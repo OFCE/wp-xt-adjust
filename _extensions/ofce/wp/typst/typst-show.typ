@@ -12,9 +12,42 @@
       $endif$
     $endfor$
   ),
+$endif$
+$if(abstract)$
+  abstract: [$abstract$],
+$else$
+$if(description)$
   abstract: [$description$],
-  year: [2024],
+$endif$
+$endif$
+$if(annee)$
+  year: [$annee$],
+$endif$
+$if(thanks)$
+  thanks: [$thanks$],
+$endif$
+$if(site-url)$
+  site-url: "$site-url$",
+$else$
+$if(citation.url)$
+  site-url: "$citation.url$",
+$endif$
+$endif$
+$if(thanks-title-fr)$
+  thanks-title-fr: "$thanks-title-fr$",
+$endif$
+$if(thanks-title-en)$
+  thanks-title-en: "$thanks-title-en$",
+$endif$
   number:[$wp$],
+$if(draft)$
+  draft: true,
+$else$
+  draft: false,
+$endif$
+$if(version)$
+  doc_version: [$version$],
+$endif$
 
 $if(date)$
   first_publish: [$date$],
@@ -34,6 +67,17 @@ $if(subtitle)$
   subtitle: [$subtitle$],
 $endif$
   number:[$wp$],
+$if(draft)$
+  draft: true,
+$else$
+  draft: false,
+$endif$
+$if(version)$
+  doc_version: [$version$],
+$endif$
+$if(annee)$
+  year: [$annee$],
+$endif$
 $if(running-head)$
   running-head: [$running-head$],
 $endif$
@@ -46,7 +90,6 @@ $endif$
       $endif$
     $endfor$
   ),
-$endif$
 $if(date)$
   first_publish: [$date$],
 $endif$

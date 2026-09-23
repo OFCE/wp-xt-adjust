@@ -120,7 +120,7 @@ update(lagr_inst) <- r_inst
 
 # impulsion --------------
 # l'impulsion sur les dépenses est définie comme la variation du taux des dépenses par rapport au potentiel
-dep_prim <- tdeppp * ppib * pibpot
+dep_prim <- tdeppp * ppib * pibpot + dep_og * lagog
 
 # ppib_dep <- lagppib_dep*(1+ infdep_star*txppib + (1-infdep_star)*lagtxppib_dep - infdep_mce*(lagppib_dep/lagppib-1))
 # pibpot_dep <- lagpibpot_dep*(1+ potdep_star*gpot_v + (1-potdep_star)*lagtxpibpot_dep - potdep_mce*(lagpibpot_dep/lagpibpot-1))
@@ -369,6 +369,7 @@ periods <- user(50)
 og_lag   <- user(0)
 og_mce   <- user(0.29)
 og_ddpot   <- user(0.29)
+dep_og <- user(0.0)
 tvnairu_mce   <- user(0.13)
 tcho_okun   <- user(0.33)
 tcho_mce   <- user(0.27)

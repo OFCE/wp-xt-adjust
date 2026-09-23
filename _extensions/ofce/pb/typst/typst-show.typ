@@ -12,9 +12,16 @@
       $endif$
     $endfor$
   ),
-  abstract: [$abstract$],
+  abstract: [$description$],
+$if(annee)$
   year: [$annee$],
+$endif$
   number:[$pb$],
+$if(pb)$
+  draft: false,
+$else$
+  draft: true,
+$endif$
 
 $if(date)$
   first_publish: [$date$],
@@ -34,6 +41,11 @@ $if(subtitle)$
   subtitle: [$subtitle$],
 $endif$
   number:[$pb$],
+$if(pb)$
+  draft: false,
+$else$
+  draft: true,
+$endif$
 $if(running-head)$
   running-head: [$running-head$],
 $endif$

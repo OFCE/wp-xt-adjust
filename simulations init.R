@@ -45,7 +45,7 @@ rs25 <- list(
   r_mat = 9,
   dstar = 1.2,
   dstarr = 0.98,
-  infstar = 0.0175,
+  infstar = 0.018,
   loss_t = 20,
   loss_d = 10,
   ib_t = 26,
@@ -69,22 +69,22 @@ rs25 <- list(
   tpo_sstar = 0.5,
   tpo_dstar = -0.05,
   tpo_og = -0.25,
-  gpot = c(1.1, 1.1, 1.1, 1.0) / 100,
+  gpot = c(1.1, 1.1, 1.1, 1.1, 1.1, 1.0) / 100,
   use_gpot = TRUE,
-  i_og = 0.008,
+  i_og = 0.004,
   i_tpo = 0.0013,
   i_dette = -0.0048,
   pcpo = 0.5,
-  taut = .000,
-  add_og = c(-0.002, -0.001, rep(0.00, 25)),
-  add_inf = c(+0.003, -0.0, 0.001),
+  taut = -.001,
+  add_og = c(-0.006, -0.0025, rep(0.00, 25)),
+  add_inf = c(+0.0028, 0.0025, 0.001),
   no_rule = c(1),
-  add_ib = c(-0.0, 0.0, 0.0, 0.0, 0.0, 0),
+  add_ib = c(-0.00, 0.0, 0.0, 0.0, 0.0, 0),
   nairu = 0.07,
-  add_tcho = c(0.005, 0.003, 0.0),
+  add_tcho = c(0.0055, 0.00, 0.0),
   ecstar = 0.00,
   add_rinst = c(0.009, 0.01, 0.007, rep(0.0055, 25)),
-  add_rapp = c(-0.075, 0) / 100
+  add_rapp = c(0.06, 0.0) / 100
 )
 
 brs25 <- setup_params(
@@ -100,13 +100,13 @@ ibs <- list(
     no_rule = c(1, 1, 1, 1, 0, 0)
   ),
   fildle = list(
-    add_ib = c(-0.005, 0),
+    add_ib = c(-0.006, 0),
     no_rule = c(1, 1, 1, 1, 1, 1, 1)
   ),
   fildle_plus_r = list(
-    add_ib = c(-0.005, 0),
+    add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 1, 1, 1, 1, 1),
-    add_rinst = c(0.009, 0.009, 0.0105, rep(0.0105, 25))
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   psmtlr = list(add_ib = c(-0.005, -0.005, 0), no_rule = c(1, 1, 0)),
   backload = list(
@@ -118,17 +118,19 @@ ibs <- list(
     no_rule = c(1, 1, 1, 0, 0)
   ),
   optimal1 = list(
-    add_ib = c(-0.005, 0),
-    no_rule = c(1, 0)
+    add_ib = c(-0.004, -0.007, 0),
+    no_rule = c(1, 1, 0),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   optimal1_plus_r = list(
-    add_ib = c(-0.005, 0),
-    no_rule = c(1, 0),
+    add_ib = c(-0.004, -0.007, 0),
+    no_rule = c(1, 1, 0),
     add_rinst = c(0.009, 0.009, 0.0105, rep(0.0105, 25))
   ),
   optimal2 = list(
-    add_ib = c(-0.005, 0),
-    no_rule = c(1, 1, 0)
+    add_ib = c(-0.004, -0.007, 0),
+    no_rule = c(1, 1, 1, 0),
+    add_rinst = c(0.009, 0.009, 0.0105, rep(0.0105, 25))
   ),
   lr = list(
     add_ib = c(0),

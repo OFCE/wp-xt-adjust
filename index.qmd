@@ -26,7 +26,7 @@ Ces résultats découlent de simulations détaillées ci-dessous mis en oeuvre d
 
 <br>
 
-### Conformité au RAA  {#sec-main}
+### Conformité au RAA {#sec-main}
 
 L'ajustement "optimal" -- tel que défini plus loin, voir principales hypothèses -- conduit à une impulsion de **-0,77 points de PIB** en 2027 et une impulsion cumulée de 2,92 points de PIB en 2032 (approx. 85 milliards d'euro au PIB de 2026). C'est un résultat qui découle d'un déficit initial important (5,1% en 2025) et d'un objectif de dette à brève échéance (2037). L'ajustement en 2026 est de -0,5% ce qui correspond au [Rapport d'Avancement Annuel 2026 publié le 22 avril 2026](https://www.tresor.economie.gouv.fr/Articles/b16f3103-ed47-4c37-9362-11ff01e12ae5/files/1d29351b-0187-4837-a3cd-e4ea7b0e4ce1). Les conséquences de cet ajustement sont le creusement de l'écart de production en 2027 et en 2028. A partir de 2029, les impulsions sont plus faibles et la dynamique du multiplicateur fait que l'ajustement de 2027 perd en effet sur l'écart de production. Cependant, parce qu'il y a chaque année une impulsion négative, même moindre, l'écart de production reste négatif jusu'en 2035 (@fig-optimal).
 
@@ -59,10 +59,10 @@ vlabels <- tibble::tribble(
 
 if(knitr::is_html_output())
   options(ofce.tab.font.size = 12) else
-    options(ofce.tab.font.size = 8) 
+    options(ofce.tab.font.size = 10) 
 
-source(ofce::pathify("/ajust/cae26/simulations init.R"))
-sims <- sourcoise::sourcoise("simulations ajustement cae26.r", force=FALSE) |> 
+source(ofce::pathify("simulations init.R"))
+sims <- sourcoise::sourcoise("simulations ajustement ofce2609.r", force=FALSE) |> 
   mutate(
     psmt_l = case_when(
       ibs == "optimal1" ~ "impulsions optimales calculées à partir de 2027",
