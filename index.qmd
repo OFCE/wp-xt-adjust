@@ -76,7 +76,6 @@ sims <- sourcoise::sourcoise("simulations ajustement ofce2609.r", force=FALSE) |
 #| label: fig-optimal
 #| fig-cap: Ajustements optimaux
 #| fig-asp: 0.8
-#| column: page-inset-right 
 
 data_cc <- sims |> 
   filter(
@@ -118,7 +117,7 @@ gg <- ggplot(data_cc)+
          x = guide_axis(minor.ticks = TRUE))+
   labs(color = NULL, fill=NULL) +
   ofce_caption(
-    source = "Debtwatch v2.0, AMECO, prevision d'automne 2026 de l'OFCE"  )
+    source = "Debtwatch v2.0, AMECO, prévision d'automne 2026 de l'OFCE"  )
 
 girafy(gg, r=1.5)
 
