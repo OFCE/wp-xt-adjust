@@ -643,7 +643,9 @@ table_simulation <- function(
       sspp = spp - tpo * og,
       ibsna = replace_na(ib, 0),
       ibc = cumsum(ibsna * (year > debut)),
-      ibc = ifelse(year <= debut, NA, ibc)
+      ibc = ifelse(year <= debut, NA, ibc),
+      ci_ni = ci - gppib * dettep,
+      bdn = (r_app - gpib - gppib)/(1 + gpib + gppib) * dettep
     ) |>
     select(-ibsna) |>
     ungroup() |>
@@ -694,7 +696,9 @@ table_simulation <- function(
     "r_inst"  ,   15 , "Taux souverain courant"           , "10 ans, % annuel"                        , ""    ,
     "r_app"   ,   16 , "Taux souverain pondéré"           , "% annuel"                                , ""    ,
     "dettep"  ,   17 , "Dette publique"                   , "% du PIB"                                , ""    ,
-    "ci"      ,   18 , "Charge d'intérêts"                , "% du PIB"                                , ""
+    "ci"      ,   18 , "Charge d'intérêts"                , "% du PIB"                                , ""    ,
+    "ci_ni"   ,   19 , "Ch. int. nette de l'inflation"    , "% du PIB"                                , ""    ,
+    "bdn"     ,   20 , "Effet boule de neige"             , "% du PIB"                                , ""
   )
 
   an_tot <- sim1 |>

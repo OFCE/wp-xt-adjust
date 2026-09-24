@@ -1,12 +1,11 @@
+project: 
+  type: website
 lang: fr
 website:
-  title: Titre du document de travail
-  repo-url: https://github.com/OFCE/debtwatch/
-  site-path: 2025/14
-  site-url: www.ofce.fr/wp
+  title: "Ajustement bugdétaire 2609"
+  repo-url: https://github.com/xtimbeau/budget/
 comments:
   hypothesis: true
-ofce_wp: true
 
 author: 
   - name: "Xavier Timbeau" 
@@ -14,14 +13,6 @@ author:
     affiliation: OFCE,  Sciences Po Paris
     affiliation-url: "http://www.ofce.fr"
     orcid: "0000-0002-6198-5953"
-date: 2025-07-11
-wp: 14
-annee: 2025
-keep-md: false
-citation:
-  type: article
-  issue: 14
-  container-title: "Document de travail de l'OFCE"
-  url: https://ofce.github.io/debtwatch
+date: 2026-09-24
 format:
-  wp-html: default
+  ofce-html: default

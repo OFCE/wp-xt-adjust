@@ -10,35 +10,35 @@ cclr <- map_dfr(
   },
   .progress = TRUE
 ) |> 
-  mutate(loss_ib = NA)
+  mutate(loss_ib = NA, sp = NA)
 
 # table_scenarios(cclr |> filter(ibs == "fildle"), dec = 2, bck = 0, fwd=8)
-table_scenarios(cclr |> filter(ibs == "fildle_plus_r"), dec = 2, bck = 0, fwd=8)
+table_scenarios(cclr |> filter(ibs == "fildle"), dec = 2, bck = 0, fwd=8)
 # graph_scenarios(
 #   cclr |> filter(ibs == "fildle"),
 #   to = 2050,
 #   vars = c("og", "dettep", "ib", "spp")
 # )
 
-ccnl <- map_dfr(
-  c("optimal1", "optimal2", "optimal1_plus_r"),
-  ~ {
-    phis <- calc_phis(
-      brs25,
-      algorithm = "cobyla",
-      params = c(
-        c(dstar = 1.2, loss_og = 5, loss_ib = 0, loss_ogpe = 0),
-        ibs[[.x]] ) )
-    cli::cli_alert_info(phis$message)
-    run_model(brs25, out = "none", params = phis, full_mc = FALSE) |>
-      mutate(ibs = .x)
-  },
-  .progress = TRUE
-) |> 
-  mutate(loss_ib = 0)
+# ccnl <- map_dfr(
+#   c("optimal1", "optimal2", "optimal1_plus_r"),
+#   ~ {
+#     phis <- calc_phis(
+#       brs25,
+#       algorithm = "cobyla",
+#       params = c(
+#         c(dstar = 1.2, loss_og = 5, loss_ib = 0, loss_ogpe = 0),
+#         ibs[[.x]] ) )
+#     cli::cli_alert_info(phis$message)
+#     run_model(brs25, out = "none", params = phis, full_mc = FALSE) |>
+#       mutate(ibs = .x)
+#   },
+#   .progress = TRUE
+# ) |> 
+#   mutate(loss_ib = 0)
 
 ccl <- map_dfr(
-  c("optimal1", "optimal2", "optimal1_plus_r"),
+  c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_moins_r", "no2027", "d2037"),
   ~ {
     phis <- calc_phis(
       brs25,
@@ -52,11 +52,11 @@ ccl <- map_dfr(
   },
   .progress = TRUE
 ) |> 
-  mutate(loss_ib = 5)
+  mutate(loss_ib = 5, sp = FALSE)
 
 
 ccss <- map_dfr(
-  c("optimal1", "optimal2", "optimal1_plus_r"),
+  c("optimal1"),
   ~ {
     phis <- calc_phis(
       brs25,
@@ -79,7 +79,7 @@ ccss <- map_dfr(
 #   vars = c("ib", "dettep", "sppsd", "spp")
 # )
 
-cc <- bind_rows(ccnl, ccl, cclr, ccss)
+cc <- bind_rows( ccl, cclr, ccss)
 
 # table_scenarios(cc |> filter(ibs == "optimal1"), dec = 2)
 # graph_scenarios(

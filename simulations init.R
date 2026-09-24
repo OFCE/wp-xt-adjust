@@ -49,8 +49,8 @@ rs25 <- list(
   loss_t = 20,
   loss_d = 10,
   ib_t = 26,
-  cons_d = 15,
-  cons_dt = 12,
+  cons_d = 20,
+  cons_dt = 7,
   cons_sp = 0,
   cons_spt = 12,
   loss_df = 0.0,
@@ -58,11 +58,11 @@ rs25 <- list(
   loss_og = 0,
   loss_ogpe = 0,
   loss_exp = 8,
-  ibcap = 0.05,
+  ibcap = 0.025,
   multivar = 0,
   og_bar = -.02,
-  og_rn = 0.01,
-  og_po_plus = 1.5,
+  og_rn = 0.001,
+  og_po_plus = 0.75,
   og_dep_plus = 1.5,
   r_dette_star = 0,
   r_dette = 0,
@@ -101,12 +101,13 @@ ibs <- list(
   ),
   fildle = list(
     add_ib = c(-0.006, 0),
-    no_rule = c(1, 1, 1, 1, 1, 1, 1)
+    no_rule = c(1, 1, 1, 1, 1, 1, 1),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   fildle_plus_r = list(
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 1, 1, 1, 1, 1),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))
   ),
   psmtlr = list(add_ib = c(-0.005, -0.005, 0), no_rule = c(1, 1, 0)),
   backload = list(
@@ -122,15 +123,32 @@ ibs <- list(
     no_rule = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
+  optimal1_moins_r = list(
+    add_ib = c(-0.004, -0.007, 0),
+    no_rule = c(1, 1, 0),
+    add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))
+  ),
   optimal1_plus_r = list(
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0),
-    add_rinst = c(0.009, 0.009, 0.0105, rep(0.0105, 25))
+    add_rinst = c(0.015, 0.017, rep(0.017, 25))
   ),
   optimal2 = list(
     add_ib = c(-0.004, -0.007, 0),
-    no_rule = c(1, 1, 1, 0),
-    add_rinst = c(0.009, 0.009, 0.0105, rep(0.0105, 25))
+    no_rule = c(0, 0, 0, 0),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    ),
+  no2027 = list(
+    add_ib = c(-0.004, -0.0, 0),
+    no_rule = c(1, 1, 0, 0),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+  ),
+  d2037 = list(
+    cons_d = 15,
+    cons_dt = 12,
+    add_ib = c(-0.004, -0.007, 0),
+    no_rule = c(1, 1, 0, 0),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   lr = list(
     add_ib = c(0),
