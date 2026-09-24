@@ -4,7 +4,8 @@
     "index.embed.ipynb": "92b99ec6",
     "index.out.ipynb": "70122812",
     "index-preview.html": "5b4a7923",
-    "index.html": "53c33256"
+    "index.html": "53c33256",
+    "index.typ": "69f8e04d"
   },
   "help/credits-en.md": {
     "credits-en.out.ipynb": "93388c9d",
@@ -65,5 +66,11 @@
     "note ajustement 2026 XT.typ": "9533b179",
     "note ajustement 2026 XT.html": "80f9e8a6",
     "note-ajustement-2026-XT.tex": "f4f9b389"
+  },
+  "annexes.qmd": {
+    "annexes.html": "3114ce58"
+  },
+  "news.qmd": {
+    "news.html": "8f014d7e"
   }
 }
