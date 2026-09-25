@@ -24,9 +24,9 @@ citation: false
 
 - La stabilisation de la dette en 2032 (ou cible de solde) implique une impulsion cumulée de 3,1% du PIB, avec un maximum de dette public plus élevé à 123,5% du PIB à terme (soit 3,5 point de PIB de dette en plus qu'une cible de dette de 120%) (@sec-annexe3). L'impact sur l'activité serait nettement moins négatif, le chômage atteignant au pire 8,6% en 2029.
 
-- Une cible de dette en 2037 au lieu de 2032 réduit significativement les coûts en activité et en chômage (@sec-d2037).
+- Une cible de dette en 2037 au lieu de 2032 réduit significativement les coûts en activité et en chômage (@sec-d2037). Ce résultat découle de la prise en compte des muitplicateurs budgétaires et de leur dynamique. Bien que la modélisation retienne une version des multiplicateurs particulièrement concentrée dans le court terme et super neutres à long terme, lorsque l'objectif de dette est à une échéance relativement courte (5 ans ici), l'effet des mulitplicateurs oblige à une consolidation très forte (la neutralité à long terme induit un effet positif au delà de l'échéance). A l'extrême, si l'échéance était à 1 ou 2 ans, l'objectif ne serait pas atteignable.
 
-- Un taux souverain inférieur de de 0,5 point réduit l'impulsion primaire cumulée de 0,4 points de PIB en 2032 (12 milliards d'euros de 2026) (@sec-annexe4). Le gain est de l'ordre de 0,2 point de chômage et d'activité en 2028 et 2029.
+- Un taux souverain inférieur de de 0,5 point réduit l'impulsion primaire cumulée de 0,4 points de PIB en 2032 (12 milliards d'euros de 2026) (@sec-annexe4). Le gain est de l'ordre de 0,2 point de chômage et d'activité en 2028 et 2029. A l'inverse, si le taux souverain de marché nominal restait à la valeur actuelle (4,5%), le surcoût d'ajustement serait de 21 milliards. Entre cette situation et le retour à une prime de risque de 0,5%, l'écart est d'un point de PIB, ce qui illustre l'importance de ce facteur.
 
 Ces résultats découlent de simulations détaillées ci-dessous mis en oeuvre dans @psmt et @timbeau2025, en s'appuyant sur la prévision d'automne 2026 de l'OFCE [@prev2609].
 
@@ -79,15 +79,16 @@ sims <- sourcoise::sourcoise("simulations ajustement ofce2609.r", force=FALSE) |
 
 data_cc <- sims |> 
   filter(
-    ibs %in% c("optimal1", "d2037"),
+    ibs %in% c("optimal1", "d2037", "nomult"),
     !is.na(sp),
     between(year, 2025, 2050), 
     variable %in% c("og", "ib", "dettep", "sep")) |> 
   mutate(
     cas = case_when(
       sp ~ "dette stable en 2032",
-      ibs == "optimal1" ~ "120% en 2032; IB à partir de 2028",
-      ibs == "d2037" ~ "120% en 2037; IB à partir de 2028")  )
+      ibs == "optimal1" ~ "120% en 2032",
+      ibs == "optimal1" ~ "120% en 2032, multiplicateurs nuls",
+      ibs == "d2037" ~ "120% en 2037")  )
 
 gg <- ggplot(data_cc)+
   theme_ofce(base_size = 10)+
@@ -150,7 +151,7 @@ Dans ce scénario, la dette publique passe par un maximum en 2031 et le solde pu
 
 table_scenarios(
   sim = sims |> filter(ibs == "optimal1", loss_ib == 5, !sp),
-  dec = 2 , bck = 0, fwd = 7)
+  dec = 1 , bck = 0, fwd = 7)
 ```
 
 ## Résultats
@@ -168,7 +169,7 @@ L'effort budgétaire est sensiblement inférieur dans ce scénario (3,1% du PIB 
 
 table_scenarios(
   sim = sims |> filter(ibs == "optimal2", loss_ib == 5, !sp),
-  dec = 2  , bck = 0, fwd = 7)
+  dec = 1  , bck = 0, fwd = 7)
 ```
 
 ### 120% de dette en 2037 {#sec-d2037}
@@ -186,7 +187,7 @@ La perte d'activité cumulée (8,5 points de PIB) ou le pic de chômage (8,8% de
 
 table_scenarios(
   sim = sims |> filter(ibs == "d2037", loss_ib == 5, !sp),
-  dec = 2  , bck = 0, fwd = 7)
+  dec = 1  , bck = 0, fwd = 7)
 ```
 
 ### Coût de l'inaction : pas d'impulsion en 2027 {#sec-inaction}
@@ -202,7 +203,7 @@ Nous incluons pas de tensions supplémentaires sur les taux dans ce scénario qu
 
 table_scenarios(
   sim = sims |> filter(ibs == "no2027", loss_ib == 5, !sp),
-  dec = 2  , bck = 0, fwd = 7)
+  dec = 1  , bck = 0, fwd = 7)
 ```
 
 ### Stabilisation de la dette en 2032 (cible de solde) {#sec-annexe3}
@@ -218,7 +219,7 @@ Le @tbl-sp résulte de l'optimisation complète. La dette est stabilisée à une
 
 table_scenarios(
   sim = sims |> filter(ibs == "optimal1", loss_ib==0, sp),
-  dec = 2, bck = 0, fwd = 7)
+  dec = 1, bck = 0, fwd = 7)
 
 ```
 
@@ -235,7 +236,7 @@ A l'horizon de l'année 2032, l'effort budgétaire serait inférieur de 0,4 poin
 
 table_scenarios(
   sim = sims |> filter(ibs == "optimal1_moins_r", loss_ib==5, !sp),
-  dec = 2, bck = 0, fwd = 7)
+  dec = 1, bck = 0, fwd = 7)
 
 ```
 
@@ -252,11 +253,24 @@ Entre ce scénario (taux élevés) et le précédent (taux plus bas), l'écart d
 
 table_scenarios(
   sim = sims |> filter(ibs == "optimal1_plus_r", loss_ib==5, !sp),
-  dec = 2, bck = 0, fwd = 7)
+  dec = 1, bck = 0, fwd = 7)
 
 ```
 
-## Méthodes
+### Multiplicateurs nuls
+
+```{r}
+#| label: tbl-nomult
+#| tbl-cap: Ajustement optimal, 120% de dette en 2032, mulitplicateurs nuls
+#| column: page-inset-right
+
+table_scenarios(
+  sim = sims |> filter(ibs == "nomult", loss_ib==5, !sp),
+  dec = 1, bck = 0, fwd = 7)
+
+```
+
+## Eléments de méthode
 
 ### Principales hypothèses {#sec-annexe1}
 
@@ -289,7 +303,7 @@ De ce point de vue, la stabilité du déficit structurel ajouté à la hausse de
 
 table_scenarios(
   sim = sims |> filter(ibs == "fildle", is.na(loss_ib), !sp),
-  dec = 2, bck = 0, fwd = 7)
+  dec = 1, bck = 0, fwd = 7)
 ```
 
 ```{r}

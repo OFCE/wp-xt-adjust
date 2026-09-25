@@ -150,6 +150,13 @@ ibs <- list(
     no_rule = c(1, 1, 0, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
+  nomult = list(
+    og_po = 0,
+    og_dep = 0,
+    add_ib = c(-0.004, -0.007, 0),
+    no_rule = c(1, 1, 0),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+  ),
   lr = list(
     add_ib = c(0),
     no_rule = c(0)

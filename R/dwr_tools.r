@@ -608,6 +608,7 @@ table_simulation <- function(
 ) {
   fin <- debut + fwd + 1
   p1.d <- debut - 4
+  
   sim1 <- sim |>
     filter(
       variable %in%
@@ -644,6 +645,8 @@ table_simulation <- function(
       ibsna = replace_na(ib, 0),
       ibc = cumsum(ibsna * (year > debut)),
       ibc = ifelse(year <= debut, NA, ibc),
+      ogc = cumsum(og * (year > debut) ),
+      ogc = ifelse(year <= debut, NA, ogc),
       ci_ni = ci - gppib * dettep,
       bdn = (r_app - gpib - gppib)/(1 + gpib + gppib) * dettep
     ) |>
@@ -680,27 +683,28 @@ table_simulation <- function(
     mutate(year = "Max. 25-50")
 
   pos <- tribble(
-    ~variable , ~pos , ~label                             , ~note                                     , ~max  ,
-    "gpib"    ,    1 , "Croissance du PIB"                , "évolution en % annuel, volume"           , ""    ,
-    "og"      ,    2 , "Ecart de production"              , "% du PIB"                                , "min" ,
-    "gpot"    ,    3 , "Croissance du PIB potentiel"      , "évolution en % annuel, volume"           , ""    ,
-    "gppib"   ,    4 , "Inflation"                        , "déflateur du PIB, évolution en % annuel" , ""    ,
-    "tcho"    ,    5 , "Taux de chômage"                  , "% de la population active"               , ""    ,
-    "sep"     ,    6 , "Solde public"                     , "% du PIB"                                , ""    ,
-    "spp"     ,    7 , "Solde public primaire"            , "% du PIB"                                , ""    ,
-    "sspp"    ,    8 , "Solde public structurel primaire" , "% du PIB"                                , ""    ,
-    "ib"      ,    9 , "Impulsion budgétaire primaire"    , "% du PIB"                                , ""    ,
-    "ib_po"   ,   10 , "\u202F\u202F\u202Fdont PO"        , "% du PIB"                                , ""    ,
-    "ib_dep"  ,   11 , "\u202F\u202f\u202fdont dépense"   , "% du PIB"                                , ""    ,
-    "ibc"     ,   12 , "Cumul de l'impulsion primaire"    , "% du PIB"                                , "min" ,
-    "r_inst"  ,   15 , "Taux souverain courant"           , "10 ans, % annuel"                        , ""    ,
-    "r_app"   ,   16 , "Taux souverain pondéré"           , "% annuel"                                , ""    ,
-    "dettep"  ,   17 , "Dette publique"                   , "% du PIB"                                , ""    ,
-    "ci"      ,   18 , "Charge d'intérêts"                , "% du PIB"                                , ""    ,
-    "ci_ni"   ,   19 , "Ch. int. nette de l'inflation"    , "% du PIB"                                , ""    ,
-    "bdn"     ,   20 , "Effet boule de neige"             , "% du PIB"                                , ""
-  )
-
+    ~variable , ~label                             , ~note                                     , ~max  ,
+    "gpib"    , "Croissance du PIB"                , "évolution en % annuel, volume"           , ""    ,
+    "og"      , "Ecart de production"              , "% du PIB"                                , "min" ,
+    "ogc"     , "Ecart de production cumulé"       , "% du PIB"                                , "min" ,
+    "gpot"    , "Croissance du PIB potentiel"      , "évolution en % annuel, volume"           , ""    ,
+    "gppib"   , "Inflation"                        , "déflateur du PIB, évolution en % annuel" , ""    ,
+    "tcho"    , "Taux de chômage"                  , "% de la population active"               , ""    ,
+    "sep"     , "Solde public"                     , "% du PIB"                                , ""    ,
+    "spp"     , "Solde public primaire"            , "% du PIB"                                , ""    ,
+    "sspp"    , "Solde public structurel primaire" , "% du PIB"                                , ""    ,
+    "ib"      , "Impulsion budgétaire primaire"    , "% du PIB"                                , ""    ,
+    "ib_po"   , "\u202F\u202F\u202Fdont PO"        , "% du PIB"                                , ""    ,
+    "ib_dep"  , "\u202F\u202f\u202fdont dépense"   , "% du PIB"                                , ""    ,
+    "ibc"     , "Cumul de l'impulsion primaire"    , "% du PIB"                                , "min" ,
+    "r_inst"  , "Taux souverain courant"           , "10 ans, % annuel"                        , ""    ,
+    "r_app"   , "Taux souverain pondéré"           , "% annuel"                                , ""    ,
+    "dettep"  , "Dette publique"                   , "% du PIB"                                , ""    ,
+    "ci"      , "Charge d'intérêts"                , "% du PIB"                                , ""    ,
+    "ci_ni"   , "Ch. int. nette de l'inflation"    , "% du PIB"                                , ""    ,
+    "bdn"     , "Effet boule de neige"             , "% du PIB"                                , "" )  |> 
+    mutate(pos = 1:n())
+  
   an_tot <- sim1 |>
     filter(year %in% (debut - bck):(fin)) |>
     mutate(year = as.character(year)) |>
