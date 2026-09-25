@@ -95,10 +95,6 @@ brs25 <- setup_params(
 )
 
 ibs <- list(
-  psmt = list(
-    add_ib = c(-0.0075, -0.0075, -0.0075, -0.0075, 0),
-    no_rule = c(1, 1, 1, 1, 0, 0)
-  ),
   fildle = list(
     add_ib = c(-0.006, 0),
     no_rule = c(1, 1, 1, 1, 1, 1, 1),
@@ -108,15 +104,6 @@ ibs <- list(
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 1, 1, 1, 1, 1),
     add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))
-  ),
-  psmtlr = list(add_ib = c(-0.005, -0.005, 0), no_rule = c(1, 1, 0)),
-  backload = list(
-    add_ib = c(0, -0.0075, -0.0075, -0.0075, -0.0075, 0),
-    no_rule = c(1, 1, 1, 1, 1, 0, 0)
-  ),
-  frontload = list(
-    add_ib = c(-0.0145, -0.0086, -0.0067, -0.008, 0),
-    no_rule = c(1, 1, 1, 0, 0)
   ),
   optimal1 = list(
     add_ib = c(-0.004, -0.007, 0),
@@ -153,6 +140,22 @@ ibs <- list(
   nomult = list(
     og_po = 0,
     og_dep = 0,
+    add_ib = c(-0.004, -0.007, 0),
+    no_rule = c(1, 1, 0),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+  ),
+  ogpers = list(
+    og_mce = 0.3,
+    add_ib = c(-0.004, -0.007, 0),
+    no_rule = c(1, 1, 0),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+  ),
+  multivar = list(
+    multivar = 1,
+    og_bar = -.01,
+    og_rn = 1,
+    og_po_plus = 0.75,
+    og_dep_plus = 1.35,
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))

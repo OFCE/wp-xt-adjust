@@ -38,7 +38,7 @@ table_scenarios(cclr |> filter(ibs == "fildle"), dec = 2, bck = 0, fwd=8)
 #   mutate(loss_ib = 0)
 
 ccl <- map_dfr(
-  c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_moins_r", "no2027", "d2037", "nomult"),
+  c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_moins_r", "no2027", "d2037", "nomult", "ogpers", "multivar"),
   ~ {
     phis <- calc_phis(
       brs25,

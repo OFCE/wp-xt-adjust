@@ -791,13 +791,7 @@ table_simulation <- function(
     ofce::ofce_tab_options() |>
     sub_missing() |>
     cols_align_decimal(-label) |>
-    tab_options(
-      column_labels.padding = 2,
-      data_row.padding = 2,
-      footnotes.multiline = FALSE,
-      footnotes.padding = 1,
-      source_notes.padding = 0
-    ) |> 
+    ofce::ofce_tab_options() |> 
     cols_width(
       label ~ px(220),
       everything() ~ px(50)
