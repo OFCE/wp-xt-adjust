@@ -54,3 +54,4 @@ rsconnect/
 .quarto
 _site
 .secrets
+.DS_Store
