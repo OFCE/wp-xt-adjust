@@ -38,7 +38,8 @@ table_scenarios(cclr |> filter(ibs == "fildle"), dec = 2, bck = 0, fwd=8)
 #   mutate(loss_ib = 0)
 
 ccl <- map_dfr(
-  c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_moins_r", "no2027", "d2037", "nomult", "ogpers", "multivar"),
+  c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_moins_r", 
+    "no2027", "d2037", "nomult", "ogpers", "multivar"),
   ~ {
     phis <- calc_phis(
       brs25,
@@ -62,7 +63,8 @@ ccss <- map_dfr(
       brs25,
       algorithm = "cobyla",
       params = c(
-        c(dstar = 1.2, cons_d=12, cons_dt=0, cons_sp = 7, cons_spt = 19, loss_og = 5, loss_ib = 0, loss_ogpe = 0),
+        c(dstar = 1.2, cons_d=12, cons_dt=0, cons_sp = 7, cons_spt = 19, loss_og = 5, loss_ib = 0, loss_ogpe = 0,
+          tpo_dstar = 0, tpo_og = 0, tpo_ec = 0, tpo_inf = 0),
         ibs[[.x]] ) )
     cli::cli_alert_info(phis$message)
     run_model(brs25, out = "none", params = phis, full_mc = FALSE) |>

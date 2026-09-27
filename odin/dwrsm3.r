@@ -50,6 +50,8 @@ vog_dep <- (og_dep * exp(og_rcn) + og_dep_plus * exp(-og_rcn))/(exp(og_rcn) + ex
 vog_po <- (og_po * exp(og_rcn) + og_po_plus * exp(-og_rcn))/(exp(og_rcn) +  exp(-og_rcn))*multivar[step]+
   (1-multivar[step])*og_po
 
+vog <-  (vog_dep  + vog_po)/2
+  
 
 # chômage&NAIRU -------------------
 tcho <- lagtcho - tcho_okun * dog - tcho_mce * (lagtcho - lagtvnairu + lagog)  + add_tcho[step]
@@ -160,7 +162,7 @@ ib_sup_inf <-  lagktau_og * (- lagdettep + (1-beta) * lag2dettep + lagspp + lagt
 update(lagib_sup_inf) <- ib_sup_inf
 betastar <- (lagr_app - gpot_v - infstar) / (1 + gpot_v + infstar)
 beta <- (lagr_app - laggvpib) / (1 + laggvpib)
-sppsd <-  lagdettep * beta + add_spstar[step]
+sppsd <-  beta * lagdettep + add_spstar[step]
 update(lagsppsd) <- sppsd
 
 # règle budgétaire --------------
@@ -185,15 +187,13 @@ ib_fr <- tpo_sstar * (lagspp - (spp_cc[step]==0) * sppsd - (spp_cc[step]!=0) * l
   tpo_dstar * (lagdettep - (dettep_cc[step]==0) * dstar - (dettep_cc[step]!=0) *lagdettep_cc) +
   tpo_og*(lagog - (og_cc[step]!=0) *lagog_cc) +
   tpo_ec*(ecart_c - (ec_cc[step]==0)*ecstar - ec_cc[step]) +
-  tpo_inf*(lagtxppib - (inf_cc[step]==0)*infstar - laginf_cc ) +
-  phi[step]
+  tpo_inf*(lagtxppib - (inf_cc[step]==0)*infstar - laginf_cc ) 
 
-ib_fre <- ib_fr * (1-no_rule[step])
+ib_fre <- ib_fr * (1-no_rule[step]) +
+  phi[step]*(1-no_phi[step])
 
 ib_sup <- max(min(ib_fre, ibcap), -ibcap)  +
   add_ib[step]  
-# +
-# (ib_sup_inf * (step>=loss_t) ) * 0.
 
 ib_spont_dep <- tx_deriv_dep[step] * lagtdeppp 
   # lagtdeppp * (lagppib_dep*lagpibpot_dep / lagpibpot / lagppib - lag2ppib_dep * lag2pibpot_dep/ lag2pibpot / lag2ppib)
@@ -262,6 +262,7 @@ update(loss_d_only_o) <- loss_d_only
 update(loss_nd_o) <- loss_no_d
 update(sppsd_o) <- sppsd
 update(ec_o) <- ecart_c
+update(vog_o) <- vog
 
 initial(txppib_o) <- 0
 initial(gpib_o) <- 0
@@ -295,7 +296,7 @@ initial(loss_d_only_o) <- 0
 initial(lagib_sup_inf) <- 0
 initial(lagktau_og) <- 0
 initial(sppsd_o) <- 0
-
+initial(vog_o) <- 0
 initial(og_noise) <- (1-ogn_ar)*rnorm(0, ogn_sigma*og_mce)
 
 # init ----------------
@@ -447,6 +448,7 @@ gpot[] <- user(0)
 tx_deriv_dep[] <- user(0)
 tx_deriv_po[] <- user(0)
 no_rule[] <- user(0)
+no_phi[] <- user(0)
 add_ib[] <- user(0)
 add_inf[] <- user(0)
 add_inf_e[] <- user(0)
@@ -466,6 +468,7 @@ inf_cc[] <- user(0)
 
 dim(dette_oneoff) <- periods
 dim(phi) <- periods
+dim(no_phi) <- periods
 dim(gpot) <- periods
 dim(taut) <- periods
 dim(add_og) <- periods

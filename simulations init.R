@@ -25,19 +25,19 @@ source(pathify("/R/dwr_tools.r"))
 source(pathify("/R/dwr_mongo.r"))
 
 rs25 <- list(
-  draws = 256,
+  draws = 1,
   start_hist = 2007,
   end_year = 2035,
-  og_lag = 0.25,
+  og_lag = 0.1,
   og_mce = 0.4,
-  og_cin = 0.2,
+  og_cin = 0.0,
   og_po = 0.5,
   og_dep = 1.2,
   og_ddpot = 0,
   pot_r = 0,
-  ogn_sigma = 0.015,
-  ogn_ar = 0.9,
-  inf_sigma = 0.01,
+  ogn_sigma = 0, #0.015,
+  ogn_ar = 0, # 0.9,
+  inf_sigma = 0, # 0.01,
   go_mc = TRUE,
   tcho_okun = 0.6,
   inf_tcho = 0.15,
@@ -78,7 +78,8 @@ rs25 <- list(
   taut = -.001,
   add_og = c(-0.006, -0.0025, rep(0.00, 25)),
   add_inf = c(+0.0028, 0.0025, 0.001),
-  no_rule = c(1),
+  no_rule = 1,
+  no_phi = 0,
   add_ib = c(-0.00, 0.0, 0.0, 0.0, 0.0, 0),
   nairu = 0.07,
   add_tcho = c(0.0055, 0.00, 0.0),
@@ -97,37 +98,44 @@ brs25 <- setup_params(
 ibs <- list(
   fildle = list(
     add_ib = c(-0.006, 0),
-    no_rule = c(1, 1, 1, 1, 1, 1, 1),
+    no_rule = 1,
+    no_phi = 1,
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   fildle_plus_r = list(
     add_ib = c(-0.004, -0.007, 0),
-    no_rule = c(1, 1, 1, 1, 1, 1, 1),
+    no_rule = c(1),
+    no_phi = 1,
     add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))
   ),
   optimal1 = list(
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0),
+    no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   optimal1_moins_r = list(
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0),
+    no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))
   ),
   optimal1_plus_r = list(
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0),
+    no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.017, rep(0.017, 25))
   ),
   optimal2 = list(
     add_ib = c(-0.004, -0.007, 0),
-    no_rule = c(0, 0, 0, 0),
+    no_rule = c(0),
+    no_phi = c( 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
     ),
   no2027 = list(
     add_ib = c(-0.004, -0.0, 0),
     no_rule = c(1, 1, 0, 0),
+    no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   d2037 = list(
@@ -135,6 +143,7 @@ ibs <- list(
     cons_dt = 12,
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0, 0),
+    no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   nomult = list(
@@ -142,26 +151,31 @@ ibs <- list(
     og_dep = 0,
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0),
+    no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   ogpers = list(
     og_mce = 0.3,
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0),
+    no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   multivar = list(
     multivar = 1,
-    og_bar = -.01,
-    og_rn = 1,
+    og_bar = -.02,
+    og_po = 0.5,
+    og_dep = 1.2,
+    og_rn = 0.01,
     og_po_plus = 0.75,
-    og_dep_plus = 1.35,
+    og_dep_plus = 1.5,
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0),
+    no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   lr = list(
     add_ib = c(0),
-    no_rule = c(0)
-  )
-)
+    no_rule = c(0),
+    no_phi = 0
+  ))

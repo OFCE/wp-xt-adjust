@@ -61,11 +61,10 @@ ibs_labs <- c("optimal1"  =  "Prévision OFCE aut. 26",
               "ogpers" = "Ecart de prod. plus persistant")  
 
 source(ofce::pathify("simulations init.R"))
-sims <- sourcoise::sourcoise("simulations ajustement ofce2609.r", track = "simulations init.R") |> 
-  mutate(
-    psmt_l = ibs_labs[ibs],
-    tooltip = glue("<b>{vlabels[variable]}</b><br><em>{psmt_l}</em><br>En {year} : {round(q0.5*100,1)}%"))
- debut <- 2025
+sims <- sourcoise::sourcoise(
+  "simulations ajustement ofce2609.r", 
+  track = "simulations init.R") 
+debut <- 2025
 sims_sum <- sims |>
   select(ibs, loss_ib, sp, variable, year, mean) |> 
   pivot_wider(names_from = variable, values_from = mean) |> 
@@ -172,7 +171,7 @@ Ces résultats découlent de simulations détaillées ci-dessous mis en œuvre d
 
 data_cc <- sims |> 
   filter(
-    ibs %in% c("optimal1", "d2037"),
+    ibs %in% c("optimal1", "d2037", "multivar"),
     !is.na(sp),
     between(year, 2025, 2050), 
     variable %in% c("og", "ib", "dettep", "sep")) |> 
@@ -180,8 +179,11 @@ data_cc <- sims |>
     cas = case_when(
       sp ~ "dette stable en 2032",
       ibs == "optimal1" ~ "120% en 2032",
-      ibs == "optimal1" ~ "120% en 2032, multiplicateurs nuls",
-      ibs == "d2037" ~ "120% en 2037")  )
+      ibs == "nomult" ~ "120% en 2032, multiplicateurs nuls",
+      ibs == "multivar" ~ "120% en 2032, multiplicateurs variables",
+      ibs == "d2037" ~ "120% en 2037")  ) |> 
+  mutate(
+    tooltip = glue("<b>{cas}</b><br><em>{vlabels[variable]}</em><br>En {year} : {round(q0.5*100,1)}%"))
 
 gg <- ggplot(data_cc)+
   theme_ofce(base_size = 10)+
@@ -193,7 +195,7 @@ gg <- ggplot(data_cc)+
   geom_ribbon(
     aes(x=year, ymin=q0.025, ymax=q0.975, fill = cas), alpha = 0.05) +
   geom_line(
-    aes(x = year, y = mean, color = cas), linewidth = 0.25) +
+    aes(x = year, y = q0.5, color = cas), linewidth = 0.25) +
   geom_point_interactive(
     aes(x = year, y = mean, fill = cas, shape = nat, size = nat,
         tooltip = tooltip, data_id = year), 
@@ -416,7 +418,17 @@ data_cc <- sims |>
     ibs %in% c("fildle"),
     is.na(loss_ib), is.na(sp),
     between(year, 2025, 2050), 
-    variable %in% c("og", "ib", "dettep", "sep")) 
+    variable %in% c("og", "ib", "dettep", "sep")) |> 
+  mutate(
+    cas = case_when(
+      sp ~ "dette stable en 2032",
+      ibs == "optimal1" ~ "120% en 2032",
+      ibs == "nomult" ~ "120% en 2032, multiplicateurs nuls",
+      ibs == "multivar" ~ "120% en 2032, multiplicateurs variables",
+      ibs == "d2037" ~ "120% en 2037")  ) |> 
+  mutate(
+    tooltip = glue("<b>{cas}</b><br><em>{vlabels[variable]}</em><br>En {year} : {round(q0.5*100,1)}%"))
+
 
 gg <- ggplot(data_cc)+
   theme_ofce(base_size = 10)+

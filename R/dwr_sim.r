@@ -189,7 +189,7 @@ dataandparams <- function(country, start_year, periods = 2050-start_year, draws=
               periods=periods))
 }
 
-.dwr.long <- c("dette_oneoff", "phi", "gpot", "taut", "tx_deriv_dep", 
+.dwr.long <- c("dette_oneoff", "phi", "no_phi", "gpot", "taut", "tx_deriv_dep", 
                "tx_deriv_po", "add_og", "add_rinst",
                "add_og_e", "add_ib", "no_rule", "add_inf",
                "add_inf_e", "add_rapp", "add_tdeppp", "add_tpo", "add_spstar", "multivar",
