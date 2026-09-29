@@ -525,3 +525,9 @@ $$
 \min_{ib_{t}}\mathcal{L}
 \text{ sous contrainte : pour } t \geq T \text{, } d_t = d^* \text{avec } d_t = \mathcal{S}(ib_t) 
 $$ {#eq-prog-min}
+
+### Paramétrisation de référence  {#sec-param}
+
+### Multiplicateurs budgétaires
+
+La modélisation présentée dans la section @sec-annexe5 associée à la paramétrisation de la section @sec-param
