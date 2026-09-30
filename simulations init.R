@@ -142,7 +142,7 @@ ibs <- list(
     cons_d = 15,
     cons_dt = 12,
     add_ib = c(-0.004, -0.007, 0),
-    no_rule = c(1, 1, 0, 0),
+    no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
@@ -156,6 +156,14 @@ ibs <- list(
   ),
   ogpers = list(
     og_mce = 0.3,
+    add_ib = c(-0.004, -0.007, 0),
+    no_rule = c(1, 1, 0),
+    no_phi = c(1, 1, 0),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+  ),
+  highmult = list(
+    og_po = 0.75,
+    og_dep = 1.45,
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),

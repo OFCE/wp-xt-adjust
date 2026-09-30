@@ -448,7 +448,7 @@ best_phis_nlcons <- function(p, model, dt = 0, method = "cobyla") {
       eval_f = loss_phi,
       eval_g_eq = eq_func,
       opts = list(algorithm = "NLOPT_LN_COBYLA",
-                  maxeval = 100000, xtol_rel = 1.e-6,
+                  maxeval = 100000, xtol_rel = 1.e-7,
                   xtol_abs = 1e-8)  )
   if(is.null(det_opt))
     return(list(phi = phic,

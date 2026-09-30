@@ -645,7 +645,7 @@ table_simulation <- function(
       ibsna = replace_na(ib, 0),
       ibc = cumsum(ibsna * (year > debut)),
       ibc = ifelse(year <= debut, NA, ibc),
-      ogc = cumsum(og * (year > debut) ),
+      ogc = cumsum(og * (year > debut) )/cumsum((year>debut)),
       ogc = ifelse(year <= debut, NA, ogc),
       ci_ni = ci - gppib * dettep,
       bdn = (r_app - gpib - gppib)/(1 + gpib + gppib) * dettep
@@ -668,13 +668,12 @@ table_simulation <- function(
   #     mean(q0.5)),
   #             .groups = "drop")
   an_moy <- sim1 |>
-    filter(year == debut + 1 + 25) |>
+    filter(year == 2050) |>
     rename(ygrp = year) |>
     mutate(ygrp = "LT (2050)")
   max <- sim1 |>
     filter(
-      variable %in% c("dettep", "sspp", "sep", "ibc", "spp", "tcho", "og", "ci")
-    ) |>
+      variable %in% c("dettep", "sspp", "sep", "ibc", "spp", "tcho", "og", "ci") ) |>
     filter(year |> between(debut + 1, fin + 1 + 25)) |>
     mutate(mean = ifelse(variable %in% c("og", "ibc"), -mean, mean)) |>
     group_by(variable) |>
@@ -686,7 +685,7 @@ table_simulation <- function(
     ~variable , ~label                             , ~note                                     , ~max  ,
     "gpib"    , "Croissance du PIB"                , "évolution en % annuel, volume"           , ""    ,
     "og"      , "Ecart de production"              , "% du PIB"                                , "min" ,
-    "ogc"     , "Ecart de production cumulé"       , "% du PIB"                                , "min" ,
+    "ogc"     , "Ecart de production cumulé moyen" , "% du PIB"                                , "min" ,
     "gpot"    , "Croissance du PIB potentiel"      , "évolution en % annuel, volume"           , ""    ,
     "gppib"   , "Inflation"                        , "déflateur du PIB, évolution en % annuel" , ""    ,
     "tcho"    , "Taux de chômage"                  , "% de la population active"               , ""    ,
@@ -751,7 +750,7 @@ table_simulation <- function(
     ) |>
     tab_style(style = cell_borders('top'), cells_body(rows = c(6, 13))) |>
     cols_label(label = "") |>
-    cols_hide(c(note, max)) |>
+    cols_hide(c(note, max, `Max. 25-50`)) |>
     tab_footnote(
       "évolution en % annuel, volume",
       cells_body(label, note == "évolution en % annuel, volume")
@@ -794,7 +793,8 @@ table_simulation <- function(
     ofce::ofce_tab_options() |> 
     cols_width(
       label ~ px(220),
-      everything() ~ px(50)
+      `LT (2050)` ~ px(55),
+      everything() ~ px(45)
     )
 }
 

@@ -1,0 +1,20 @@
+{
+  "timing": [24.0774],
+  "date": ["2026-09-29 18:24:45.823756"],
+  "size": [171480],
+  "args": [],
+  "lapse": ["never"],
+  "src": ["multiplicateurs.r"],
+  "src_hash": ["a04d025534c72a621b295598fc256c87c5116dd1"],
+  "arg_hash": ["4262323b"],
+  "track_hash": [0],
+  "track": [],
+  "wd": ["file"],
+  "qmd_file": [],
+  "src_in": ["project"],
+  "data_hash": ["97b2406f6634a34b3d785718932e7fd8"],
+  "priority": [10],
+  "file_size": [21155],
+  "data_date": ["2026-09-29 18:24:45.816223"],
+  "data_file": ["multiplicateurs-4262323b_97b2406f6634a34b3d785718932e7fd8.qs2"]
+}
