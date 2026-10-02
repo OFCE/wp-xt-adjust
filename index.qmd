@@ -118,6 +118,8 @@ sims_sum <- sims |>
 
 - Un taux souverain inférieur de de 0,5 point réduit l'impulsion primaire nécessaire de 0,4 points de PIB en 2032 (12 milliards d'euros de 2026) (@sec-annexe4). Le gain est de l'ordre de 0,1 point de chômage et d'activité en 2028 et 2029. A l'inverse, si le taux souverain de marché nominal restait à la valeur actuelle (4,5%), le surcoût d'ajustement serait de 21 milliards d'euros. Entre cette situation et le retour à une prime de risque de 0,5% (soit à terme un taux souverain de 3,3%), l'écart d'effort budgétaire supplémentaire est de plus d'un point de PIB. Ce facteur est donc particulièrement important.
 
+- Le niveau de la dette importe peu tant que l'écart critique ($r-g$) reste contenu. En revanche, si celui-ci devennait élévé -- ce qui prend du temps compte tenu de la maturité de la dette -- alors l'effet boule de neige peut devenir significatif. L'urgence de stabiliser la dette ne découle donc pas de la crainte d'un effet boule de neige qui rendrait incontrôlable l'évolution de la dette publique.
+
 [^1]: La super neutralité est définie ici par le fait que l'impact cumulé sur l'activité de l'ajustement budgétaire est fini et qu'il est nul à l'infini, voir @sec-mulitplicateurs.
 
 ```{r}
@@ -559,11 +561,21 @@ sims_sum_ifd <- sims_ifd |>
 
 Nous reprennons ici l'ensemble des simulations du @tbl-sum sous une hypothèse forte : la dette publique en 2025 est de 55,6% au lieu de 115,6%, soit une translation de -60% du PIB pour la dette.
 
-Au lieu de viser une cible de 120% du PIB, nous visons ici une dette de 60% du PIB. Les paramètres des simulations sont identiques, en conservant les mêmes conventions que le @tbl-sum. En particulier le déficit public en 2025 est le même (5,1% du PIB) et les charges d'intérêts en 2026 sont reduites, fonction du nouveau ratio dette sur PIB -- et donc divisées par 2 à peu près. Le taux souverain est égaliement réduit, puisque l'écart critique ($r-g$) est supposé nul -- ce qui est une hypothèse favorable qui correspond à la France entre 2012 et 2022 si on prend le taux souverain de marché -- et qui continue aujourd'hui si on considère le taux apparent. On impute donc à l'écart de dette avec la cible du Pacte de Stabilité et de Croissance l'intégralité de l'écart critique, ce qui est est abusif.
+Au lieu de viser une cible de 120% du PIB, nous visons ici une dette de 60% du PIB. Les paramètres des simulations sont identiques, en conservant les mêmes conventions que le @tbl-sum. En particulier le déficit public en 2025 est le même (5,1% du PIB) et les charges d'intérêts en 2026 sont reduites, fonction du nouveau ratio dette sur PIB -- et donc divisées par 2 à peu près. Le taux souverain est égaliement réduit, puisque l'écart critique ($r-g$) est supposé nul -- ce qui est une hypothèse plutôt favorable. Entre 2012 et 2022, cet écart critique a été négatif (voir @tip-dyndet) si on prend le taux souverain de marché -- et qui continue aujourd'hui d'être négatif si on considère le taux apparent. On impute donc à l'écart de dette avec la cible du Pacte de Stabilité et de Croissance l'intégralité de l'écart critique, ce qui est est abusif, mais permet d'isoler cet effet.
 
 Cet exercice de pensée est évidement factice mais il est intéressant pour mesurer ce que le niveau de la dette fait peser comme contrainte sur le retour à l'équilibre des finances publiques (au sens du déficit public primaire) et d'un objectif de dette à moyen terme moyennent ambitieux.
 
-le @tbl-sumd60 résume les résulats de ces simulations. Le principal résultat est qu'une dette publique divisée par 2 ne réduit pas significativement le coût de l'ajustement budgétaire. 
+le @tbl-sumd60 résume les résulats de ces simulations. Le principal résultat est qu'une dette publique divisée par 2 ne réduit pas significativement le coût de l'ajustement budgétaire. Si avec un écart critique nul, le coût budgétaire est inférieur de 0,3 point de PIB à celui calculé pour le niveau observé de la dette (@tbl-sum), il est très proche pour un écart critique de +0,8 point de pourcentage.
+
+Par ailleurs, on retrouve une hiérarchie identique dans toutes les variantes à celle observée pour la dette à 115,6% en 2025.
+
+L'explication de ce résultat très contre intuitif est assez simple. Le paramètre clef pour identifier le coût de la dette, c'est-à-dire ce qu'elle fait peser comme contrainte, n'est pas le niveau de la dette, ni la charge d'intérêts. Le paramètre essentiel est le produit de l'écart critique par la dette ($\frac{r-g}{1+g} \times d$, voir @tip-dyndet). 
+
+Or, dans le cas de la France en 2025, ce paramètre joue en la faveur des finances publiques françaises, puisque le taux apparent sur la dette publique française est inférieur au taux de croissance nominal. Sur la période 2026-2032, le taux souverain pondéré est de 2,7 points de pourcentage, ce qui est inférieur au taux de croissance potentiel nominal espéré sur la période (2,8% par an), et même du taux de croissance espéré, compte tenu de l'effort budgétaire (2,9% par an, supérieur au taux de croissance potentiel parce que l'écart de production est négatif en début de période) (@tbl-optimal1). L'écart critique reste négatif et, toute choses égales par ailleurs, plus de dette induit un effet boule de neige négatif, qui contribue (modestement) à réduire la dette.
+
+Un taux souverain de marché plus élevé fera fondre cet avantage plus rapidement. Le @tbl-plustaux illustre cet effet. Le taux souverain moyen pondéré est de 2,9% par an de 2026 à 2032, au lieu de 2,8% par an dans le scénario de référence. Il atteint lentement une valeur supérieur la croissance potentielle nominal et augmente petit à petit. Il faut attendre 2028 pour que cet écart critique deviennent nul, puis positif. A très long terme il aboutit à une valeur rédhibitoire. La ligne "effet boule de neige" quantifie cette dynamique délétère. Malgré une dette importante, cet effet reste modeste face à l'ampleur du déficit à combler. Le scénario "fil de l'eau" (@tdl-fildle) indique ainsi que, avec un écart critique faible (+0,5% par an), l'effet boule de neige s'accroît dans le temps, et serait de 0,1 point par an en 2032 (c'est-à-dire la dette publique s'accroit de son propre poids de 0,1 point par an). Il faut attendre au delà de 2040 pour que cela soit suéprieur à 1/2 point de pourcentage par an. Un écart critique plus important augmente directement cet effet boule de neige. Cela illustre pourquoi la charge d'intérêts n'est pas un indicateur budgétaire pertienent : c'est la charge nette de la taxe inflationniste ou mieux nette de la croissance nominale (l'effet boule de neige) qui est intéressante, et tant que l'écart critique est faible ou négatif, la dette n'est pas un fardeau -- et même peut faciliter la stabilisation des finances publiques.  
+
+Des taux de marché encore plus élevés pourraient accélérer cette évolution. Il faudrait un taux de l'ordre de 8% par an pour propulser le taux souverain pondéré à 2,8% en 2026. La conclusion est donc simple : il faut des taux de marché élevés pendant une longue période pour que la dette publique devienne une contrainte véritable. C'est un serieux risque pour le très long terme qui n'a pas de conséquences immédiates. Ce même raisonnement s'applique à des pays comme l'Italie ou le Japon qui n'ont pas basculé à cause d'une dette publique trpo importante. En revanche, l'effet des politiques budgétaires pour réduire rapidement la dette ont un impact à court terme qu'il ne faut absolument pas négliger au risque de graves déconvenues.
 
 ```{r}
 #| label: tbl-sumd60
@@ -651,7 +663,7 @@ De ce point de vue, la stabilité du déficit structurel ajouté à la hausse de
 #| tbl-cap: Fil de l'eau, pas d'impulsion après 2027
 
 table_scenarios(
-  sim = sims |> filter(ibs == "fildle", is.na(loss_ib), !sp),
+  sim = sims |> filter(ibs == "fildle"),
   dec = 1, bck = 0, fwd = 7)
 ```
 
