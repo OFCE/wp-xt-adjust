@@ -61,12 +61,13 @@ phis <- calc_phis(
   algorithm = "cobyla",
   params = list_modify(
     ibs[["optimal1"]], 
-      dstar = 1.2, cons_d=0, cons_dt=0, cons_sp = 19, 
+    dstar = 1.2, cons_d=0, cons_dt=0, cons_sp = 19, 
     cons_spt = 7, loss_og = 5, loss_ib = 10, loss_ogpe = 0,
-    no_rule = 1, no_phi = c(1,1,0), add_spstar = 0.005))
+    no_rule = 1, no_phi = c(1,1,0), 
+    add_spstar = c(0,0,0,0,0,0, 0, 0.005)))
 cli::cli_alert_info(phis$message)
 ccsd <- run_model(brs25, out = "none", params = phis, full_mc = FALSE) |>
-      mutate(ibs = "ddecroit", loss_ib = 5, sp = TRUE)
+  mutate(ibs = "ddecroit", loss_ib = 5, sp = TRUE)
 
 phis <- calc_phis(
   brs25,
@@ -91,23 +92,34 @@ ccss <- run_model(brs25, out = "none", params = phis, full_mc = FALSE) |>
 ## et si la dette était à 60% ? -----------------
 
 brs25d60 <- setup_params(
-  params = list_modify(rs25, i_dette = -0.4835),
+  params = list_modify(rs25, i_dette = -0.5214),
   modele = "dwrsm3",
   start_y = 2025,
   ameco_version = "5/2026"
 )
 
+# table_scenarios(run_model(brs25d60, out = "none", full_mc = FALSE), dec = 2, bck = 0, fwd=8)
+
 ccdd <- map_dfr(
-  c("optimal1", "optimal2", 
+  c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_plus_r8",
     "no2027", "d2037", "nomult", "ogpers", "highmult", "multivar"),
   ~ {
+    pp <- list_modify(
+      ibs[[.x]], 
+      dstar = 0.6, loss_og = 5, loss_ib = 5, loss_ogpe = 0,
+      add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25)))
+    if(str_detect(.x, "plus_r$"))
+      pp <- list_modify(
+        pp, 
+        add_rinst = c(0.015, 0.017, rep(0.017, 25)))
+    if(str_detect(.x, "plus_r8$"))
+      pp <- list_modify(
+        pp, 
+        add_rinst = c(0.015, 0.008, rep(0.008, 25)))
     phis <- calc_phis(
       brs25d60,
       algorithm = "cobyla",
-      params = list_modify(
-        ibs[[.x]], 
-        dstar = 0.6, loss_og = 5, loss_ib = 5, loss_ogpe = 0,
-        add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))))
+      params = pp)
     cli::cli_alert_info(phis$message)
     run_model(brs25d60, out = "none", params = phis, full_mc = FALSE) |>
       mutate(ibs = .x)

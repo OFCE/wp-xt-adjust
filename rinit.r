@@ -32,8 +32,12 @@ options(
   ofce.marquee = TRUE,
   ofce.caption.srcplus = NULL,
   ofce.caption.wrap = 0)
-showtext_opts(dpi = 220)
-showtext_auto()
+
+ggplot2::set_theme(ofce::theme_ofce())
+
+if(knitr::is_html_output())
+  ggplot2::update_theme(text = element_text(size = 10)) else
+    ggplot2::update_theme(text = element_text(size = 8))
 
 tooltip_css  <-
   "font-family:Open Sans;

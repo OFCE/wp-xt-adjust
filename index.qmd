@@ -51,8 +51,9 @@ if(knitr::is_html_output())
 
 ibs_labs <- c("optimal1"  =  "Prévision OFCE aut. 26",
               "nomult" = "Multiplicateurs nuls",
-              "optimal1_plus_r" = "Taux plus élevés (4,5%)",
-              "optimal1_moins_r" = "Taux moins élevés (g+0.5)",
+              "optimal1_plus_r" = "Taux plus élevés (e.c. +1,7%)",
+              "optimal1_plus_r8" = "Taux plus élevés (e.c. +0,8%)",
+              "optimal1_moins_r" = "Taux moins élevés (e.c. 0%)",
               "no2027" = "Pas d'impulsion en 2027",
               "d2037" = "5 ans de plus",
               "optimal2" = "Impulsions calculées dès 2026",
@@ -61,7 +62,7 @@ ibs_labs <- c("optimal1"  =  "Prévision OFCE aut. 26",
               "ogpers" = "Ecart de prod. plus persistant",
               "highmult" = "Multiplicateurs plus élevés",
               "dstable" = "Stabilité de la dette en 2032",
-              "ddecroit" = "Décroissancede la dette en 2032")  
+              "ddecroit" = "Décroissance de la dette en 2032")  
 
 source(ofce::pathify("simulations init.R"))
 sims <- sourcoise::sourcoise(
@@ -109,13 +110,13 @@ sims_sum <- sims |>
 
 ## Principaux résultats
 
-- Une cible de dette de 120% demande une une impulsion primaire cumulée de 3,5 points de PIB (approx. 107 milliards d'euros au PIB de 2026) en 2032. Le déficit public passe en dessous de 3,0% en 2031 (@sec-main). En 2028, le creusement moyen de l'activité de 2026 à 2032) (@tbl-sum) est de 1,3, marquant un sérieux ralentissement 4 années de suite. Le chômage ateindrait 9,2% de la population active en 2029.
+- Une cible de dette de 120% demande une une impulsion primaire cumulée de 3,5 points de PIB (approx. 107 milliards d'euros au PIB de 2026) en 2032. Le déficit public passe en dessous de 3,0% en 2031 (@sec-main). En 2028, le creusement moyen de l'activité de 2026 à 2032) (@tbl-sum) est de 1,3, marquant un sérieux ralentissement 4 années de suite. Le chômage ateindrait 9,2% de la population active en 2029 dasn ce scénario.
 
-- La stabilisation de la dette en 2032, puis sa décroissance d'un demi point par an (cible de solde) implique une impulsion cumulée de 3,3% du PIB, avec un maximum de dette publique de 124% du PIB en 2030 et une dette publique supérieur de 3,4 points de PIB de dette en 2032 (@sec-annexe3). L'impact sur l'activité serait nettement moins négatif (1,2% du PIB en moyenne entre 2026 et 2032), le chômage atteignant au plus haut 8,6% en 2029.
+- La stabilisation de la dette en 2032, puis sa décroissance d'un demi point par an (cible de solde) implique une impulsion cumulée de 3,3% du PIB, soit 0,2 point de moins, avec un maximum de dette publique de 124% du PIB en 2030 et une dette publique supérieure de 3,4 points de PIB de dette en 2032 (@sec-annexe3). L'impact sur l'activité serait moins négatif (1,2% du PIB en moyenne entre 2026 et 2032), le chômage atteignant au plus haut 8,6% en 2029.
 
-- Repousser la cible de dette de 5 années à 2037 au lieu de 2032 réduit significativement les coûts en activité et en chômage (8,5% de perte cumulée d'activité) (@sec-d2037). Ce résultat découle de la prise en compte des multiplicateurs budgétaires et de leur dynamique. Bien que la modélisation retienne une version des multiplicateurs particulièrement concentrée dans le court terme et super neutres à long terme[^1], lorsque l'objectif de dette est à une échéance relativement courte (5 ans ici), l'effet des multiplicateurs oblige à une consolidation très forte (la neutralité à long terme induit un effet positif au delà de l'échéance). A l'extrême, si l'échéance était à 1 ou 2 ans, l'objectif ne serait pas atteignable – ce qu'illustre l'exercice "Ecart de production plus persistant", malgré un multiplicateur budgétaire plutôt faible à court terme ($dQ/dG = 0,85$ la première année).
+- Repousser la cible de dette de 5 années à 2037 au lieu de 2032 ne réduit ni le coût en activité ni l'effort fiscal à faire (@sec-d2037). Bien que l'effet des multiplicateurs budgétaires oblige à une consolidation plus violent en 2028 lorsque la cible de dette est en 2032, repousser la cible de dette demande ensuite un effort plus important du fait de l'accumulation des charges d'intérêts.
 
-- Un taux souverain inférieur de de 0,5 point réduit l'impulsion primaire cumulée de 0,4 points de PIB en 2032 (12 milliards d'euros de 2026) (@sec-annexe4). Le gain est de l'ordre de 0,2 point de chômage et d'activité en 2028 et 2029. A l'inverse, si le taux souverain de marché nominal restait à la valeur actuelle (4,5%), le surcoût d'ajustement serait de 21 milliards d'euros. Entre cette situation et le retour à une prime de risque de 0,5% (soit à terme un taux souverain de 3,3%), l'écart d'effort budgétaire est de plus d'un point de PIB, ce qui illustre l'importance de ce facteur.
+- Un taux souverain inférieur de de 0,5 point réduit l'impulsion primaire nécessaire de 0,4 points de PIB en 2032 (12 milliards d'euros de 2026) (@sec-annexe4). Le gain est de l'ordre de 0,1 point de chômage et d'activité en 2028 et 2029. A l'inverse, si le taux souverain de marché nominal restait à la valeur actuelle (4,5%), le surcoût d'ajustement serait de 21 milliards d'euros. Entre cette situation et le retour à une prime de risque de 0,5% (soit à terme un taux souverain de 3,3%), l'écart d'effort budgétaire supplémentaire est de plus d'un point de PIB. Ce facteur est donc particulièrement important.
 
 [^1]: La super neutralité est définie ici par le fait que l'impact cumulé sur l'activité de l'ajustement budgétaire est fini et qu'il est nul à l'infini, voir @sec-mulitplicateurs.
 
@@ -184,19 +185,22 @@ En particulier, @ratav retiennent que la dérive des finances publiques est pres
 
 data_cc <- sims |> 
   filter(
-    ibs %in% c("optimal1", "d2037", "multivar", "ddecroit"),
+    ibs %in% c("optimal1", "d2037", "ddecroit", "highmult"),
     !is.na(sp),
     between(year, 2025, 2050), 
     variable %in% c("og", "ib", "dettep", "sep")) |> 
   mutate(
     cas = case_when(
       ibs == "ddecroit" ~ "Dette décroissance à partir de 2032",
+      ibs == "dstable" ~ "Dette stable à partir de 2032",
       ibs == "optimal1" ~ "120% en 2032",
       ibs == "nomult" ~ "120% en 2032, multiplicateurs nuls",
+      ibs == "highmult" ~ "120% en 2032, multiplicateurs plus élevés",
       ibs == "multivar" ~ "120% en 2032, multiplicateurs variables",
-      ibs == "d2037" ~ "120% en 2037")  ) |> 
+      ibs == "d2037" ~ "120% en 2037") ) |> 
   mutate(
-    tooltip = glue("<b>{cas}</b><br><em>{vlabels[variable]}</em><br>En {year} : {round(q0.5*100,1)}%"))
+    tooltip = glue(
+      "<b>{cas}</b><br><em>{vlabels[variable]}</em><br>En {year} : {round(q0.5*100,1)}%" ))
 
 gg <- ggplot(data_cc)+
   theme_ofce(base_size = 10)+
@@ -232,6 +236,123 @@ gg <- ggplot(data_cc)+
 girafy(gg, r=1.5)
 
 ```
+
+::: {#tip-dyndet .callout-tip}
+## la dynamique de la dette publique
+
+L'évolution du ratio de dette publique suit une loi simple où $d$ est le ratio dette sur PIB, $r$ le taux d'intérêt sur la dette publique (apparent, nominal), $g$ la croissance du PIB (nominal) et $s_p$ le solde publique hors charge d'intérêts, i.e. primaire :
+
+$$ 
+\Delta d = \frac{r-g}{1+g} d_{-1} + s_p
+$$
+La modélisation employée repose sur cette équation en intégrant :
+1.   les éléments de dynamique des différentes variables,
+2.   les interactions entre les variables, certaines n'apparaissant pas dans cette équation (l'écart de production, l'inflation notamment).
+
+On peut déduire de cette équation le solde stabilisant la dette publique à chaque instant, ainsi qu'une condition d'équilibre de la dette dasn un équilibre stationaire (i.e. dasn lequel toutes les variables sont constantes en fonction du temps). Ainsi le solde stabilisant la dette peut s'écrire :
+
+$$ 
+s_p^* = - \frac{r-g}{1+g} d_{-1}
+$$
+Chacune des variables changeant dasn le temps, par exemple, le taux apparent sous l'effet du roulement de la dette, le solde stabilisant la dette publique peut évoluer dans le temps.
+
+Le @fig-dette illustre ces concepts pour le cas français de 2007 à 2026.
+
+```{r, include=FALSE}
+dette_trim <- source_data("dette_trim.r")$trim |> 
+  mutate(time = as.Date(time)) |> 
+  filter(time >= "2007-01-01") |> 
+  mutate(time = factor(time))
+txt <- tribble(
+  ~x, ~y, ~text, ~hjust, ~width,
+  "2024-01-01", -0.02, "avec le taux souverain pondéré", 0, 1,
+  "2016-01-01", -0.035, "avec le taux souverain courant", 1, 2 )
+sx <- scale_x_discrete(
+  breaks = str_c(seq(2007, 2026, by=1), "-01-01"),
+  minor_breaks = str_c(seq(2007, 2026, by=1), "-01-01"),
+  labels = c( "2007", str_c("0", 8:9), 10:26),
+  expand = expansion(0.03, 0.03))
+```
+
+```{r}
+#| label: fig-dette
+#| fig-cap: La dette et sa dynamique de 1995 à 2026
+#| fig-asp: 1.2
+
+gec <- ggplot(dette_trim) +
+  aes(x=time) +
+  geom_hline(yintercept = 0, linewidth = 0.25, color = "grey75")+
+  geom_col(aes(y=ec, fill = ecp), alpha = 0.25, width=1, show.legend = FALSE) +
+  geom_step(aes(y = ec, group=1), direction = "mid", linewidth = 0.25) +
+  labs(y="% par an",
+       x = NULL,
+       subtitle= "(a) r - g (écart critique)") +
+  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
+  sx+
+  scale_y_continuous(labels = label_percent(1)) +
+  guides(x = guide_axis(minor.ticks = TRUE))
+
+gecapp <- ggplot(dette_trim) +
+  aes(x=time) +
+  geom_hline(yintercept = 0, linewidth = 0.25, color = "grey75")+
+  geom_col(aes(y=ec_app, fill = ecp_app), alpha = 0.25, width=1, show.legend = FALSE) +
+  geom_step(aes(y = ec_app, group=1), direction = "mid", linewidth = 0.25) +
+  labs(y="% par an",
+       x = NULL,
+       subtitle= "(b) r - g (écart critique apparent)") +
+  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
+  sx+
+  scale_y_continuous(labels = label_percent(1)) +
+  guides(x = guide_axis(minor.ticks = TRUE))
+
+gdm <- ggplot(dette_trim) +
+  aes(x=time) +
+  geom_hline(yintercept = 0, linewidth = 0.25, color = "grey75")+
+  geom_step(aes(y = dm, group=1), direction = "mid", linewidth = 0.25) +
+  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
+  labs(y="% du PIB",
+       x = NULL,
+       subtitle= "(d) Dette publique (au sens de Maastricht)") +
+  sx +
+  scale_y_continuous(labels = label_percent(1)) +
+  guides(x = guide_axis(minor.ticks = TRUE))
+
+txt <- tribble(
+  ~x, ~y, ~text, ~hjust, ~width,
+  "2011-04-01", -0.07, "Solde public effectif", 0, 1,
+  "2010-04-01", 0.015, "Solde stabilisant la dette publique", 0, 2 )
+
+gssp <- ggplot(dette_trim) +
+  aes(x=time) +
+  geom_hline(yintercept = 0, linewidth = 0.25, color = "grey75")+
+  geom_step(aes(y = ss, group=1),
+            direction = "mid", linewidth = 0.25, linetype = '11', color = "grey25") +
+  geom_step(aes(y = def_ma, group=1), direction = "mid", linewidth = 0.25) +
+  geom_rect(aes(width = 1, ymin = def_ma, ymax=ss, fill = sppp),
+            linewidth = 0.5,  color = NA, alpha = 0.25, show.legend = FALSE) +
+  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
+  geom_marquee(
+    data=txt, 
+    aes(x, y, hjust = hjust, label = text),
+    width = unit(4, "cm"),
+    size = 7, size.unit = "pt") + 
+  labs(y="% du PIB",
+       x = NULL, 
+       subtitle= "(c) Solde et solde stabilisant la dette") +
+  sx +
+  scale_y_continuous(labels = label_percent(1)) +
+  guides(x = guide_axis(minor.ticks = TRUE))
+
+gfinal <- gec/gecapp/gssp/gdm  +
+  plot_layout(axes = "collect_x") &
+  theme(plot.margin = margin(0),
+        axis.text.x = element_text(size = rel(0.75), hjust = 0),
+        plot.subtitle = element_marquee(size=rel(0.75)))
+
+gfinal
+```
+
+:::
 
 ## Prévision de l'OFCE automne 2026 et PLF 2027 {#sec-main}
 
@@ -390,7 +511,7 @@ table_scenarios(
 
 ```
 
-### Et si la dette était à 60%
+## Et si la dette était à 60% ?
 
 ```{r, include=FALSE}
 sims_ifd <- sourcoise::sourcoise(
@@ -423,7 +544,9 @@ sims_sum_ifd <- sims_ifd |>
     libs = ibs_labs[ibs],
     ibs = factor(
       ibs,
-      c("optimal1", "optimal1_moins_r", "optimal1_plus_r", "no2027", "d2037", "dstable", "ddecroit",
+      c("optimal1", "optimal1_moins_r", 
+        "optimal1_plus_r", "optimal1_plus_r8",
+        "no2027", "d2037", "dstable", "ddecroit",
         "optimal2", "nomult", "multivar", "ogpers", "highmult"))) |>
   arrange(ibs) |> 
   mutate(
@@ -433,6 +556,14 @@ sims_sum_ifd <- sims_ifd |>
   select(libs, cible, date_cible, ibc32, ogc32, dettep32, ibc37, ogc37, dettep37)
   
 ```
+
+Nous reprennons ici l'ensemble des simulations du @tbl-sum sous une hypothèse forte : la dette publique en 2025 est de 55,6% au lieu de 115,6%, soit une translation de -60% du PIB pour la dette.
+
+Au lieu de viser une cible de 120% du PIB, nous visons ici une dette de 60% du PIB. Les paramètres des simulations sont identiques, en conservant les mêmes conventions que le @tbl-sum. En particulier le déficit public en 2025 est le même (5,1% du PIB) et les charges d'intérêts en 2026 sont reduites, fonction du nouveau ratio dette sur PIB -- et donc divisées par 2 à peu près. Le taux souverain est égaliement réduit, puisque l'écart critique ($r-g$) est supposé nul -- ce qui est une hypothèse favorable qui correspond à la France entre 2012 et 2022 si on prend le taux souverain de marché -- et qui continue aujourd'hui si on considère le taux apparent. On impute donc à l'écart de dette avec la cible du Pacte de Stabilité et de Croissance l'intégralité de l'écart critique, ce qui est est abusif.
+
+Cet exercice de pensée est évidement factice mais il est intéressant pour mesurer ce que le niveau de la dette fait peser comme contrainte sur le retour à l'équilibre des finances publiques (au sens du déficit public primaire) et d'un objectif de dette à moyen terme moyennent ambitieux.
+
+le @tbl-sumd60 résume les résulats de ces simulations. Le principal résultat est qu'une dette publique divisée par 2 ne réduit pas significativement le coût de l'ajustement budgétaire. 
 
 ```{r}
 #| label: tbl-sumd60
@@ -471,20 +602,20 @@ sims_sum_ifd |>
   tab_footnote("En 2037", cells_column_labels(dettep37)) |>
   ofce::ofce_caption(
     source = "AMECO mai 2026, Simulation debtwatch v2.0 (github.com/OFCE/dwr), France",
-    note = "La dette publique initiale, en 2025, est fictivement mise à 60% du PIB en 2025. Première année de simulation 2026.") |> 
+    note = "La dette publique initiale, en 2025, est fictivement mise à 60% du PIB en 2025 et l'écart critique à long terme est nul. Première année de simulation 2026.") |> 
   ofce::ofce_tab_options() |> 
   tab_style(
     cell_borders("top", color = "grey", weight = px(0.5)),
-    location = cells_body(rows = c(2,5) ) )
+    location = cells_body(rows = c(2,4,7) ) )
   
 ```
 
 ```{r, results='asis'}
-ofce::margin_download(sims_sum_ifd, "ofce-xt-sims-tbld60", "Données du tableau", prefix="")
+ofce::margin_download(sims_sum_ifd, "ofce-xt-sims-tbld60", "Données du tableau (d=60%)", prefix="")
 ```
 
 ```{r, results='asis'}
-ofce::margin_download(sims_ifd, "ofce-xt-sims-d60", "Simulations (d=60)", prefix="")
+ofce::margin_download(sims_ifd, "ofce-xt-sims-d60", "Simulations (d=60%)", prefix="")
 ```
 
 ## Eléments de méthode
@@ -544,7 +675,6 @@ data_cc <- sims |>
       ibs == "d2037" ~ "120% en 2037")  ) |> 
   mutate(
     tooltip = glue("<b>{cas}</b><br><em>{vlabels[variable]}</em><br>En {year} : {round(q0.5*100,1)}%"))
-
 
 gg <- ggplot(data_cc)+
   theme_ofce(base_size = 10)+
