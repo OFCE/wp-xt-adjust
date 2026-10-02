@@ -120,8 +120,6 @@ sims_sum <- sims |>
 
 - Le niveau de la dette importe peu tant que l'écart critique ($r-g$) reste contenu. En revanche, si celui-ci devennait élévé -- ce qui prend du temps compte tenu de la maturité de la dette -- alors l'effet boule de neige peut devenir significatif. L'urgence de stabiliser la dette ne découle donc pas de la crainte d'un effet boule de neige qui rendrait incontrôlable l'évolution de la dette publique.
 
-[^1]: La super neutralité est définie ici par le fait que l'impact cumulé sur l'activité de l'ajustement budgétaire est fini et qu'il est nul à l'infini, voir @sec-mulitplicateurs.
-
 ```{r}
 #| label: tbl-sum
 #| tbl-cap: Résumé des simulations
@@ -246,17 +244,13 @@ L'évolution du ratio de dette publique suit une loi simple où $d$ est le ratio
 
 $$ 
 \Delta d = \frac{r-g}{1+g} d_{-1} + s_p
-$$
-La modélisation employée repose sur cette équation en intégrant :
-1.   les éléments de dynamique des différentes variables,
-2.   les interactions entre les variables, certaines n'apparaissant pas dans cette équation (l'écart de production, l'inflation notamment).
+$$ La modélisation employée repose sur cette équation en intégrant : 1. les éléments de dynamique des différentes variables, 2. les interactions entre les variables, certaines n'apparaissant pas dans cette équation (l'écart de production, l'inflation notamment).
 
 On peut déduire de cette équation le solde stabilisant la dette publique à chaque instant, ainsi qu'une condition d'équilibre de la dette dasn un équilibre stationaire (i.e. dasn lequel toutes les variables sont constantes en fonction du temps). Ainsi le solde stabilisant la dette peut s'écrire :
 
 $$ 
 s_p^* = - \frac{r-g}{1+g} d_{-1}
-$$
-Chacune des variables changeant dasn le temps, par exemple, le taux apparent sous l'effet du roulement de la dette, le solde stabilisant la dette publique peut évoluer dans le temps.
+$$ Chacune des variables changeant dasn le temps, par exemple, le taux apparent sous l'effet du roulement de la dette, le solde stabilisant la dette publique peut évoluer dans le temps.
 
 Le @fig-dette illustre ces concepts pour le cas français de 2007 à 2026.
 
@@ -353,7 +347,6 @@ gfinal <- gec/gecapp/gssp/gdm  +
 
 gfinal
 ```
-
 :::
 
 ## Prévision de l'OFCE automne 2026 et PLF 2027 {#sec-main}
@@ -454,7 +447,6 @@ table_scenarios(
 ```
 
 Alternativement, au lieu de viser une stabilisation de la dette en 2032, on vise dans le @tbl-decroit une décroissance régulière de la dette publique à partir de 2032, le solde primiaire public s'établissant à 0,5 point de PIB au dessus de celui stabilisant la dette publique.
-
 
 ```{r}
 #| label: tbl-decroit
@@ -569,13 +561,15 @@ le @tbl-sumd60 résume les résulats de ces simulations. Le principal résultat 
 
 Par ailleurs, on retrouve une hiérarchie identique dans toutes les variantes à celle observée pour la dette à 115,6% en 2025.
 
-L'explication de ce résultat très contre intuitif est assez simple. Le paramètre clef pour identifier le coût de la dette, c'est-à-dire ce qu'elle fait peser comme contrainte, n'est pas le niveau de la dette, ni la charge d'intérêts. Le paramètre essentiel est le produit de l'écart critique par la dette ($\frac{r-g}{1+g} \times d$, voir @tip-dyndet). 
+L'explication de ce résultat très contre intuitif est assez simple. Le paramètre clef pour identifier le coût de la dette, c'est-à-dire ce qu'elle fait peser comme contrainte, n'est pas le niveau de la dette, ni la charge d'intérêts. Le paramètre essentiel est le produit de l'écart critique par la dette ($\frac{r-g}{1+g} \times d$, voir @tip-dyndet).
 
 Or, dans le cas de la France en 2025, ce paramètre joue en la faveur des finances publiques françaises, puisque le taux apparent sur la dette publique française est inférieur au taux de croissance nominal. Sur la période 2026-2032, le taux souverain pondéré est de 2,7 points de pourcentage, ce qui est inférieur au taux de croissance potentiel nominal espéré sur la période (2,8% par an), et même du taux de croissance espéré, compte tenu de l'effort budgétaire (2,9% par an, supérieur au taux de croissance potentiel parce que l'écart de production est négatif en début de période) (@tbl-optimal1). L'écart critique reste négatif et, toute choses égales par ailleurs, plus de dette induit un effet boule de neige négatif, qui contribue (modestement) à réduire la dette.
 
-Un taux souverain de marché plus élevé fera fondre cet avantage plus rapidement. Le @tbl-plustaux illustre cet effet. Le taux souverain moyen pondéré est de 2,9% par an de 2026 à 2032, au lieu de 2,8% par an dans le scénario de référence. Il atteint lentement une valeur supérieur la croissance potentielle nominal et augmente petit à petit. Il faut attendre 2028 pour que cet écart critique deviennent nul, puis positif. A très long terme il aboutit à une valeur rédhibitoire. La ligne "effet boule de neige" quantifie cette dynamique délétère. Malgré une dette importante, cet effet reste modeste face à l'ampleur du déficit à combler. Le scénario "fil de l'eau" (@tbl-fildle) indique ainsi que, avec un écart critique faible (+0,5% par an), l'effet boule de neige s'accroît dans le temps, et serait de 0,1 point par an en 2032 (c'est-à-dire la dette publique s'accroit de son propre poids de 0,1 point par an). Il faut attendre au delà de 2040 pour que cela soit suéprieur à 1/2 point de pourcentage par an. Un écart critique plus important augmente directement cet effet boule de neige. Cela illustre pourquoi la charge d'intérêts n'est pas un indicateur budgétaire pertienent : c'est la charge nette de la taxe inflationniste ou mieux nette de la croissance nominale (l'effet boule de neige) qui est intéressante, et tant que l'écart critique est faible ou négatif, la dette n'est pas un fardeau -- et même peut faciliter la stabilisation des finances publiques.  
+Un taux souverain de marché plus élevé fera fondre cet avantage plus rapidement. Le @tbl-plustaux illustre cet effet. Le taux souverain moyen pondéré est de 2,9% par an de 2026 à 2032, au lieu de 2,8% par an dans le scénario de référence. Il atteint lentement une valeur supérieur la croissance potentielle nominal et augmente petit à petit. Il faut attendre 2028 pour que cet écart critique deviennent nul, puis positif. A très long terme il aboutit à une valeur rédhibitoire. La ligne "effet boule de neige" quantifie cette dynamique délétère. Malgré une dette importante, cet effet reste modeste face à l'ampleur du déficit à combler. Le scénario "fil de l'eau" (@tbl-fildle) indique ainsi que, avec un écart critique faible (+0,5% par an), l'effet boule de neige s'accroît dans le temps, et serait de 0,1 point par an en 2032 (c'est-à-dire la dette publique s'accroit de son propre poids de 0,1 point par an). Il faut attendre au delà de 2040 pour que cela soit suéprieur à 1/2 point de pourcentage par an. Un écart critique plus important augmente directement cet effet boule de neige. Cela illustre pourquoi la charge d'intérêts n'est pas un indicateur budgétaire pertienent : c'est la charge nette de la taxe inflationniste ou mieux nette de la croissance nominale (l'effet boule de neige) qui est intéressante, et tant que l'écart critique est faible ou négatif, la dette n'est pas un fardeau -- et même peut faciliter la stabilisation des finances publiques[^1].
 
-Des taux de marché encore plus élevés pourraient accélérer cette évolution. Il faudrait un taux de l'ordre de 8% par an pour propulser le taux souverain pondéré à 2,8% en 2026. La conclusion est donc simple : il faut des taux de marché élevés pendant une longue période pour que la dette publique devienne une contrainte véritable. C'est un serieux risque pour le très long terme qui n'a pas de conséquences immédiates. Ce même raisonnement s'applique à des pays comme l'Italie ou le Japon qui n'ont pas basculé à cause d'une dette publique trpo importante. En revanche, l'effet des politiques budgétaires pour réduire rapidement la dette ont un impact à court terme qu'il ne faut absolument pas négliger au risque de graves déconvenues.
+[^1]: Voir à ce sujet les échanges de François Geerolf avec le DG de l'INSEE [@geerolf:hal-05506068].
+
+Des taux de marché encore plus élevés pourraient accélérer cette évolution. Il faudrait un taux de l'ordre de 8% par an pour propulser le taux souverain pondéré à 2,8% en 2026. La conclusion est donc simple : il faut des taux de marché élevés pendant une longue période pour que la dette publique devienne une contrainte véritable. C'est un serieux risque pour le très long terme qui n'a pas de conséquences immédiates. Ce même raisonnement s'applique à des pays comme l'Italie ou le Japon qui n'ont pas basculé à cause d'une dette publique trop importante. En revanche, l'effet des politiques budgétaires pour réduire rapidement la dette ont un impact à court terme qu'il ne faut absolument pas négliger au risque de graves déconvenues.
 
 ```{r}
 #| label: tbl-sumd60
