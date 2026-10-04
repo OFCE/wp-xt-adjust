@@ -258,7 +258,31 @@ Le @fig-dette illustre ces concepts pour le cas français de 2007 à 2026.
 dette_trim <- source_data("dette_trim.r")$trim |> 
   mutate(time = as.Date(time)) |> 
   filter(time >= "2007-01-01") |> 
-  mutate(time = factor(time))
+  mutate(time = factor(time)) |> 
+  mutate(
+    tta = glue(
+      "<b>{date_trim(time)}</b>
+      Taux souverain 10 ans trimestre en cours: {round(r10ans,2)}%/an
+      Croissance: {fmt_pct(g,2)}/an
+      Ecart critique (trimestre): {fmt_pct(ec,2)}/an
+      BdN (trimestre): {fmt_pct(ec*dm/(1+g),2)}/an"  ),
+    ttb = glue(
+      "<b>{date_trim(time)}</b>
+      Taux souverain 10 ans pondéré: {fmt_pct(rapp,2)}/an
+      Croissance: {fmt_pct(g,2)}/an
+      Ecart critique (pondéré): {fmt_pct(ec_app,2)}/an
+      BdN (pondéré): {fmt_pct(ec_app*dm/(1+g),2)}/an"  ),
+    ttcdm = glue(
+      "<b>{date_trim(time)}</b>
+      \u2192Déficit au sens de Maastricht: {fmt_pct(-def_ma,2)} du PIB
+      Déficit stabilisant la dette: {fmt_pct(-ss,2)} du PIB"  ),
+    ttcss = glue(
+      "<b>{date_trim(time)}</b>
+      Déficit au sens de Maastricht: {fmt_pct(-def_ma,2)} du PIB
+      \u2192Déficit stabilisant la dette: {fmt_pct(-ss,2)} du PIB"  ),
+    ttd = glue(
+      "<b>{year(time)}</b>
+      Dette publique au sens de Maastricht: {fmt_pct(dm,1)} du PIB"  ) )
 txt <- tribble(
   ~x, ~y, ~text, ~hjust, ~width,
   "2024-01-01", -0.02, "avec le taux souverain pondéré", 0, 1,
@@ -272,45 +296,46 @@ sx <- scale_x_discrete(
 
 ```{r}
 #| label: fig-dette
-#| fig-cap: La dette et sa dynamique de 1995 à 2026
+#| fig-cap: La dette et sa dynamique de 2007 à 2026
 #| fig-asp: 1.2
 
 gec <- ggplot(dette_trim) +
   aes(x=time) +
   geom_hline(yintercept = 0, linewidth = 0.25, color = "grey75")+
-  geom_col(aes(y=ec, fill = ecp), alpha = 0.25, width=1, show.legend = FALSE) +
-  geom_step(aes(y = ec, group=1), direction = "mid", linewidth = 0.25) +
+  geom_col(aes(y=ec*dm/(1+g), fill = ecp), alpha = 0.25, width=1, show.legend = FALSE) +
+  geom_step(aes(y = ec*dm/(1+g), group=1), direction = "mid", linewidth = 0.25) +
+  geom_point_interactive(
+    aes(y = ec*dm/(1+g), tooltip = tta),
+    size = 1, col = "transparent", 
+    hover_nearest = TRUE ) +
   labs(y="% par an",
        x = NULL,
-       subtitle= "(a) r - g (écart critique)") +
+       subtitle= "(a) (r-g)/(1+g)*d (effet boule de neige), taux de l'année") +
   scale_fill_manual(values = c("p" = "red", "n"= "green"))+
   sx+
-  scale_y_continuous(labels = label_percent(1)) +
+  scale_y_continuous(
+    labels = label_percent(1),
+    limits = c(-0.11, 0.06),
+    oob = scales::squish) +
   guides(x = guide_axis(minor.ticks = TRUE))
 
 gecapp <- ggplot(dette_trim) +
   aes(x=time) +
   geom_hline(yintercept = 0, linewidth = 0.25, color = "grey75")+
-  geom_col(aes(y=ec_app, fill = ecp_app), alpha = 0.25, width=1, show.legend = FALSE) +
-  geom_step(aes(y = ec_app, group=1), direction = "mid", linewidth = 0.25) +
+  geom_col(aes(y=ec_app*dm/(1+g), fill = ecp_app), alpha = 0.25, width=1, show.legend = FALSE) +
+  geom_step(aes(y = ec_app*dm/(1+g), group=1), direction = "mid", linewidth = 0.25) +
+  geom_point_interactive(
+    aes(y = ec_app*dm/(1+g), tooltip = ttb),
+    size = 1, col = "transparent", 
+    hover_nearest = TRUE ) +
   labs(y="% par an",
        x = NULL,
-       subtitle= "(b) r - g (écart critique apparent)") +
+       subtitle= "(b) (r-g)/(1+g)*d (effet boule de neige), taux pondéré") +
   scale_fill_manual(values = c("p" = "red", "n"= "green"))+
   sx+
-  scale_y_continuous(labels = label_percent(1)) +
-  guides(x = guide_axis(minor.ticks = TRUE))
-
-gdm <- ggplot(dette_trim) +
-  aes(x=time) +
-  geom_hline(yintercept = 0, linewidth = 0.25, color = "grey75")+
-  geom_step(aes(y = dm, group=1), direction = "mid", linewidth = 0.25) +
-  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
-  labs(y="% du PIB",
-       x = NULL,
-       subtitle= "(d) Dette publique (au sens de Maastricht)") +
-  sx +
-  scale_y_continuous(labels = label_percent(1)) +
+  scale_y_continuous(
+    labels = label_percent(1),
+    limits = c(-0.11, 0.06)) +
   guides(x = guide_axis(minor.ticks = TRUE))
 
 txt <- tribble(
@@ -326,6 +351,14 @@ gssp <- ggplot(dette_trim) +
   geom_step(aes(y = def_ma, group=1), direction = "mid", linewidth = 0.25) +
   geom_rect(aes(width = 1, ymin = def_ma, ymax=ss, fill = sppp),
             linewidth = 0.5,  color = NA, alpha = 0.25, show.legend = FALSE) +
+  geom_point_interactive(
+    aes(y = def_ma, tooltip = ttcdm),
+    size = 1, col = "transparent", 
+    hover_nearest = TRUE ) +
+  geom_point_interactive(
+    aes(y = ss, tooltip = ttcss),
+    size = 1, col = "transparent", 
+    hover_nearest = TRUE ) +
   scale_fill_manual(values = c("p" = "red", "n"= "green"))+
   geom_marquee(
     data=txt, 
@@ -336,7 +369,26 @@ gssp <- ggplot(dette_trim) +
        x = NULL, 
        subtitle= "(c) Solde et solde stabilisant la dette") +
   sx +
-  scale_y_continuous(labels = label_percent(1)) +
+  scale_y_continuous(labels = label_percent(1),
+                     limits = c(-0.11, 0.06)) +
+  guides(x = guide_axis(minor.ticks = TRUE))
+
+# dette publique au sens de Maastricht
+
+gdm <- ggplot(dette_trim) +
+  aes(x=time) +
+  geom_hline(yintercept = 0.6, linewidth = 0.25, color = "grey75")+
+  geom_step(aes(y = dm, group=1), direction = "mid", linewidth = 0.25) +
+  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
+  geom_point_interactive(
+    aes(y = dm, tooltip = ttd),
+    size = 1, col = "transparent", hover_nearest = TRUE )+
+  labs(y="% du PIB",
+       x = NULL,
+       subtitle= "(d) Dette publique au sens de Maastricht") +
+  sx +
+  scale_y_continuous(labels = label_percent(1), 
+                     limits = c(0.6, NA)) +
   guides(x = guide_axis(minor.ticks = TRUE))
 
 gfinal <- gec/gecapp/gssp/gdm  +
@@ -345,7 +397,13 @@ gfinal <- gec/gecapp/gssp/gdm  +
         axis.text.x = element_text(size = rel(0.75), hjust = 0),
         plot.subtitle = element_marquee(size=rel(0.75)))
 
-gfinal
+gd <- gfinal +
+  ofce_caption(
+    source = "INSEE, Banque de France",
+    lecture = "Le panneau (b) indique la contribution de l'écart critique à la dynamique de la dette. Le panneau (a) ce que serait cette contribution si le taux pondéré (ou apparent) était le taux souverain à 10 ans instantané"
+  )
+
+girafy(gd)
 ```
 :::
 
