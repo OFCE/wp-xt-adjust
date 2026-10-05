@@ -203,14 +203,20 @@ run_model <- function(
   from = NULL,
   to = NULL,
   full_mc = FALSE,
+  detail = c("annual", "monthly"),
   dec = 2,
   vars = c("og", "dettep", "ib", "spp")
 ) {
+  detail <- match.arg(detail)
+  # détail mensuel : données et graphique mensuels ; seule la table reste annuelle
+  if (detail == "monthly" && out == "table")
+    stop("detail = 'monthly' n'est pas compatible avec out = 'table' ",
+         "(graph_scenarios est infra-annuel, table_scenarios reste annuel)")
   globals <- context$globals
   pp <- context$params
   p <- pp$p |> list_modify(!!!params)
   # bp <- calc_rule_params(globals, params=p, draws=pp$p$draws)
-  sims <- calc_sim_dust(p, globals$model, history = pp$h, full_mc = full_mc)
+  sims <- calc_sim_dust(p, globals$model, history = pp$h, full_mc = full_mc, detail = detail)
 
   if (full_mc) {
     baseline <- sims$sim
@@ -417,15 +423,26 @@ graph_scenarios <- function(
   diff = FALSE,
   plotly = TRUE
 ) {
+  # pas infra-annuel : axe continu year + (month - 0.5)/n_sub, l'historique
+  # annuel reste aux années entières (month manquant)
+  mly <- "month" %in% names(sim)
   lsim <- sim |>
     dplyr::ungroup() |>
     dplyr::filter(variable %in% vars) |>
     dplyr::filter(between(year, from, to)) |>
-    dplyr::mutate(variable = factor(variable, vars, ordered = TRUE))
+    dplyr::mutate(
+      variable = factor(variable, vars, ordered = TRUE),
+      time = if (mly) {
+        dplyr::if_else(is.na(month), year,
+                       year + (month - 0.5) / max(month, na.rm = TRUE))
+      } else {
+        year
+      }
+    )
 
   if (diff) {
     lsim <- lsim |>
-      group_by(year, variable) |>
+      group_by(time, variable) |>
       mutate(
         q0.025 = q0.025 - q0.5[scenario == "baseline"],
         q0.975 = q0.975 - q0.5[scenario == "baseline"],
@@ -438,10 +455,19 @@ graph_scenarios <- function(
   if (is.null(start_y)) {
     start_y <- start_year(sim)
   }
+  # couches simulation / historique : au pas mensuel l'historique se repère
+  # par month manquant ; en annuel, frontière start_y (comportement inchangé)
+  if (mly) {
+    lay_sim <- ~ dplyr::filter(.x, !is.na(month))
+    lay_hist <- ~ dplyr::filter(.x, is.na(month))
+  } else {
+    lay_sim <- ~ dplyr::filter(.x, year >= start_y)
+    lay_hist <- ~ dplyr::filter(.x, year <= start_y)
+  }
   if (draws(sim) > 1) {
     ribs <- list(ggplot2::geom_ribbon(
-      data = ~ dplyr::filter(.x, year >= start_y),
-      aes(x = year, ymin = q0.025, ymax = q0.975, fill = scenario),
+      data = lay_sim,
+      aes(x = time, ymin = q0.025, ymax = q0.975, fill = scenario),
       alpha = 0.1
     ))
   } else {
@@ -453,24 +479,24 @@ graph_scenarios <- function(
 
   gg <- ggplot2::ggplot(lsim |> filter(scenario %in% !!scenario)) +
     ggplot2::geom_line(
-      data = ~ dplyr::filter(.x, year >= start_y),
-      ggplot2::aes(x = year, y = mean, col = scenario)
+      data = lay_sim,
+      ggplot2::aes(x = time, y = mean, col = scenario)
     ) +
     ggplot2::geom_point(
-      data = ~ dplyr::filter(.x, year >= start_y),
-      ggplot2::aes(x = year, y = mean, col = scenario),
+      data = lay_sim,
+      ggplot2::aes(x = time, y = mean, col = scenario),
       size = 1.25,
       fill = "white",
       shape = 21,
       stroke = 0.25
     ) +
     ggplot2::geom_line(
-      data = ~ dplyr::filter(.x, year <= start_y),
-      ggplot2::aes(x = year, y = mean, col = scenario)
+      data = lay_hist,
+      ggplot2::aes(x = time, y = mean, col = scenario)
     ) +
     ggplot2::geom_point(
-      data = ~ dplyr::filter(.x, year <= start_y),
-      ggplot2::aes(x = year, y = mean, col = scenario),
+      data = lay_hist,
+      ggplot2::aes(x = time, y = mean, col = scenario),
       size = 1
     ) +
     ribs +
@@ -489,7 +515,8 @@ graph_scenarios <- function(
   if (plotly) {
     plotly::ggplotly(gg) |>
       plotly::layout(hovermode = "x unified", showlegend = FALSE) |>
-      plotly::style(hovertemplate = "%{y:.2%}", xhoverformat = "%{x:.0f}")
+      plotly::style(hovertemplate = "%{y:.2%}",
+                    xhoverformat = if (mly) "%{x:.2f}" else "%{x:.0f}")
   } else {
     gg
   }

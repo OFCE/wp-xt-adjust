@@ -1,0 +1,172 @@
+---
+title: "Annexe : le modèle infra-annuel dwrsm3g"
+date: 2026-10-04
+---
+
+Cette annexe documente `dwrsm3g`, la déclinaison infra-annuelle du modèle d'ajustement budgétaire `dwrsm3` : son usage, la sémantique du pas mensuel, le traitement des soldes comme ratios de deux sommes, la calibration du bruit, et les résultats de validation. Tous les chiffres cités sont reproduits par le script `simulations infra annuel.R`.
+
+::: callout-note
+**En une phrase.** `dwrsm3` reste le modèle de production ; `dwrsm3g` ajoute un pas infra-annuel (1/n_sub année, mensuel si `n_sub = 12`) pour explorer les phénomènes intra-année, avec la garantie qu'à `n_sub = 1` les deux modèles sont identiques au sens numérique (test V0) et que la chaîne R en aval fonctionne sans modification.
+:::
+
+## Positionnement
+
+Le choix retenu est **additif** : le modèle annuel `odin/dwrsm3.r` n'est pas modifié, et `odin/dwrsm3g.r` est un modèle compagnon compilé séparément. La bascule se fait par un seul paramètre, `n_sub`, transmis dans la liste de paramètres :
+
+- `n_sub = 1` : dwrsm3g se réduit exactement à dwrsm3 (toutes les transformations infra-annuelles se neutralisent terme à terme) ;
+- `n_sub = 12` : pas mensuel ; les exogènes restent annuelles, indicées par l'année en cours.
+
+Côté R, les fonctions détectent la présence de `params$n_sub` et adaptent la simulation (horizon `periods*n_sub+1`), l'agrégation annuelle (`aggregate_annual()` dans `R/dwr_sim.r`) et l'optimisation (`onesim()` dans `R/dwr_optim.r`). Aucun script existant n'est affecté s'il ne fixe pas `n_sub`.
+
+## Usage
+
+Le script d'exploration complet est `simulations infra annuel.R` ; l'ossature :
+
+``` r
+source("simulations init.R")   # rs25, ibs, brs25, fonctions
+
+# construction d'un contexte mensuel (compile le modèle, ~1 min)
+brg12 <- setup_params(
+  params = list_modify(rs25, n_sub = 12L),
+  modele = "dwrsm3g", start_y = 2025, ameco_version = "5/2026")
+
+# série annuelle agrégée (même schéma de tibble que dwrsm3)
+simg12 <- calc_sim_dust(brg12$params$p, brg12$globals$model,
+                        history = brg12$params$h)
+
+# détail mensuel : une ligne par (année, mois, variable)
+pm12 <- calc_sim_dust(brg12$params$p, brg12$globals$model,
+                      history = brg12$params$h, detail = "monthly")
+
+# équivalent via run_model : ajoute scenario = "baseline" et positionne
+# .last.baseline ; données mensuelles uniquement (out = "none" requis)
+rm12 <- run_model(brg12, out = "none", detail = "monthly")
+```
+
+La chaîne en aval est inchangée : `run_model()` (agrégation annuelle par défaut ; `detail = "monthly"` avec `out = "none"` pour les données mensuelles), `calc_phis()` / `onesim()` fonctionnent sur un contexte dwrsm3g comme sur dwrsm3. Les sorties `graph` et `table` de `run_model()` restent annuelles.
+
+Les phénomènes infra-annuels se pilotent par deux noyaux, passés dans les paramètres :
+
+``` r
+# profil intra-annuel de la réponse des multiplicateurs (doit sommer à 1)
+# neutre par défaut : réponse pleine en janvier, tenue constante ensuite
+mk_spread <- sqrt(1:12) / sum(sqrt(1:12))
+p <- list_modify(brg12$params$p, mkern = mk_spread, mkern_use = 1)
+
+# vitesse de réaction des prix par mois (doit moyenner 1 ; 1 = ECM mensuel)
+pk_slow <- c(rep(0.2, 6), rep(1.8, 6))   # rien au 1er semestre, rattrapage ensuite
+p <- list_modify(p, pkern = pk_slow, pkern_use = 1)
+```
+
+`dust_fix_params()` recadre automatiquement `mkern`/`pkern` à `n_sub`, force les switchs à 0 s'ils sont absents, convertit `n_sub` en entier et injecte les facteurs de bruit `k_ogn`/`k_inf` (voir section [Bruit](#sec-bruit)).
+
+## Sémantique du pas infra-annuel {#sec-semantique}
+
+L'en-tête de `odin/dwrsm3g.r` fait foi ; les principes :
+
+- **Indices de temps.** `an <- 1 + floor((step-1)/n_sub)` est l'année du step calculé (les exogènes restent annuelles, indicées par `an`) ; `mth` est le mois dans l'année ; `is_jan`/`is_dec` marquent les steps de janvier et décembre (à `n_sub = 1` ils coïncident).
+- **ECM mensuels.** Vitesses géométriques `x_m = 1-(1-x)^(1/n_sub)` ; momentum apparié par racines annuelles (`og_lag_m = og_lag^(1/n_sub)`) ; `og_ddpot` rescalé par `n_sub` (l'accélération est mesurée au pas mensuel).
+- **Niveaux.** Croissance mensuelle géométrique `(1+g)^(1/n_sub)-1` pour `pibpot`, `ppib`, `dette` ; les frontières d'année coïncident avec dwrsm3.
+- **Taux annualisés.** `r_inst` utilise les équivalents annualisés `gpot_v_a`, `txppib_a` ; `r_app` est une moyenne mobile de fenêtre `r_mat*n_sub` mois.
+- **Flux.** Les flux de valeur sont annualisés et l'accumulation de dette est mensuelle (`ddette/n_sub`) : la somme télescopée sur l'année redonne la variation annuelle de dwrsm3.
+- **Décisions.** La règle budgétaire et l'impulsion sont évaluées à chaque step mais appliquées en janvier seulement ; la décision de janvier est tenue constante le reste de l'année (états `lagib_*_dec`, variables `ib_*_eff`).
+- **Chaînes gelées de décembre.** Les grandeurs glissantes sur un an utilisées par la règle et la perte (`lagtxppib_y`, `laggpib_y`) sont calculées sur des niveaux de décembre (`lagppib_dec`, `lagqpib_dec`, ...) : exactes aux frontières d'année.
+- **Add-ons.** Niveaux (`add_og`, `add_tcho`, `dette_oneoff`) appliqués en janvier ; taux (`add_rinst`, `add_rapp`, `add_spstar`) chaque mois ; chocs d'inflation convertis `(1+x)^(1/n_sub)-1` et appliqués chaque mois.
+- **Perte.** Sémantique annuelle conservée : termes en retards engagés en janvier (retards = valeurs de décembre), termes instantanés (`cum_ogp`, `minog`, `cum_no_d`) engagés en décembre ; actualisation mensuelle `(1+loss_df)^(1/n_sub)` ; seuil sur l'indice d'année.
+
+```{mermaid}
+flowchart LR
+  J["Janvier<br/>décision annuelle<br/>(tpo, tdeppp)"] --> M["Janvier → décembre<br/>flux mensuels annualisés<br/>dette : ddette / n_sub"]
+  M --> D["Décembre<br/>année close :<br/>spp_ytd = Σ flux / Σ vpib"]
+  D --> A["Agrégation annuelle<br/>(mean / dec / geo)"]
+  D --> R["Janvier suivant<br/>la règle lit lagspp :<br/>solde de l'année close"]
+```
+
+## Les soldes : ratios de deux sommes {#les-soldes-ratios-de-deux-sommes}
+
+Le solde rapporté n'est pas la moyenne de ratios mensuels : c'est le rapport de deux sommes. Le solde est un flux qui fait passer la dette d'une fin d'année à l'autre, et sa version en pourcentage du PIB doit être cohérente avec cette variation de dette. dwrsm3g implémente cette contrainte **dans le modèle** :
+
+- des cumulants intra-année (états `cum_*`, sommes `sum_*` incluant le mois courant) agrègent les flux depuis janvier ; les ratios YTD (`spp_ytd`, `cinp_ytd`, `sep_ytd`, `tdep_ytd`, `tdepp_ytd`) en sont dérivés à chaque step ;
+- **la valeur de décembre est le ratio annuel exact** Σ flux / Σ vpib, égal à celui de dwrsm3 (l'ajustement cyclique de `ssp_ytd` utilise `og_ytd`, moyenne YTD de l'og, cohérente avec l'agrégation annuelle de l'og) ;
+- l'identité de dette est fermée à chaque année :
+
+$$\sum_{m=1}^{n_{sub}} \texttt{ddette}_m = -\ \texttt{sep}^{\texttt{dec}} \times \frac{\sum_m \texttt{vpib}_m}{n_{sub}}$$
+
+(les flux mensuels étant annualisés, le PIB annuel est la moyenne des vpib mensuels, pas leur somme) ; - `lagspp` s'engage en décembre sur ce solde annuel : la règle de janvier lit le solde de l'année close, comme dwrsm3 lit le solde de l'année précédente.
+
+Côté R, `aggregate_annual()` prend ces ratios en **décembre** (groupe `dec` de `.dwr.agg`), et les variables `*_o` mensuelles portent le cumul YTD (un « solde depuis le 1er janvier »). Le schéma du tibble annuel est inchangé pour les utilisateurs en aval.
+
+::: {#tbl-agg}
+| Groupe | Variables | Lecture |
+|------------------------|------------------------|------------------------|
+| `mean` | og, tcho, tvnairu, sppsd, tpo, ib, ib_po, ib_dep, spstar, r_app, r_inst, ec, vog | moyenne annuelle (ratios d'états mensuels, décisions tenues constantes) |
+| `dec` | dettep, dettepp, qpib, ppib, loss, loss_d_only, loss_nd, **spp, ci, sep, ssp, tdep, tdeppp, taut** | valeur de décembre : stocks, cumulants, et ratios de flux (ratio de sommes) |
+| `geo` | gpib, gpot, txppib | composition géométrique (décembre sur décembre) |
+
+Groupes d'agrégation annuelle (`R/dwr_sim.r`). À `n_sub = 1`, tous les groupes coïncident.
+:::
+
+## Bruit infra-annuel {#sec-bruit}
+
+Le bruit d'og est un AR(1) à racine appariée (`ogn_ar_m = ogn_ar^(1/n_sub)`) ; les innovations sont rescalées par les facteurs `k_ogn` et `k_inf`, calculés côté R dans `sub_noise_factors()` (`R/dwr_sim.r`) et injectés par défaut :
+
+- `k_ogn` : l'injection annuelle de bruit sur l'og est la somme pondérée (décroissance ECM) des bruits mensuels — les poids font que la variance aux frontières d'année est celle de dwrsm3 ;
+- `k_inf` : l'inflation de décembre sur décembre est la somme des déviations mensuelles (AR(1) mensuel, racine appariée) — même contrainte de variance.
+
+À `n_sub = 12` avec les paramètres par défaut, `k_ogn` ≈ 0,37 et `k_inf` ≈ 0,043 ; les deux valent exactement 1 à `n_sub = 1`. La calibration est une approximation pour `inf_lag > 0` (racine dominante).
+
+## Validation
+
+### V0 : identité à n_sub = 1
+
+Déterministe, toutes variables confondues, écart maximal sur 75 ans : **9,1e-13** (passerelle 1e-12), dominé par les ordres d'opérations flottantes des transformations mensuelles (qui se neutralisent exactement en mathématique, pas bit à bit). Avec la règle budgétaire active (variante `optimal1`), l'écart monte à **3,6e-12** : la boucle fermée amplifie le même bruit numérique (≈1e-15 en relatif) — sans écart de sémantique, la modification de `lagspp` étant bit-identique à `n_sub = 1` par construction.
+
+### V1 : écarts déterministes à noyaux neutres {#sec-v1}
+
+À noyaux neutres (réponse pleine en janvier, ECM mensuel des prix), les écarts n = 12 vs dwrsm3 ne contiennent que la discrétisation et l'effet boule de neige intra-annuel des intérêts. Écarts maximaux (2100) :
+
+| Variable          | Écart max | Variable                     | Écart max |
+|-------------------|-----------|------------------------------|-----------|
+| loss, loss_d_only | 193       | og                           | 5,5e-3    |
+| qpib              | 18,9      | tdep, spp                    | 2,8e-3    |
+| dettep, dettepp   | 0,12 (pp) | tdeppp                       | 2,8e-16   |
+| ppib              | 0,11      | ib, ib_po, ib_dep, tpo, taut | 0         |
+| txppib            | 1,1e-2    |                              |           |
+
+L'écart de dette +0,12 point à l'horizon vient des intérêts courus intra-année (la dette accroît `cin` chaque mois au taux mensuel équivalent, alors que dwrsm3 capitalise une fois par an). Les variables de politique sont exactement nulles : le baseline a la règle coupée (`no_rule = 1`).
+
+### Identité de dette
+
+Sur le détail mensuel, la variation de dette reconstruite depuis les sorties ferme l'identité de [la section soldes](#les-soldes-ratios-de-deux-sommes) à **1,6e-11** près (à comparer au 1e-11 de dwrsm3 lui-même) ; avec l'ancienne sémantique (moyenne de ratios mensuels), le résidu atteignait **4,4** — c'est l'écart entre « solde rapporté » et « solde qui fait bouger la dette ». La cohérence valeur de décembre (détail mensuel) = valeur agrégée annuelle est exacte.
+
+### Chaîne d'optimisation
+
+La chaîne COBYLA (`calc_phis()` → `onesim()`) fonctionne sans modification sur dwrsm3g : \~20 s par `calc_phis` sur dwrsm3g (n = 1) contre \~10 s sur dwrsm3 (le modèle compile plus de sorties), et \~3 ms par évaluation `onesim` dans les deux cas. Les `phis` optimisés sur dwrsm3 se rejouent tel quel sur dwrsm3g.
+
+### Bruit : distribution annuelle
+
+Avec les deux bruits activés (100 tirages), les écarts-types annuels agrégés de dwrsm3g (n = 12) sont 1,7 à 2,4 fois ceux de dwrsm3 selon l'horizon (og, txppib, spp, dettep). Les facteurs `k` contraignent la variance **par canal** aux **frontières d'année** ; la propagation croisée entre canaux (l'inflation entre dans `r_inst` qui agit sur l'og via le taux réel, l'og entre dans l'inflation via Okun-Phillips) n'est pas contrainte. C'est la limite connue du calibrage, à garder à l'esprit pour tout usage distributionnel du modèle mensuel.
+
+### Démonstrations
+
+![Réponse de l'écart de production à une impulsion budgétaire de -1 point de PIB en 2027 : détail mensuel de dwrsm3g (courbes) selon le noyau multiplicateur `mkern`, points = dwrsm3 annuel. Noyau neutre : réponse pleine en janvier tenue constante ; noyau étalé : réponse croissante sur l'année (profil en racine).](figure/dwrsm3g-mkern.png){#fig-mkern fig-alt="Deux courbes mensuelles de l'écart de production sur 2026-2031 avec des points annuels superposés ; le noyau étalé donne une réponse plus progressive et un cumul différent."}
+
+![Réaction de l'inflation à un choc de 2 points en 2027 : détail mensuel (courbes) selon la vitesse de réaction des prix `pkern`, points = dwrsm3 annuel. Noyau neutre : ECM mensuel ; noyau retardé : réaction quasi nulle au premier semestre, rattrapage au second.](figure/dwrsm3g-pkern.png){#fig-pkern fig-alt="Deux courbes mensuelles d'inflation sur 2026-2031 avec points annuels ; le noyau retardé maintient l'inflation plus haute en début d'année."}
+
+Ces deux graphiques sont produits par la section 5 du script `simulations infra annuel.R`.
+
+## Limites et questions ouvertes
+
+- **Règle en boucle fermée.** `lagspp` est désormais le solde annuel exact, mais la règle lit encore d'autres états à fréquence mensuelle — `lagog` (og de décembre), `sppsd` (mis à jour chaque mois), `ecart_c` — là où dwrsm3 lit leurs homologues annuels. Sous règle active, les trajectoires n = 12 divergent donc de l'annuel de façon cumulée (qpib \~6 %, dettep \~0,6 point en 2100). Une variante « règle fidèle » (engagement en décembre de toutes les entrées de la règle) permettrait de séparer l'effet de discrétisation de l'effet de lecture mensuelle.
+- **`sppsd` dans le groupe `mean`.** Sa valeur de janvier est l'homologue exact du dwrsm3 annuel ; un groupe `jan` dans `aggregate_annual()` (trois lignes) documenterait cette sémantique.
+- **Distribution stochastique.** Voir [validation du bruit](#bruit-infra-annuel) : la calibration aux frontières ne contraint pas la propagation croisée des deux canaux de bruit.
+
+## Fichiers de référence
+
+| Fichier | Contenu |
+|------------------------------------|------------------------------------|
+| `odin/dwrsm3g.r` | le modèle (l'en-tête documente toutes les conventions et le contrat côté R) |
+| `R/dwr_sim.r` | `sub_noise_factors()`, `dust_fix_params()`, `aggregate_annual()`, `.dwr.agg` |
+| `R/dwr_optim.r` | `onesim()` — simulation au pas infra-annuel puis agrégation annuelle |
+| `simulations infra annuel.R` | script d'exploration : V0, V1, identité de dette, noyaux, boucle fermée, stochastique |
+| `odin/dwrsm3.r` | le modèle de production (inchangé) |

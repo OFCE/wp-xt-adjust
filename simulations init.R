@@ -1,4 +1,4 @@
-rsmlibrary(future)
+library(future)
 library(furrr)
 library(progressr)
 library(scales)

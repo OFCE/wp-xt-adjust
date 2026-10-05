@@ -195,11 +195,46 @@ dataandparams <- function(country, start_year, periods = 2050-start_year, draws=
                "add_inf_e", "add_rapp", "add_tdeppp", "add_tpo", "add_spstar", "multivar",
                "dettep_cc", "ec_cc", "og_cc", "spp_cc", "inf_cc")
 
+.dwr.sub <- c("mkern", "pkern")
+
+# facteurs de rescalage du bruit infra-annuel (dwrsm3g) : calibrés pour que
+# les agrégats aux frontières d'année gardent la distribution de dwrsm3.
+#  - k_ogn : l'injection annuelle de bruit sur og est la somme pondérée des
+#    bruits mensuels (AR(1) racine appariée a^(1/n_sub)), les poids étant la
+#    décroissance ECM intra-année (1-og_mce)^((n_sub-m)/n_sub) ;
+#  - k_inf : l'inflation de décembre sur décembre est la somme des déviations
+#    mensuelles d'inflation (AR(1) mensuel, racine appariée) ;
+#  - exacts (égaux à 1) pour n_sub = 1 ; approximation pour inf_lag > 0
+#    (racine dominante).
+sub_noise_factors <- function(n_sub, ogn_ar = 0, og_mce = 0.29,
+                              inf_mce = 0.68, inf_lag = 0) {
+  if (n_sub == 1)
+    return(list(k_ogn = 1, k_inf = 1))
+  a <- min(max(ogn_ar, 0), 0.999)
+  a_m <- a^(1/n_sub)
+  q <- (1 - min(max(og_mce, 0), 0.999))^(1/n_sub)
+  m <- seq_len(n_sub)
+  w <- q^(n_sub - m)
+  psi <- sum(outer(w, w) * a_m^abs(outer(m, m, "-")))
+  k_ogn <- sqrt((1 - a) * (1 + a_m) / ((1 + a) * (1 - a_m) * psi))
+  rho_a <- min(max(1 - inf_mce + inf_lag, -0.999), 0.999)
+  rho_m <- sign(rho_a) * abs(rho_a)^(1/n_sub)
+  k <- 1:(n_sub - 1)
+  g <- n_sub + 2 * sum((n_sub - k) * rho_m^k)
+  k_inf <- sqrt((1 - rho_m^2) / ((1 - rho_a^2) * g))
+  list(k_ogn = k_ogn, k_inf = k_inf)
+}
+
 # dust_check_params
-dust_fix_params <- function(params, long = .dwr.long) {
+# si params$n_sub est présent (modèle dwrsm3g) : n_sub est entier côté dust,
+# les noyaux mkern/pkern sont recadrés à n_sub (pas periods) et remplis de 1
+# par défaut, les switchs mkern_use/pkern_use à 0
+dust_fix_params <- function(params, long = .dwr.long, sub = .dwr.sub) {
   long_exo <- params |> purrr::keep(~length(.x)>1) |> names()
   # pas moyen de récupérer cette liste de l'objet dust model
   long_exo <- unique(c(long_exo, long))
+  if(!is.null(params$n_sub))
+    long_exo <- setdiff(long_exo, sub)
   ss <- purrr::map(
     rlang::set_names(long_exo), 
     ~{
@@ -208,7 +243,32 @@ dust_fix_params <- function(params, long = .dwr.long) {
       else
         rep(0,params$periods)
     })
-  purrr::list_modify(params, !!!ss)
+  p <- purrr::list_modify(params, !!!ss)
+  if(!is.null(p$n_sub)) {
+    p$n_sub <- as.integer(p$n_sub)
+    ss_sub <- purrr::map(
+      rlang::set_names(sub),
+      ~{
+        if(!is.null(p[[.x]]))
+          trimortrick(p[[.x]], p$n_sub)
+        else
+          rep(1, p$n_sub)
+      })
+    kf <- sub_noise_factors(
+      p$n_sub,
+      ogn_ar = p$ogn_ar %|||% 0,
+      og_mce = p$og_mce %|||% 0.29,
+      inf_mce = p$inf_mce %|||% 0.68,
+      inf_lag = p$inf_lag %|||% 0)
+    p <- purrr::list_modify(
+      p,
+      !!!ss_sub,
+      k_ogn = p$k_ogn %|||% kf$k_ogn,
+      k_inf = p$k_inf %|||% kf$k_inf,
+      mkern_use = p$mkern_use %|||% 0,
+      pkern_use = p$pkern_use %|||% 0)
+  }
+  p
 }
 
 # simulations ---------------
@@ -216,7 +276,13 @@ dust_fix_params <- function(params, long = .dwr.long) {
 calc_sim_dust <- function(params, model, probs=c(0.025, 0.5, 0.975), 
                           history = NULL, 
                           long= .dwr.long,
-                          full_mc = FALSE) {
+                          full_mc = FALSE,
+                          detail = c("annual", "monthly")) {
+  detail <- match.arg(detail)
+  if (is.null(params$n_sub) && detail == "monthly")
+    stop("detail = 'monthly' requiert params$n_sub (modèle dwrsm3g)")
+  if (full_mc && detail == "monthly")
+    stop("full_mc n'est pas encore adapté au détail mensuel")
   p <- params
   p <- dust_fix_params(p, long=long)
   if(is.null(params$seed))
@@ -229,11 +295,20 @@ calc_sim_dust <- function(params, model, probs=c(0.025, 0.5, 0.975),
   out_i <- which(stringr::str_detect(state_names, "_o$")) 
   m$set_index(out_i)
   out_names <- state_names[out_i] 
-  # on simule une année de plus
-  res <- m$simulate(1:(params$periods+1))
+  # pas infra-annuel (dwrsm3g) : on simule au pas 1/n_sub année
+  n_sub <- params$n_sub
+  if (is.null(n_sub)) {
+    # on simule une année de plus
+    res <- m$simulate(1:(params$periods+1))
+  } else {
+    n_sub <- as.integer(n_sub)
+    res <- m$simulate(1:(params$periods*n_sub+1))
+  }
   dimnames(res)[[1]] <- out_names
   # on drop le premier step qui ne contient pas d'info
   res <- res[,,-1, drop=FALSE]
+  if (!is.null(n_sub) && detail == "annual")
+    res <- aggregate_annual(res, n_sub, out_names)
   se <- stringr::str_c("q", setdiff(probs, 0.5))
   if(params$draws>1)
     sim <- purrr::map_dfr(out_names, ~{
@@ -262,10 +337,26 @@ calc_sim_dust <- function(params, model, probs=c(0.025, 0.5, 0.975),
   if(!is.null(history))
   {
     start_year <- max(history$year)
-    sim <- sim |> 
-      dplyr::mutate(year = start_year+step) |> 
-      dplyr::bind_rows(history |> mutate(mean = q0.5)) |> 
-      dplyr::arrange(year) |> 
+    if (detail == "monthly") {
+      # pas infra-annuel : step = indice du mois simulé
+      sim <- sim |> 
+        dplyr::mutate(year = start_year + 1 + (step-1) %/% n_sub,
+                      month = 1 + (step-1) %% n_sub) |> 
+        dplyr::bind_rows(history |> mutate(mean = q0.5)) |> 
+        dplyr::arrange(year) |> 
+        dplyr::select(-step)
+    } else {
+      sim <- sim |> 
+        dplyr::mutate(year = start_year+step) |> 
+        dplyr::bind_rows(history |> mutate(mean = q0.5)) |> 
+        dplyr::arrange(year) |> 
+        dplyr::select(-step)
+    }
+  }
+  else if (detail == "monthly") {
+    sim <- sim |>
+      dplyr::mutate(year = 1 + (step-1) %/% n_sub,
+                    month = 1 + (step-1) %% n_sub) |>
       dplyr::select(-step)
   }
   else 
@@ -295,7 +386,43 @@ calc_sim_dust <- function(params, model, probs=c(0.025, 0.5, 0.975),
   return(sim)
 }
 
+.dwr.agg <- list(
+  # ratios et taux annualisés : moyenne annuelle
+  mean = c("og", "tcho", "tvnairu", "sppsd", "tpo", "ib", "ib_po", "ib_dep",
+           "spstar", "r_app", "r_inst", "ec", "vog"),
+  # stocks, cumulants et ratios de flux budgétaires : valeur de décembre
+  # (fin d'année). dwrsm3g sort les ratios de flux (spp, ci, sep, ssp, tdep,
+  # tdeppp) comme ratios de sommes YTD : leur valeur de décembre est le ratio
+  # annuel Σ flux / Σ vpib, cohérent avec l'accumulation de dette ; taut est
+  # constant intra-année (décembre = moyenne).
+  dec = c("dettep", "dettepp", "qpib", "ppib", "loss", "loss_d_only", "loss_nd",
+          "spp", "ci", "sep", "ssp", "tdep", "tdeppp", "taut"),
+  # taux de croissance : composition géométrique (décembre sur décembre)
+  geo = c("gpib", "gpot", "txppib")
+)
 
+# agrège un tableau de simulation infra-annuelle (états, tirages,
+# periods*n_sub) en série annuelle (états, tirages, periods)
+aggregate_annual <- function(res, n_sub, out_names, agg = .dwr.agg) {
+  if (n_sub == 1)
+    return(res)
+  v <- stringr::str_remove(out_names, "_o$")
+  per <- dim(res)[[3]] %/% n_sub
+  i_dec <- which(v %in% agg$dec)
+  i_geo <- which(v %in% agg$geo)
+  i_mean <- setdiff(seq_along(v), c(i_dec, i_geo))
+  # décembre par défaut, puis moyenne / composition géométrique
+  out <- res[, , seq_len(per) * n_sub, drop = FALSE]
+  # cube[s, d, p, m] = mois m de l'année p (attention au repliement col-major)
+  cube <- aperm(`dim<-`(res, c(dim(res)[[1]], dim(res)[[2]], n_sub, per)),
+                c(1, 2, 4, 3))
+  if (length(i_mean) > 0)
+    out[i_mean, , ] <- apply(cube[i_mean, , , , drop = FALSE], c(1, 2, 3), mean)
+  if (length(i_geo) > 0)
+    out[i_geo, , ] <- apply(cube[i_geo, , , , drop = FALSE], c(1, 2, 3),
+                            function(x) prod(1 + x) - 1)
+  out
+}
 
 add_previous <- function(ns, ps) {
   if(!purrr::is_empty(ps))
@@ -448,6 +575,9 @@ set_params <- function(inputs, globals, datas)
   
   # on change les vecteurs à la bonne longueur en les coupant ou étendant si nécessaire
   long_exo <- p |> purrr::keep(~length(.x)>1) |> names()
+  # les noyaux infra-annuels sont recadrés à n_sub (dans dust_fix_params), pas à periods
+  if(!is.null(p$n_sub))
+    long_exo <- setdiff(long_exo, .dwr.sub)
   ss <- purrr::map(rlang::set_names(long_exo), ~trimortrick(p[[.x]], periods))
   p <- purrr::list_modify(p, !!!ss)
   

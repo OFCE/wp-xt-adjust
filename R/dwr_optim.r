@@ -8,8 +8,17 @@ onesim <- function(params, model, n_threads = 2L,
   state_names <- names(m$info()$index)
   out_i <- which(state_names%in%str_c(vars, "_o"))
   m$set_index(out_i)
-  res <- m$simulate(1:(periods+1))
+  # pas infra-annuel (dwrsm3g) : simulation au pas 1/n_sub puis agrégation annuelle
+  n_sub <- params$n_sub
+  if (is.null(n_sub)) {
+    res <- m$simulate(1:(periods+1))
+  } else {
+    n_sub <- as.integer(n_sub)
+    res <- m$simulate(1:(periods*n_sub+1))
+  }
   res <- res[,,-1, drop=FALSE]
+  if (!is.null(n_sub))
+    res <- aggregate_annual(res, n_sub, state_names[out_i])
   names <- state_names[out_i] |> str_remove("_o$")
   dimnames(res)[[1]] <- names
   if(params$draws>1)
