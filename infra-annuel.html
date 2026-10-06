@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Xavier Timbeau">
+
+<title> le modèle infra-annuel dwrsm3g – Ajustement bugdétaire 2609</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-1352f9db2132ed6d9c4208da9f3ea9cc.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-80a9517f667a56e9cfbe70615c42973a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+<script>
+// État actif de la navbar par préfixe d'URL : un item est actif si le premier
+// segment de son href (URLs racine, ex. /blog2024/, /prev/derniere/) coïncide
+// avec celui de la page courante. Pour un item de sous-menu, c'est l'entrée
+// parente du menu qui est surlignée. Fonctionne pour tous les sites, sans
+// texte en dur.
+document.addEventListener('DOMContentLoaded', function () {
+  var currentPath = window.location.pathname;
+
+  function firstSegment(pathname) {
+    var match = pathname.match(/^\/([^\/]+)/);
+    return match ? match[1] : '';
+  }
+
+  function isActive(link) {
+    var href = link.getAttribute('href');
+    if (!href || href === '#') return false;
+    if (link.host !== window.location.host) return false;
+    if (link.pathname === '/') {
+      return currentPath === '/' || currentPath === '/index.html';
+    }
+    return firstSegment(link.pathname) === firstSegment(currentPath) &&
+      firstSegment(currentPath) !== '';
+  }
+
+  document.querySelectorAll('.navbar-nav .nav-item').forEach(function (item) {
+    var navLink = item.querySelector('.nav-link');
+    if (!navLink) return;
+    var links = item.classList.contains('dropdown')
+      ? item.querySelectorAll('.dropdown-menu .dropdown-item')
+      : [navLink];
+    var active = Array.prototype.some.call(links, isActive);
+    if (active) navLink.classList.add('active');
+  });
+});
+</script>
+<script>
+  /* === Encadrés preview === */
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.callout-tip').forEach(function (el) {
+    var btnOpen = document.createElement('button');
+    btnOpen.className = 'enc-preview-btn enc-open-btn';
+    btnOpen.textContent = '▼ Lire la suite\u2026';
+    btnOpen.addEventListener('click', function () {
+      el.classList.add('enc-expanded');
+    });
+
+    var btnClose = document.createElement('button');
+    btnClose.className = 'enc-preview-btn enc-close-btn';
+    btnClose.textContent = '▲ Réduire';
+    btnClose.addEventListener('click', function () {
+      el.classList.remove('enc-expanded');
+    });
+
+    var bodyContainer = el.querySelector('.callout-body-container');
+    if (bodyContainer) {
+      bodyContainer.insertAdjacentElement('afterend', btnClose);
+      bodyContainer.insertAdjacentElement('afterend', btnOpen);
+    } else {
+      el.appendChild(btnOpen);
+      el.appendChild(btnClose);
+    }
+  });
+});
+</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="floating quarto-light">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Sur cette page</h2>
+   
+  <ul>
+  <li><a href="#positionnement" id="toc-positionnement" class="nav-link active" data-scroll-target="#positionnement"><span class="header-section-number">1</span> Positionnement</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage"><span class="header-section-number">2</span> Usage</a></li>
+  <li><a href="#sec-semantique" id="toc-sec-semantique" class="nav-link" data-scroll-target="#sec-semantique"><span class="header-section-number">3</span> Sémantique du pas infra-annuel</a></li>
+  <li><a href="#les-soldes-ratios-de-deux-sommes" id="toc-les-soldes-ratios-de-deux-sommes" class="nav-link" data-scroll-target="#les-soldes-ratios-de-deux-sommes"><span class="header-section-number">4</span> Les <span style="white-space:nowrap">soldes :</span> ratios de deux sommes</a></li>
+  <li><a href="#sec-bruit" id="toc-sec-bruit" class="nav-link" data-scroll-target="#sec-bruit"><span class="header-section-number">5</span> Bruit infra-annuel</a></li>
+  <li><a href="#validation" id="toc-validation" class="nav-link" data-scroll-target="#validation"><span class="header-section-number">6</span> Validation</a>
+  <ul class="collapse">
+  <li><a href="#v0-identité-à-n_sub-1" id="toc-v0-identité-à-n_sub-1" class="nav-link" data-scroll-target="#v0-identité-à-n_sub-1"><span class="header-section-number">6.1</span> <span style="white-space:nowrap">V0 :</span> identité à n_sub = 1</a></li>
+  <li><a href="#sec-v1" id="toc-sec-v1" class="nav-link" data-scroll-target="#sec-v1"><span class="header-section-number">6.2</span> <span style="white-space:nowrap">V1 :</span> écarts déterministes à noyaux neutres</a></li>
+  <li><a href="#identité-de-dette" id="toc-identité-de-dette" class="nav-link" data-scroll-target="#identité-de-dette"><span class="header-section-number">6.3</span> Identité de dette</a></li>
+  <li><a href="#chaîne-doptimisation" id="toc-chaîne-doptimisation" class="nav-link" data-scroll-target="#chaîne-doptimisation"><span class="header-section-number">6.4</span> Chaîne d’optimisation</a></li>
+  <li><a href="#bruit-distribution-annuelle" id="toc-bruit-distribution-annuelle" class="nav-link" data-scroll-target="#bruit-distribution-annuelle"><span class="header-section-number">6.5</span> <span style="white-space:nowrap">Bruit :</span> distribution annuelle</a></li>
+  <li><a href="#démonstrations" id="toc-démonstrations" class="nav-link" data-scroll-target="#démonstrations"><span class="header-section-number">6.6</span> Démonstrations</a></li>
+  </ul></li>
+  <li><a href="#limites-et-questions-ouvertes" id="toc-limites-et-questions-ouvertes" class="nav-link" data-scroll-target="#limites-et-questions-ouvertes"><span class="header-section-number">7</span> Limites et questions ouvertes</a></li>
+  <li><a href="#fichiers-de-référence" id="toc-fichiers-de-référence" class="nav-link" data-scroll-target="#fichiers-de-référence"><span class="header-section-number">8</span> Fichiers de référence</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span style="white-space:nowrap">Annexe :</span> le modèle infra-annuel dwrsm3g</h1>
+</div>
+
+
+
+
+  <details class="details-box">
+          <summary class="quarto-title-meta-heading"><b>Auteurs&amp;résumé</b></summary>
+    
+        <div class="quarto-title-meta-author">
+      <div class="quarto-title-meta-heading">Par</div>
+      <div class="quarto-title-meta-heading">Affiliation</div>
+
+            <div class="quarto-title-meta-contents">
+        <span class="author">Xavier Timbeau <a href="mailto:xavier.timbeau@sciencespo.fr" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> <a href="https://orcid.org/0000-0002-6198-5953" class="quarto-title-author-orcid" aria-label="ORCID profile for Xavier Timbeau"> <img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></span>
+      </div>
+
+            <div class="quarto-title-meta-contents">
+                <p class="affiliation">
+                    <a href="http://www.ofce.fr">
+                    OFCE, Sciences Po Paris
+                    </a>
+                  </p>
+              </div>
+                </div>
+    
+          
+    <div class="quarto-title-meta">
+            <div>
+        <div class="quarto-title-meta-heading">Publié le</div>
+        <div class="quarto-title-meta-contents">
+          <p class="date">4 octobre 2026</p>
+        </div>
+      </div>
+      
+      
+      
+      
+      
+<!--
+        </div>
+-->
+
+    
+      </div></details>
+
+</header>
+
+
+<p>Cette annexe documente <code>dwrsm3g</code>, la déclinaison infra-annuelle du modèle d’ajustement budgétaire <code>dwrsm3</code> : son usage, la sémantique du pas mensuel, le traitement des soldes comme ratios de deux sommes, la calibration du bruit, et les résultats de validation. Tous les chiffres cités sont reproduits par le script <code>simulations infra annuel.R</code>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>En une phrase.</strong> <code>dwrsm3</code> reste le modèle de <span style="white-space:nowrap">production ;</span> <code>dwrsm3g</code> ajoute un pas infra-annuel (1/n_sub année, mensuel si <code>n_sub = 12</code>) pour explorer les phénomènes intra-année, avec la garantie qu’à <code>n_sub = 1</code> les deux modèles sont identiques au sens numérique (test V0) et que la chaîne R en aval fonctionne sans modification.</p>
+</div>
+</div>
+<section id="positionnement" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="positionnement"><span class="header-section-number">1</span> Positionnement</h2>
+<p>Le choix retenu est <strong>additif</strong> : le modèle annuel <code>odin/dwrsm3.r</code> n’est pas modifié, et <code>odin/dwrsm3g.r</code> est un modèle compagnon compilé séparément. La bascule se fait par un seul paramètre, <code>n_sub</code>, transmis dans la liste de <span style="white-space:nowrap">paramètres :</span></p>
+<ul>
+<li><code>n_sub = 1</code> : dwrsm3g se réduit exactement à dwrsm3 (toutes les transformations infra-annuelles se neutralisent terme à <span style="white-space:nowrap">terme) ;</span></li>
+<li><code>n_sub = 12</code> : pas <span style="white-space:nowrap">mensuel ;</span> les exogènes restent annuelles, indicées par l’année en cours.</li>
+</ul>
+<p>Côté R, les fonctions détectent la présence de <code>params$n_sub</code> et adaptent la simulation (horizon <code>periods*n_sub+1</code>), l’agrégation annuelle (<code>aggregate_annual()</code> dans <code>R/dwr_sim.r</code>) et l’optimisation (<code>onesim()</code> dans <code>R/dwr_optim.r</code>). Aucun script existant n’est affecté s’il ne fixe pas <code>n_sub</code>.</p>
+</section>
+<section id="usage" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="usage"><span class="header-section-number">2</span> Usage</h2>
+<p>Le script d’exploration complet est <code>simulations infra annuel.R</code> ; <span style="white-space:nowrap">l’ossature :</span></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"simulations init.R"</span>)   <span class="co"># rs25, ibs, brs25, fonctions</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># construction d'un contexte mensuel (compile le modèle, ~1 min)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>brg12 <span class="ot">&lt;-</span> <span class="fu">setup_params</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">params =</span> <span class="fu">list_modify</span>(rs25, <span class="at">n_sub =</span> <span class="dv">12</span>L),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> <span class="st">"dwrsm3g"</span>, <span class="at">start_y =</span> <span class="dv">2025</span>, <span class="at">ameco_version =</span> <span class="st">"5/2026"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># série annuelle agrégée (même schéma de tibble que dwrsm3)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>simg12 <span class="ot">&lt;-</span> <span class="fu">calc_sim_dust</span>(brg12<span class="sc">$</span>params<span class="sc">$</span>p, brg12<span class="sc">$</span>globals<span class="sc">$</span>model,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">history =</span> brg12<span class="sc">$</span>params<span class="sc">$</span>h)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># détail mensuel : une ligne par (année, mois, variable)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>pm12 <span class="ot">&lt;-</span> <span class="fu">calc_sim_dust</span>(brg12<span class="sc">$</span>params<span class="sc">$</span>p, brg12<span class="sc">$</span>globals<span class="sc">$</span>model,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                      <span class="at">history =</span> brg12<span class="sc">$</span>params<span class="sc">$</span>h, <span class="at">detail =</span> <span class="st">"monthly"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># équivalent via run_model : ajoute scenario = "baseline" et positionne</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># .last.baseline ; données mensuelles uniquement (out = "none" requis)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>rm12 <span class="ot">&lt;-</span> <span class="fu">run_model</span>(brg12, <span class="at">out =</span> <span class="st">"none"</span>, <span class="at">detail =</span> <span class="st">"monthly"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La chaîne en aval est <span style="white-space:nowrap">inchangée :</span> <code>run_model()</code> (agrégation annuelle par <span style="white-space:nowrap">défaut ;</span> <code>detail = "monthly"</code> avec <code>out = "none"</code> pour les données mensuelles), <code>calc_phis()</code> / <code>onesim()</code> fonctionnent sur un contexte dwrsm3g comme sur dwrsm3. Les sorties <code>graph</code> et <code>table</code> de <code>run_model()</code> restent annuelles.</p>
+<p>Les phénomènes infra-annuels se pilotent par deux noyaux, passés dans les <span style="white-space:nowrap">paramètres :</span></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># profil intra-annuel de la réponse des multiplicateurs (doit sommer à 1)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># neutre par défaut : réponse pleine en janvier, tenue constante ensuite</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mk_spread <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">list_modify</span>(brg12<span class="sc">$</span>params<span class="sc">$</span>p, <span class="at">mkern =</span> mk_spread, <span class="at">mkern_use =</span> <span class="dv">1</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># vitesse de réaction des prix par mois (doit moyenner 1 ; 1 = ECM mensuel)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>pk_slow <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="fl">0.2</span>, <span class="dv">6</span>), <span class="fu">rep</span>(<span class="fl">1.8</span>, <span class="dv">6</span>))   <span class="co"># rien au 1er semestre, rattrapage ensuite</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">list_modify</span>(p, <span class="at">pkern =</span> pk_slow, <span class="at">pkern_use =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>dust_fix_params()</code> recadre automatiquement <code>mkern</code>/<code>pkern</code> à <code>n_sub</code>, force les switchs à 0 s’ils sont absents, convertit <code>n_sub</code> en entier et injecte les facteurs de bruit <code>k_ogn</code>/<code>k_inf</code> (voir section <a href="#sec-bruit">Bruit</a>).</p>
+</section>
+<section id="sec-semantique" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-semantique"><span class="header-section-number">3</span> Sémantique du pas infra-annuel</h2>
+<p>L’en-tête de <code>odin/dwrsm3g.r</code> fait <span style="white-space:nowrap">foi ;</span> les <span style="white-space:nowrap">principes :</span></p>
+<ul>
+<li><strong>Indices de temps.</strong> <code>an &lt;- 1 + floor((step-1)/n_sub)</code> est l’année du step calculé (les exogènes restent annuelles, indicées par <code>an</code><span style="white-space:nowrap">) ;</span> <code>mth</code> est le mois dans <span style="white-space:nowrap">l’année ;</span> <code>is_jan</code>/<code>is_dec</code> marquent les steps de janvier et décembre (à <code>n_sub = 1</code> ils coïncident).</li>
+<li><strong>ECM mensuels.</strong> Vitesses géométriques <code>x_m = 1-(1-x)^(1/n_sub)</code> ; momentum apparié par racines annuelles (<code>og_lag_m = og_lag^(1/n_sub)</code><span style="white-space:nowrap">) ;</span> <code>og_ddpot</code> rescalé par <code>n_sub</code> (l’accélération est mesurée au pas mensuel).</li>
+<li><strong>Niveaux.</strong> Croissance mensuelle géométrique <code>(1+g)^(1/n_sub)-1</code> pour <code>pibpot</code>, <code>ppib</code>, <code>dette</code> ; les frontières d’année coïncident avec dwrsm3.</li>
+<li><strong>Taux annualisés.</strong> <code>r_inst</code> utilise les équivalents annualisés <code>gpot_v_a</code>, <code>txppib_a</code> ; <code>r_app</code> est une moyenne mobile de fenêtre <code>r_mat*n_sub</code> mois.</li>
+<li><strong>Flux.</strong> Les flux de valeur sont annualisés et l’accumulation de dette est mensuelle (<code>ddette/n_sub</code><span style="white-space:nowrap">) :</span> la somme télescopée sur l’année redonne la variation annuelle de dwrsm3.</li>
+<li><strong>Décisions.</strong> La règle budgétaire et l’impulsion sont évaluées à chaque step mais appliquées en janvier <span style="white-space:nowrap">seulement ;</span> la décision de janvier est tenue constante le reste de l’année (états <code>lagib_*_dec</code>, variables <code>ib_*_eff</code>).</li>
+<li><strong>Chaînes gelées de décembre.</strong> Les grandeurs glissantes sur un an utilisées par la règle et la perte (<code>lagtxppib_y</code>, <code>laggpib_y</code>) sont calculées sur des niveaux de décembre (<code>lagppib_dec</code>, <code>lagqpib_dec</code><span style="white-space:nowrap">, …) :</span> exactes aux frontières d’année.</li>
+<li><strong>Add-ons.</strong> Niveaux (<code>add_og</code>, <code>add_tcho</code>, <code>dette_oneoff</code>) appliqués en <span style="white-space:nowrap">janvier ;</span> taux (<code>add_rinst</code>, <code>add_rapp</code>, <code>add_spstar</code>) chaque <span style="white-space:nowrap">mois ;</span> chocs d’inflation convertis <code>(1+x)^(1/n_sub)-1</code> et appliqués chaque mois.</li>
+<li><strong>Perte.</strong> Sémantique annuelle <span style="white-space:nowrap">conservée :</span> termes en retards engagés en janvier (retards = valeurs de décembre), termes instantanés (<code>cum_ogp</code>, <code>minog</code>, <code>cum_no_d</code>) engagés en <span style="white-space:nowrap">décembre ;</span> actualisation mensuelle <code>(1+loss_df)^(1/n_sub)</code> ; seuil sur l’indice d’année.</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  J["Janvier&lt;br/&gt;décision annuelle&lt;br/&gt;(tpo, tdeppp)"] --&gt; M["Janvier → décembre&lt;br/&gt;flux mensuels annualisés&lt;br/&gt;dette : ddette / n_sub"]
+  M --&gt; D["Décembre&lt;br/&gt;année close :&lt;br/&gt;spp_ytd = Σ flux / Σ vpib"]
+  D --&gt; A["Agrégation annuelle&lt;br/&gt;(mean / dec / geo)"]
+  D --&gt; R["Janvier suivant&lt;br/&gt;la règle lit lagspp :&lt;br/&gt;solde de l'année close"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="les-soldes-ratios-de-deux-sommes" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="les-soldes-ratios-de-deux-sommes"><span class="header-section-number">4</span> Les <span style="white-space:nowrap">soldes :</span> ratios de deux sommes</h2>
+<p>Le solde rapporté n’est pas la moyenne de ratios <span style="white-space:nowrap">mensuels :</span> c’est le rapport de deux sommes. Le solde est un flux qui fait passer la dette d’une fin d’année à l’autre, et sa version en pourcentage du PIB doit être cohérente avec cette variation de dette. dwrsm3g implémente cette contrainte <strong>dans le modèle</strong> :</p>
+<ul>
+<li>des cumulants intra-année (états <code>cum_*</code>, sommes <code>sum_*</code> incluant le mois courant) agrègent les flux depuis <span style="white-space:nowrap">janvier ;</span> les ratios YTD (<code>spp_ytd</code>, <code>cinp_ytd</code>, <code>sep_ytd</code>, <code>tdep_ytd</code>, <code>tdepp_ytd</code>) en sont dérivés à chaque <span style="white-space:nowrap">step ;</span></li>
+<li><strong>la valeur de décembre est le ratio annuel exact</strong> Σ flux / Σ vpib, égal à celui de dwrsm3 (l’ajustement cyclique de <code>ssp_ytd</code> utilise <code>og_ytd</code>, moyenne YTD de l’og, cohérente avec l’agrégation annuelle de <span style="white-space:nowrap">l’og) ;</span></li>
+<li>l’identité de dette est fermée à chaque <span style="white-space:nowrap">année :</span></li>
+</ul>
+<p><span class="math display">\sum_{m=1}^{n_{sub}} \texttt{ddette}_m = -\ \texttt{sep}^{\texttt{dec}} \times \frac{\sum_m \texttt{vpib}_m}{n_{sub}}</span></p>
+<p>(les flux mensuels étant annualisés, le PIB annuel est la moyenne des vpib mensuels, pas leur <span style="white-space:nowrap">somme) ;</span> - <code>lagspp</code> s’engage en décembre sur ce solde <span style="white-space:nowrap">annuel :</span> la règle de janvier lit le solde de l’année close, comme dwrsm3 lit le solde de l’année précédente.</p>
+<p>Côté R, <code>aggregate_annual()</code> prend ces ratios en <strong>décembre</strong> (groupe <code>dec</code> de <code>.dwr.agg</code>), et les variables <code>*_o</code> mensuelles portent le cumul YTD (un « solde depuis le 1er janvier »). Le schéma du tibble annuel est inchangé pour les utilisateurs en aval.</p>
+<div id="tbl-agg" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-agg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<strong>Tableau</strong>&nbsp;1<strong>.</strong> Groupes d’agrégation annuelle (<code>R/dwr_sim.r</code>). À <code>n_sub = 1</code>, tous les groupes coïncident.
+</figcaption>
+<div aria-describedby="tbl-agg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Groupe</th>
+<th>Variables</th>
+<th>Lecture</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>mean</code></td>
+<td>og, tcho, tvnairu, sppsd, tpo, ib, ib_po, ib_dep, spstar, r_app, r_inst, ec, vog</td>
+<td>moyenne annuelle (ratios d’états mensuels, décisions tenues constantes)</td>
+</tr>
+<tr class="even">
+<td><code>dec</code></td>
+<td>dettep, dettepp, qpib, ppib, loss, loss_d_only, loss_nd, <strong>spp, ci, sep, ssp, tdep, tdeppp, taut</strong></td>
+<td>valeur de <span style="white-space:nowrap">décembre :</span> stocks, cumulants, et ratios de flux (ratio de sommes)</td>
+</tr>
+<tr class="odd">
+<td><code>geo</code></td>
+<td>gpib, gpot, txppib</td>
+<td>composition géométrique (décembre sur décembre)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="sec-bruit" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-bruit"><span class="header-section-number">5</span> Bruit infra-annuel</h2>
+<p>Le bruit d’og est un AR(1) à racine appariée (<code>ogn_ar_m = ogn_ar^(1/n_sub)</code><span style="white-space:nowrap">) ;</span> les innovations sont rescalées par les facteurs <code>k_ogn</code> et <code>k_inf</code>, calculés côté R dans <code>sub_noise_factors()</code> (<code>R/dwr_sim.r</code>) et injectés par <span style="white-space:nowrap">défaut :</span></p>
+<ul>
+<li><code>k_ogn</code> : l’injection annuelle de bruit sur l’og est la somme pondérée (décroissance ECM) des bruits <span style="white-space:nowrap">mensuels —</span> les poids font que la variance aux frontières d’année est celle de <span style="white-space:nowrap">dwrsm3 ;</span></li>
+<li><code>k_inf</code> : l’inflation de décembre sur décembre est la somme des déviations mensuelles (AR(1) mensuel, racine <span style="white-space:nowrap">appariée) —</span> même contrainte de variance.</li>
+</ul>
+<p>À <code>n_sub = 12</code> avec les paramètres par défaut, <code>k_ogn</code> ≈ 0,37 et <code>k_inf</code> ≈ <span style="white-space:nowrap">0,043 ;</span> les deux valent exactement 1 à <code>n_sub = 1</code>. La calibration est une approximation pour <code>inf_lag &gt; 0</code> (racine dominante).</p>
+</section>
+<section id="validation" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="validation"><span class="header-section-number">6</span> Validation</h2>
+<section id="v0-identité-à-n_sub-1" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="v0-identité-à-n_sub-1"><span class="header-section-number">6.1</span> <span style="white-space:nowrap">V0 :</span> identité à n_sub = 1</h3>
+<p>Déterministe, toutes variables confondues, écart maximal sur <span style="white-space:nowrap">75&nbsp;ans :</span> <strong>9,1e-13</strong> (passerelle 1e-12), dominé par les ordres d’opérations flottantes des transformations mensuelles (qui se neutralisent exactement en mathématique, pas bit à bit). Avec la règle budgétaire active (variante <code>optimal1</code>), l’écart monte à <strong>3,6e-12</strong> : la boucle fermée amplifie le même bruit numérique (≈1e-15 en <span style="white-space:nowrap">relatif) —</span> sans écart de sémantique, la modification de <code>lagspp</code> étant bit-identique à <code>n_sub = 1</code> par construction.</p>
+</section>
+<section id="sec-v1" class="level3" data-number="6.2">
+<h3 data-number="6.2" class="anchored" data-anchor-id="sec-v1"><span class="header-section-number">6.2</span> <span style="white-space:nowrap">V1 :</span> écarts déterministes à noyaux neutres</h3>
+<p>À noyaux neutres (réponse pleine en janvier, ECM mensuel des prix), les écarts n = 12 vs dwrsm3 ne contiennent que la discrétisation et l’effet boule de neige intra-annuel des intérêts. Écarts maximaux <span style="white-space:nowrap">(2100) :</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 15%">
+<col style="width: 42%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Écart max</th>
+<th>Variable</th>
+<th>Écart max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>loss, loss_d_only</td>
+<td>193</td>
+<td>og</td>
+<td>5,5e-3</td>
+</tr>
+<tr class="even">
+<td>qpib</td>
+<td>18,9</td>
+<td>tdep, spp</td>
+<td>2,8e-3</td>
+</tr>
+<tr class="odd">
+<td>dettep, dettepp</td>
+<td>0,12 (pp)</td>
+<td>tdeppp</td>
+<td>2,8e-16</td>
+</tr>
+<tr class="even">
+<td>ppib</td>
+<td>0,11</td>
+<td>ib, ib_po, ib_dep, tpo, taut</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>txppib</td>
+<td>1,1e-2</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>L’écart de dette +0,12&nbsp;point à l’horizon vient des intérêts courus intra-année (la dette accroît <code>cin</code> chaque mois au taux mensuel équivalent, alors que dwrsm3 capitalise une fois par an). Les variables de politique sont exactement <span style="white-space:nowrap">nulles :</span> le baseline a la règle coupée (<code>no_rule = 1</code>).</p>
+</section>
+<section id="identité-de-dette" class="level3" data-number="6.3">
+<h3 data-number="6.3" class="anchored" data-anchor-id="identité-de-dette"><span class="header-section-number">6.3</span> Identité de dette</h3>
+<p>Sur le détail mensuel, la variation de dette reconstruite depuis les sorties ferme l’identité de <a href="#les-soldes-ratios-de-deux-sommes">la section soldes</a> à <strong>1,6e-11</strong> près (à comparer au 1e-11 de dwrsm3 <span style="white-space:nowrap">lui-même) ;</span> avec l’ancienne sémantique (moyenne de ratios mensuels), le résidu atteignait <strong>4,4</strong> — c’est l’écart entre « solde rapporté » et « solde qui fait bouger la dette ». La cohérence valeur de décembre (détail mensuel) = valeur agrégée annuelle est exacte.</p>
+</section>
+<section id="chaîne-doptimisation" class="level3" data-number="6.4">
+<h3 data-number="6.4" class="anchored" data-anchor-id="chaîne-doptimisation"><span class="header-section-number">6.4</span> Chaîne d’optimisation</h3>
+<p>La chaîne COBYLA (<code>calc_phis()</code> → <code>onesim()</code>) fonctionne sans modification sur <span style="white-space:nowrap">dwrsm3g :</span> ~20 s par <code>calc_phis</code> sur dwrsm3g (n = 1) contre ~10 s sur dwrsm3 (le modèle compile plus de sorties), et ~3 ms par évaluation <code>onesim</code> dans les deux cas. Les <code>phis</code> optimisés sur dwrsm3 se rejouent tel quel sur dwrsm3g.</p>
+</section>
+<section id="bruit-distribution-annuelle" class="level3" data-number="6.5">
+<h3 data-number="6.5" class="anchored" data-anchor-id="bruit-distribution-annuelle"><span class="header-section-number">6.5</span> <span style="white-space:nowrap">Bruit :</span> distribution annuelle</h3>
+<p>Avec les deux bruits activés (100 tirages), les écarts-types annuels agrégés de dwrsm3g (n = 12) sont 1,7 à 2,4 fois ceux de dwrsm3 selon l’horizon (og, txppib, spp, dettep). Les facteurs <code>k</code> contraignent la variance <strong>par canal</strong> aux <strong>frontières d’année</strong> ; la propagation croisée entre canaux (l’inflation entre dans <code>r_inst</code> qui agit sur l’og via le taux réel, l’og entre dans l’inflation via Okun-Phillips) n’est pas contrainte. C’est la limite connue du calibrage, à garder à l’esprit pour tout usage distributionnel du modèle mensuel.</p>
+</section>
+<section id="démonstrations" class="level3" data-number="6.6">
+<h3 data-number="6.6" class="anchored" data-anchor-id="démonstrations"><span class="header-section-number">6.6</span> Démonstrations</h3>
+<div id="fig-mkern" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Deux courbes mensuelles de l'écart de production sur 2026-2031 avec des points annuels superposés ; le noyau étalé donne une réponse plus progressive et un cumul différent.">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-mkern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<strong>Graphique</strong>&nbsp;1<strong>.</strong> Réponse de l’écart de production à une impulsion budgétaire de -1&nbsp;point de PIB en <span style="white-space:nowrap">2027 :</span> détail mensuel de dwrsm3g (courbes) selon le noyau multiplicateur <code>mkern</code>, points = dwrsm3 annuel. Noyau <span style="white-space:nowrap">neutre :</span> réponse pleine en janvier tenue <span style="white-space:nowrap">constante ;</span> noyau <span style="white-space:nowrap">étalé :</span> réponse croissante sur l’année (profil en racine).
+</figcaption>
+<div aria-describedby="fig-mkern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figure/dwrsm3g-mkern.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Graphique&nbsp;1. Réponse de l’écart de production à une impulsion budgétaire de -1&nbsp;point de PIB en  détail mensuel de dwrsm3g (courbes) selon le noyau multiplicateur mkern, points = dwrsm3 annuel. Noyau  réponse pleine en janvier tenue  noyau  réponse croissante sur l’année (profil en racine)."><img src="figure/dwrsm3g-mkern.png" class="img-fluid figure-img" alt="Deux courbes mensuelles de l'écart de production sur 2026-2031 avec des points annuels superposés ; le noyau étalé donne une réponse plus progressive et un cumul différent."></a>
+</div>
+</figure>
+</div>
+<div id="fig-pkern" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Deux courbes mensuelles d'inflation sur 2026-2031 avec points annuels ; le noyau retardé maintient l'inflation plus haute en début d'année.">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-pkern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<strong>Graphique</strong>&nbsp;2<strong>.</strong> Réaction de l’inflation à un choc de 2&nbsp;points en <span style="white-space:nowrap">2027 :</span> détail mensuel (courbes) selon la vitesse de réaction des prix <code>pkern</code>, points = dwrsm3 annuel. Noyau <span style="white-space:nowrap">neutre :</span> ECM <span style="white-space:nowrap">mensuel ;</span> noyau <span style="white-space:nowrap">retardé :</span> réaction quasi nulle au premier semestre, rattrapage au second.
+</figcaption>
+<div aria-describedby="fig-pkern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figure/dwrsm3g-pkern.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Graphique&nbsp;2. Réaction de l’inflation à un choc de 2&nbsp;points en  détail mensuel (courbes) selon la vitesse de réaction des prix pkern, points = dwrsm3 annuel. Noyau  ECM  noyau  réaction quasi nulle au premier semestre, rattrapage au second."><img src="figure/dwrsm3g-pkern.png" class="img-fluid figure-img" alt="Deux courbes mensuelles d'inflation sur 2026-2031 avec points annuels ; le noyau retardé maintient l'inflation plus haute en début d'année."></a>
+</div>
+</figure>
+</div>
+<p>Ces deux graphiques sont produits par la section 5 du script <code>simulations infra annuel.R</code>.</p>
+</section>
+</section>
+<section id="limites-et-questions-ouvertes" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="limites-et-questions-ouvertes"><span class="header-section-number">7</span> Limites et questions ouvertes</h2>
+<ul>
+<li><strong>Règle en boucle fermée.</strong> <code>lagspp</code> est désormais le solde annuel exact, mais la règle lit encore d’autres états à fréquence <span style="white-space:nowrap">mensuelle —</span> <code>lagog</code> (og de décembre), <code>sppsd</code> (mis à jour chaque mois), <code>ecart_c</code> — là où dwrsm3 lit leurs homologues annuels. Sous règle active, les trajectoires n = 12 divergent donc de l’annuel de façon cumulée (qpib <span style="white-space:nowrap">~6 %,</span> dettep ~0,6&nbsp;point en 2100). Une variante « règle fidèle » (engagement en décembre de toutes les entrées de la règle) permettrait de séparer l’effet de discrétisation de l’effet de lecture mensuelle.</li>
+<li><strong><code>sppsd</code> dans le groupe <code>mean</code>.</strong> Sa valeur de janvier est l’homologue exact du dwrsm3 <span style="white-space:nowrap">annuel ;</span> un groupe <code>jan</code> dans <code>aggregate_annual()</code> (trois lignes) documenterait cette sémantique.</li>
+<li><strong>Distribution stochastique.</strong> Voir <a href="#bruit-infra-annuel">validation du bruit</a> : la calibration aux frontières ne contraint pas la propagation croisée des deux canaux de bruit.</li>
+</ul>
+</section>
+<section id="fichiers-de-référence" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="fichiers-de-référence"><span class="header-section-number">8</span> Fichiers de référence</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Fichier</th>
+<th>Contenu</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>odin/dwrsm3g.r</code></td>
+<td>le modèle (l’en-tête documente toutes les conventions et le contrat côté R)</td>
+</tr>
+<tr class="even">
+<td><code>R/dwr_sim.r</code></td>
+<td><code>sub_noise_factors()</code>, <code>dust_fix_params()</code>, <code>aggregate_annual()</code>, <code>.dwr.agg</code></td>
+</tr>
+<tr class="odd">
+<td><code>R/dwr_optim.r</code></td>
+<td><code>onesim()</code> — simulation au pas infra-annuel puis agrégation annuelle</td>
+</tr>
+<tr class="even">
+<td><code>simulations infra annuel.R</code></td>
+<td>script <span style="white-space:nowrap">d’exploration :</span> V0, V1, identité de dette, noyaux, boucle fermée, stochastique</td>
+</tr>
+<tr class="odd">
+<td><code>odin/dwrsm3.r</code></td>
+<td>le modèle de production (inchangé)</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Réutilisation</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.fr">CC BY 4.0</a></div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copié");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copié");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/xtimbeau\.github\.io\/budget\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
