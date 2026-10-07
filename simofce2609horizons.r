@@ -24,13 +24,14 @@ ccl <- pmap_dfr(
   .progress = TRUE ) 
 
 summary <- ccl |> 
-  select(variable, year, mean, h, p, tooltip) |> 
+  select(variable, year, deter, h, p, k) |> 
   pivot_wider(names_from = variable, values_from = deter) |> 
   group_by(h, p, k) |> 
   summarize(
-    effort = sum(ib[between(year, 2026, as.integer(h))]))
+    effort = sum(ib[between(year, 2026, as.integer(h))]),
+    .groups = "drop")
 
-return(list(sims = ccl, summary = summary)
+return(list(sims = ccl, summary = summary))
 
 # table_scenarios(cc |> filter(ibs == "optimal1"), dec = 2)
 # graph_scenarios(
@@ -50,7 +51,7 @@ data <- ccl |>
     tooltip = h)
 gg <- ggplot(data |> filter(p == 0.4))+
   theme_ofce(base_size = 10)+
-  theme(b
+  theme(
     legend.position = c(1,0),
     legend.justification = c(1,0)  )+
   PrettyCols::scale_color_pretty_d("Summer") +
@@ -83,7 +84,11 @@ girafy(gg, r=1.5)
 
 summary |> 
   ggplot()+
-  aes(x = h, color = p, y = effort , group = p) +
+  aes(x = h, color = p, y = -effort , group = p) +
   geom_line() +
-  facet_wrap(vars(k))
+  facet_wrap(vars(k)) +
+  scale_y_continuous(
+    labels = scales::label_percent(),
+    sec.axis = ~.x*3050
+  )
   

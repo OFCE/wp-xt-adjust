@@ -559,7 +559,7 @@ table_scenarios(
 
 ```
 
-### Multiplicateurs nuls
+### Multiplicateurs nuls ou plus forts
 
 Considérer que les multiplicateurs sont nuls permet de comprendre l'influence de ce paramètre. L'effort budgétaire est plus bas que lorsque les mulitplicateurs sont non nuls, de 2,9% du PIB (approx. 85 milliards d'euro de 2026).
 
@@ -571,6 +571,57 @@ table_scenarios(
   sim = sims |> filter(ibs == "nomult", loss_ib==5, !sp),
   dec = 1, bck = 0, fwd = 7)
 
+```
+
+Le multiplicateur budgétaire a donc un effet important sur l'effort budgétaire à fournir (défini comme l'opposé de la somme des impulsions budgétaires jusqu'à l'horizon de stabilisation de la dette).
+
+Dans le modèle employé, le muliplicateur dépend de deux paramètres principaux (voir @sec-multiplicateurs), la persistance $og_{mce}$ et l'amplitude. L'amplitude découle d'une moyenne pondérée entre l'effet des dépenses $og_{dep}$ et des recettes $og_{po}$ par $pcpo$, les deux canaux ayant la même persitance.
+
+Plus l'horizon est proche, plus l'effort à faire est important — un résultat intuitif que l'on retrouve facilement dans un modèle à une période avec un multiplicateur et qui a été au coeur du débat sur les mulitplicateurs budgétaires en 2011-2012 au moment des politiques de redressement du solde en Grèce (*self-defeating austerity)*. On dégage ici cependant d'autres éléments. Non seulement l'amplitude du multiplicateur est importante mais aussi sa persitance. La simulation conduite montre que pour des valeurs faibles des multiplicateurs l'écart d'effort est tout à fait significatif, de l'ordre de 40 milliards d'euros au PIB de 2026 pour un délai moyen d'ajustement entre 1 année et 3,4 année (i.e. la persistance $og_{mce} \in [0,2 ; 0,4]$) et une amplitude ($og_{dep}$) entre 0,8 et 1,2.
+
+Mais un autre résultat apparaît : plus l'horizon est lointain, plus l'effort est faible et certain. L'écart d'effort n'est que de 15 milliards d'euros pour un horizon à 2037. Ainsi, si il existe une incertitude sur le multiplicateur, s'engager sur un horizon court est plus risqué que s'engager sur un horizon plus long.
+
+```{r}
+#| label: fig-mults
+#| fig-cap: Effort budgétaire, en fonction de l'horizon et du multiplicateur
+#| fig-asp: 0.7
+
+data <- source_data("simofce2609horizons.r")
+
+data |> 
+  pluck("summary") |> 
+  mutate(p = factor(p)) |> 
+  mutate(
+    tooltip = glue(
+      "<b>Horizon (dette à 120%): {h}</b>
+      Persistance (og_mce): {round(p, 1)}
+      Amplitude (og_dep): {round(k,1)}
+      Effort budgétaire: {fmt_pct(-effort)} du PIB / {round(-effort*3050,1)} milliards €" ) ) |> 
+  ggplot()+
+  aes(x = h, color = p, y = -effort , group = p) +
+  geom_line() +
+  geom_point_interactive(
+    aes(tooltip = tooltip, data_id = h, fill = p),
+    hover_nearest = TRUE, shape = 21, color = "white"  ) +
+  facet_wrap(
+    vars(k), 
+    labeller = \(.x) {
+      str_c("og_dep=", .x[["k"]]) |> enframe(name=NULL)
+      }) +
+  scale_y_continuous(
+    labels = scales::label_percent(),
+    sec.axis = sec_axis(
+      ~.x*3050,
+      name = "Effort budgétaire (milliards € 2026)")) + 
+  guides(fill = "none") +
+  PrettyCols::scale_color_pretty_d(
+    "Joyful", 
+    name = "Persitance (og_mce)") +
+  ylab("Effort budgétaire (en % du PIB)")+
+  xlab("Horizon de stabilisation de la dette")+
+  ofce_caption(
+      source = "Debtwatch v2.0, AMECO, prévision d'automne 2026 de l'OFCE",
+      note = "l'effort budgétaire est l'opposé de la somme des impulsions de 2026 à l'horizon de stabilisation de la dette publique à 120% du PIB")
 ```
 
 ## Et si la dette était à 60% ?

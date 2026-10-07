@@ -1,0 +1,20 @@
+{
+  "timing": [1126.7052],
+  "date": ["2026-10-07 17:36:18.385877"],
+  "size": [21299520],
+  "args": [],
+  "lapse": ["never"],
+  "src": ["simofce2609horizons.r"],
+  "src_hash": ["a1e3daada3057b4b5fd003fe628423123be073fc"],
+  "arg_hash": ["4262323b"],
+  "track_hash": [0],
+  "track": [],
+  "wd": ["file"],
+  "qmd_file": [],
+  "src_in": ["project"],
+  "data_hash": ["7aaec2b614a48020a3e7ecca781157b2"],
+  "priority": [10],
+  "file_size": [4651825],
+  "data_date": ["2026-10-07 17:36:19.04018"],
+  "data_file": ["simofce2609horizons-4262323b_7aaec2b614a48020a3e7ecca781157b2.qs2"]
+}
