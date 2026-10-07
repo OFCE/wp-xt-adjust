@@ -272,43 +272,67 @@ dust_fix_params <- function(params, long = .dwr.long, sub = .dwr.sub) {
 }
 
 # simulations ---------------
-
-calc_sim_dust <- function(params, model, probs=c(0.025, 0.5, 0.975), 
-                          history = NULL, 
-                          long= .dwr.long,
-                          full_mc = FALSE,
-                          detail = c("annual", "monthly")) {
+# lance une simulation dust : instancie le modèle, simule tous les steps
+# (annuels, ou infra-annuels au pas 1/n_sub) et agrège en annuel si demandé ;
+# renvoie le cube (états, tirages, steps) avec les états en dimnames.
+# p doit être passé par dust_fix_params au préalable.
+run_dust <- function(p, model, seed = NULL, detail = c("annual", "monthly")) {
   detail <- match.arg(detail)
-  if (is.null(params$n_sub) && detail == "monthly")
-    stop("detail = 'monthly' requiert params$n_sub (modèle dwrsm3g)")
-  if (full_mc && detail == "monthly")
-    stop("full_mc n'est pas encore adapté au détail mensuel")
-  p <- params
-  p <- dust_fix_params(p, long=long)
-  if(is.null(params$seed))
-    seed <- NULL
-  else
-    seed <- as.integer(params$seed)
   m <- model$new(pars=p, time=1, n_particles = p$draws, n_threads = 4L, seed = seed)
   state_names <- names(m$info()$index)
   # les variables de sortie sont indicées par _o
-  out_i <- which(stringr::str_detect(state_names, "_o$")) 
+  out_i <- which(stringr::str_detect(state_names, "_o$"))
   m$set_index(out_i)
-  out_names <- state_names[out_i] 
+  out_names <- state_names[out_i]
   # pas infra-annuel (dwrsm3g) : on simule au pas 1/n_sub année
-  n_sub <- params$n_sub
+  n_sub <- p$n_sub
   if (is.null(n_sub)) {
     # on simule une année de plus
-    res <- m$simulate(1:(params$periods+1))
+    res <- m$simulate(1:(p$periods+1))
   } else {
     n_sub <- as.integer(n_sub)
-    res <- m$simulate(1:(params$periods*n_sub+1))
+    res <- m$simulate(1:(p$periods*n_sub+1))
   }
   dimnames(res)[[1]] <- out_names
   # on drop le premier step qui ne contient pas d'info
   res <- res[,,-1, drop=FALSE]
   if (!is.null(n_sub) && detail == "annual")
     res <- aggregate_annual(res, n_sub, out_names)
+  res
+}
+
+# simulations avec quantiles / moyenne, plus la trajectoire déterministe
+# (bruit coupé) ajoutée en colonne deter ; deterministic = FALSE retrouve
+# le comportement antérieur (ni colonne ni second run).
+calc_sim_dust <- function(params, model, probs=c(0.025, 0.5, 0.975),
+                          history = NULL,
+                          long= .dwr.long,
+                          full_mc = FALSE,
+                          detail = c("annual", "monthly"),
+                          deterministic = TRUE) {
+  detail <- match.arg(detail)
+  if (is.null(params$n_sub) && detail == "monthly")
+    stop("detail = 'monthly' requiert params$n_sub (modèle dwrsm3g)")
+  if (full_mc && detail == "monthly")
+    stop("full_mc n'est pas encore adapté au détail mensuel")
+  p <- dust_fix_params(params, long=long)
+  n_sub <- p$n_sub
+  if(is.null(params$seed))
+    seed <- NULL
+  else
+    seed <- as.integer(params$seed)
+  res <- run_dust(p, model, seed, detail)
+  out_names <- dimnames(res)[[1]]
+  # trajectoire déterministe (colonne deter) : même modèle sans bruit.
+  # stochastic = 0 coupe le bruit côté odin (multiplicateur des écarts-types
+  # du bruit) ; on éteint aussi les sigmas au cas où le modèle ne déclare
+  # pas encore le paramètre. Un seul tirage suffit, ils seraient identiques.
+  res_det <- NULL
+  if (deterministic) {
+    p_det <- purrr::list_modify(p, stochastic = 0, draws = 1,
+                               ogn_sigma = 0, inf_sigma = 0)
+    res_det <- run_dust(p_det, model, seed, detail)
+  }
   se <- stringr::str_c("q", setdiff(probs, 0.5))
   if(params$draws>1)
     sim <- purrr::map_dfr(out_names, ~{
@@ -333,22 +357,35 @@ calc_sim_dust <- function(params, model, probs=c(0.025, 0.5, 0.975),
       dplyr::bind_cols(purrr::map(se, ~tibble::tibble(!!.x := rr$q0.5)))) |> 
       mutate(mean = q0.5)
   }
+  if(!is.null(res_det)) {
+    # colonne deter : trajectoire sans bruit (tirage unique)
+    dd <- tibble::as_tibble(t(abind::adrop(res_det, drop=2))) |> 
+      dplyr::mutate(step = dplyr::row_number()) |> 
+      tidyr::pivot_longer(cols = -step, names_to = "variable", values_to = "deter") |> 
+      dplyr::mutate(variable = stringr::str_remove(variable,"_o$"))
+    sim <- dplyr::left_join(sim, dd, by = c("variable", "step")) |> 
+      dplyr::relocate(deter, .after = mean)
+  }
   
   if(!is.null(history))
   {
     start_year <- max(history$year)
+    # l'historique est déterministe par nature : deter = q0.5
+    hist <- history |> mutate(mean = q0.5)
+    if(!is.null(res_det))
+      hist <- hist |> mutate(deter = q0.5)
     if (detail == "monthly") {
       # pas infra-annuel : step = indice du mois simulé
       sim <- sim |> 
         dplyr::mutate(year = start_year + 1 + (step-1) %/% n_sub,
                       month = 1 + (step-1) %% n_sub) |> 
-        dplyr::bind_rows(history |> mutate(mean = q0.5)) |> 
+        dplyr::bind_rows(hist) |> 
         dplyr::arrange(year) |> 
         dplyr::select(-step)
     } else {
       sim <- sim |> 
         dplyr::mutate(year = start_year+step) |> 
-        dplyr::bind_rows(history |> mutate(mean = q0.5)) |> 
+        dplyr::bind_rows(hist) |> 
         dplyr::arrange(year) |> 
         dplyr::select(-step)
     }

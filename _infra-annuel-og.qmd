@@ -50,12 +50,10 @@ $$\text{mom} = L^{1/n}, \qquad \text{ecm} = 1 + L^{1/n} - \sum_i \lambda_i^{1/n}
 
 (en racines complexes conjuguées : $\text{ecm} = 1 + L^{1/n} - 2|\lambda|^{1/n}\cos(\theta/n)$). La formule retombe sur l'actuelle $1-(1-C)^{1/n}$ si et seulement si $L = 0$ — d'où l'insensibilité du bloc prix, où `inf_lag` $= 0$ en production. À $n = 1$ : $\text{ecm} = C$, $\text{mom} = L$, l'identité V0 est préservée par construction.
 
-::: {.callout-note}
-
+::: callout-note
 ## Pourquoi $L^{1/n}$ et non $L^{1/n^2}$
 
 Chacune des deux racines porte bien un facteur $1/n$, mais le produit se réduit comme $L^{1/n}$ et non $L^{1/n^2}$ : $\mu_1\mu_2 = \lambda_1^{1/n}\lambda_2^{1/n} = (\lambda_1\lambda_2)^{1/n}$, les exposants s'ajoutant en log quand les racines se multiplient — $L^{1/n^2}$ supposerait les deux réductions composées en série, alors que les modes agissent en parallèle.
-
 :::
 
 Nombres : $\lambda = \{0{,}5\,;\,0{,}2\}$, $\mu = \{0{,}94387\,;\,0{,}87449\}$, **mom** $= 0{,}82540$ (inchangé) et **ecm** $= 0{,}00704$, contre $0{,}04168$ actuellement — l'ECM mensuelle est aujourd'hui $5{,}9$ fois trop forte.

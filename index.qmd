@@ -56,12 +56,14 @@ ibs_labs <- c("optimal1"  =  "Prévision OFCE aut. 26",
               "optimal1_moins_r" = "Taux moins élevés (e.c. 0%)",
               "no2027" = "Pas d'impulsion en 2027",
               "d2037" = "5 ans de plus",
-              "optimal2" = "Impulsions calculées dès 2026",
+              "d2030" = "2 ans plutôt",
+              "optimal2" = "Impulsions optimales dès 2026",
               "solde" = "Décroissance de la dette en 2032",
               "multivar" = "Mult. variables dans le cycle",
               "ogpers" = "Ecart de prod. plus persistant",
               "highmult" = "Multiplicateurs plus élevés",
               "dstable" = "Stabilité de la dette en 2032",
+              "dstable30" = "Stabilité de la dette en 2030",
               "ddecroit" = "Décroissance de la dette en 2032")  
 
 source(ofce::pathify("simulations init.R"))
@@ -71,6 +73,7 @@ sims <- sourcoise::sourcoise(
   filter(!ifd)
 debut <- 2025
 sims_sum <- sims |>
+  #filter_out(ibs %in% c("d2030")) |> 
   select(ibs, loss_ib, sp, variable, year, mean) |> 
   pivot_wider(names_from = variable, values_from = mean) |> 
   filter(!is.na(sp)) |> 
@@ -81,10 +84,17 @@ sims_sum <- sims |>
     ibc = ifelse(year <= debut, NA, ibc),
     ogc = cumsum(og * (year > debut) ),
     ogc = ifelse(year <= debut, NA, ogc)) |> 
+  mutate(  
+    date_cible = case_when(
+      ibs=="d2037" ~ 2037,
+      ibs=="d2030" ~ 2030,
+      TRUE ~ 2032),
+    cible = if_else(sp, "Solde", "Dette")) |> 
+  group_by(ibs, loss_ib, sp, date_cible, cible) |> 
   summarize(
-    ibc32 = -ibc[year==2032],
-    ogc32 = -ogc[year==2032]/7,
-    dettep32 = dettep[year==2032],
+    ibc32 = -ibc[year==min(date_cible, 2032)],
+    ogc32 = -ogc[year==min(date_cible, 2032)]/7,
+    dettep32 = dettep[year==min(date_cible, 2032)],
     minog = -min(og[between(year, 2026, 2032)]),
     maxu = max(tcho[between(year, 2026, 2032)]),
     ibc37 = -ibc[year==2037],
@@ -96,29 +106,27 @@ sims_sum <- sims |>
     ibs = factor(
       ibs,
       c("optimal1", "optimal1_moins_r", "optimal1_plus_r",
-        "no2027", "d2037", "dstable", "ddecroit", "optimal2", 
+        "no2027", "d2030", "d2037", "dstable", "dstable30", "ddecroit", "optimal2", 
         "nomult", "ogpers", "highmult", "multivar"))) |>
   arrange(ibs) |> 
   mutate(
-    across(c(ibc32, ogc32, dettep32), ~.x - .x[ibs=="nomult"], .names = "d{.col}"),
-    date_cible = if_else(ibs=="d2037", 2037, 2032),
-    cible = if_else(sp, "Solde", "Dette")) |> 
+    across(c(ibc32, ogc32, dettep32), ~.x - .x[ibs=="nomult"], .names = "d{.col}")) |> 
   select(libs, cible, date_cible, ibc32, ogc32, dettep32, ibc37, ogc37, dettep37)
-  
-
 ```
 
 ## Principaux résultats
 
-- Une cible de dette de 120% demande une une impulsion primaire cumulée de 3,5 points de PIB (approx. 107 milliards d'euros au PIB de 2026) en 2032. Le déficit public passe en dessous de 3,0% en 2031 (@sec-main). En 2028, le creusement moyen de l'activité de 2026 à 2032) (@tbl-sum) est de 1,3, marquant un sérieux ralentissement 4 années de suite. Le chômage ateindrait 9,2% de la population active en 2029 dasn ce scénario.
+- Une cible de dette de 120% demande une une impulsion primaire cumulée de 3,5 points de PIB (approx. 107 milliards d'euros au PIB de 2026) en 2032. Le déficit public passe en dessous de 3,0% en 2031 (@sec-main). En 2028, le creusement moyen de l'activité de 2026 à 2032) (@tbl-sum) est de 1,3, marquant un sérieux ralentissement 4 années de suite. Le chômage ateindrait 9,2% de la population active en 2029 dans ce scénario.
 
 - La stabilisation de la dette en 2032, puis sa décroissance d'un demi point par an (cible de solde) implique une impulsion cumulée de 3,3% du PIB, soit 0,2 point de moins, avec un maximum de dette publique de 124% du PIB en 2030 et une dette publique supérieure de 3,4 points de PIB de dette en 2032 (@sec-annexe3). L'impact sur l'activité serait moins négatif (1,2% du PIB en moyenne entre 2026 et 2032), le chômage atteignant au plus haut 8,6% en 2029.
 
 - Repousser la cible de dette de 5 années à 2037 au lieu de 2032 ne réduit ni le coût en activité ni l'effort fiscal à faire (@sec-d2037). Bien que l'effet des multiplicateurs budgétaires oblige à une consolidation plus violent en 2028 lorsque la cible de dette est en 2032, repousser la cible de dette demande ensuite un effort plus important du fait de l'accumulation des charges d'intérêts.
 
-- Un taux souverain inférieur de de 0,5 point réduit l'impulsion primaire nécessaire de 0,4 points de PIB en 2032 (12 milliards d'euros de 2026) (@sec-annexe4). Le gain est de l'ordre de 0,1 point de chômage et d'activité en 2028 et 2029. A l'inverse, si le taux souverain de marché nominal restait à la valeur actuelle (4,5%), le surcoût d'ajustement serait de 21 milliards d'euros. Entre cette situation et le retour à une prime de risque de 0,5% (soit à terme un taux souverain de 3,3%), l'écart d'effort budgétaire supplémentaire est de plus d'un point de PIB. Ce facteur est donc particulièrement important.
+- Plus le mulitplicateur budgétaire est bas, plus l'ajustement est facile. Entre un multiplicateur nul et un multiplicateur perstistant, l'écart d'ajustement nécessaire est de presque 1 point de PIB (28 milliards d'euros au PIB de 2026). La proposition de @ratav d'une année blanche (à l'exclusion des minimas sociaux) est incomptabile avec l'hypothèse qu'ils font d'un multiplicateur nul. A défaut de pouvoir atteindre un multiplicateur aussi faible. Privilégier des mesures qui associeraient baisse d'épargne et réduction du déficit — des hausses d'impôts sur les plus riches, une taxe exceptionnelle sur les patrimoines, un gel des prestations retraites les plus élevées — est une piste plus solide.
 
-- Le niveau de la dette importe peu tant que l'écart critique ($r-g$) reste contenu. En revanche, si celui-ci devennait élévé -- ce qui prend du temps compte tenu de la maturité de la dette -- alors l'effet boule de neige peut devenir significatif. L'urgence de stabiliser la dette ne découle donc pas de la crainte d'un effet boule de neige qui rendrait incontrôlable l'évolution de la dette publique.
+- Un taux souverain inférieur de de 0,5 point réduit l'impulsion primaire nécessaire de 0,4 points de PIB en 2032 (12 milliards d'euros de 2026) (@sec-annexe4). Plus précisemment, 1 point de taux "coûte" 22 milliards d'euros (au PIB de 2026) d'effort budgétaire supplementaire — ce coût est légèrement croissant avec les mulitplicateurs. Ce facteur est donc particulièrement important.
+
+- Le niveau de la dette importe peu tant que l'écart critique ($r-g$) reste contenu. En revanche, si celui-ci devennait élévé — ce qui prend du temps par la maturité de la dette — alors l'effet boule de neige peut devenir significatif. L'urgence de stabiliser la dette ne découle donc pas de la crainte d'un effet boule de neige qui rendrait incontrôlable l'évolution de la dette publique mais du déficit public primaire qui est le principal facteur de la dynamique de la dette publique en France en 2026 et dans les années à venir.
 
 ```{r}
 #| label: tbl-sum
@@ -162,7 +170,7 @@ sims_sum |>
   ofce::ofce_tab_options() |> 
   tab_style(
     cell_borders("top", color = "grey", weight = px(0.5)),
-    location=cells_body(rows = c(2,4,6,9) ))
+    location=cells_body(rows = c(2,4,6,11) ))
   
 ```
 
@@ -186,6 +194,7 @@ En particulier, @ratav retiennent que la dérive des finances publiques est pres
 data_cc <- sims |> 
   filter(
     ibs %in% c("optimal1", "d2037", "ddecroit", "highmult"),
+    #ibs %in% c("optimal1", "d2030"),
     !is.na(sp),
     between(year, 2025, 2050), 
     variable %in% c("og", "ib", "dettep", "sep")) |> 
@@ -197,6 +206,7 @@ data_cc <- sims |>
       ibs == "nomult" ~ "120% en 2032, multiplicateurs nuls",
       ibs == "highmult" ~ "120% en 2032, multiplicateurs plus élevés",
       ibs == "multivar" ~ "120% en 2032, multiplicateurs variables",
+      ibs == "d2030" ~ "120% en 2030",
       ibs == "d2037" ~ "120% en 2037") ) |> 
   mutate(
     tooltip = glue(

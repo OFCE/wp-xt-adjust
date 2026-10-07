@@ -24,8 +24,9 @@ source(pathify("/R/dwr_utils.r"))
 source(pathify("/R/dwr_tools.r"))
 source(pathify("/R/dwr_mongo.r"))
 
+ofce::init_qmd()
 rs25 <- list(
-  draws = 1,
+  draws = 256,
   start_hist = 2007,
   end_year = 2035,
   og_lag = 0.1,
@@ -35,9 +36,9 @@ rs25 <- list(
   og_dep = 1.2,
   og_ddpot = 0,
   pot_r = 0,
-  ogn_sigma = 0, #0.015,
-  ogn_ar = 0, # 0.9,
-  inf_sigma = 0, # 0.01,
+  ogn_sigma = 0.015,
+  ogn_ar = 0.9,
+  inf_sigma = 0.01,
   go_mc = TRUE,
   tcho_okun = 0.6,
   inf_tcho = 0.15,
@@ -147,6 +148,14 @@ ibs <- list(
   d2037 = list(
     cons_d = 15,
     cons_dt = 12,
+    add_ib = c(-0.004, -0.007, 0),
+    no_rule = c(1, 1, 0),
+    no_phi = c(1, 1, 0),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+  ),
+  d2030 = list(
+    cons_d = 22,
+    cons_dt = 5,
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),

@@ -636,6 +636,9 @@ table_simulation <- function(
   fin <- debut + fwd + 1
   p1.d <- debut - 4
   
+  # valeurs affichées : trajectoire déterministe (deter) si présente,
+  # sinon moyenne des tirages (simulations calculées avant la colonne deter)
+  val <- if ("deter" %in% names(sim)) "deter" else "mean"
   sim1 <- sim |>
     filter(
       variable %in%
@@ -661,7 +664,7 @@ table_simulation <- function(
         ),
       scenario == !!scenario
     ) |>
-    pivot_wider(id_cols = year, names_from = variable, values_from = mean) |>
+    pivot_wider(id_cols = year, names_from = variable, values_from = !!val) |>
     arrange(year) |>
     mutate(
       gpib = qpib / lag(qpib) - 1,
@@ -679,7 +682,7 @@ table_simulation <- function(
     ) |>
     select(-ibsna) |>
     ungroup() |>
-    pivot_longer(cols = -c(year), names_to = "variable", values_to = "mean")
+    pivot_longer(cols = -c(year), names_to = "variable", values_to = "value")
   # an_moy <- sim1 |>
   #   mutate(ygrp = case_when(
   #     between(year, debut+1, debut+6) ~ str_c(debut+1, "-", debut+6),
@@ -702,10 +705,10 @@ table_simulation <- function(
     filter(
       variable %in% c("dettep", "sspp", "sep", "ibc", "spp", "tcho", "og", "ci") ) |>
     filter(year |> between(debut + 1, fin + 1 + 25)) |>
-    mutate(mean = ifelse(variable %in% c("og", "ibc"), -mean, mean)) |>
+    mutate(value = ifelse(variable %in% c("og", "ibc"), -value, value)) |>
     group_by(variable) |>
-    summarize(mean = max(mean)) |>
-    mutate(mean = ifelse(variable %in% c("og", "ibc"), -mean, mean)) |>
+    summarize(value = max(value)) |>
+    mutate(value = ifelse(variable %in% c("og", "ibc"), -value, value)) |>
     mutate(year = "Max. 25-50")
 
   pos <- tribble(
@@ -736,7 +739,7 @@ table_simulation <- function(
     mutate(year = as.character(year)) |>
     bind_rows(an_moy |> rename(year = ygrp)) |>
     bind_rows(max) |>
-    pivot_wider(names_from = year, values_from = mean) |>
+    pivot_wider(names_from = year, values_from = value) |>
     left_join(pos, by = "variable") |>
     filter(!is.na(pos)) |>
     arrange(pos) |>
@@ -748,8 +751,14 @@ table_simulation <- function(
     pays <- atrbts$globals$pays |>
       filter(id == atrbts$globals$country) |>
       pull(nom_fr)
+    # note : dès que deter est présente, les valeurs affichées sont la
+    # trajectoire déterministe, même si la simulation est stochastique
+    val_txt <- if (val == "deter")
+      " tirages), trajectoire déterministe (sans bruit)"
+    else
+      " tirages), valeurs moyennes"
     simulation <- glue(
-      "{if_else(mc, str_c('stochastique (', atrbts$params$p$draws, ' tirages), valeurs moyennes'), 'déterministe')}"
+      "{if_else(mc, str_c('stochastique (', atrbts$params$p$draws, val_txt), 'déterministe')}"
     )
     year1 <- atrbts$params$start_year + 1
   } else {
@@ -845,6 +854,13 @@ table_diff <- function(
   if (is.null(vars)) {
     vars <- unique(sim$variable)
   }
+  # valeurs affichées : trajectoire déterministe (deter) si présente,
+  # sinon médiane des tirages (simulations calculées avant la colonne deter)
+  val <- if ("deter" %in% names(sim)) "deter" else "q0.5"
+  val_txt <- if (val == "deter")
+    " tirages), trajectoire déterministe (sans bruit)"
+  else
+    " tirages, valeurs médiannes"
   atrbts <- attr(sim, "baseline")
   mc <- atrbts$params$p$go_mc
   pays <- atrbts$globals$pays |>
@@ -869,14 +885,14 @@ table_diff <- function(
     note_s <- ", différence avec {diff}" |> glue::glue()
     siml <- siml |>
       group_by(variable) |>
-      mutate(q0.5 = q0.5 - q0.5[scenario == !!diff]) |>
+      mutate("{val}" := .data[[val]] - .data[[val]][scenario == !!diff]) |>
       filter(scenario != !!diff)
   }
 
   simt <- siml |>
     group_by(variable, scenario) |>
     summarise(
-      q0.5 = sum(q0.5),
+      "{val}" := sum(.data[[val]]),
       year = str_c(min(year), "-", max(year)),
       .groups = "drop"
     )
@@ -886,7 +902,7 @@ table_diff <- function(
     bind_rows(simt) |>
     pivot_wider(
       id_cols = c(variable, scenario),
-      values_from = q0.5,
+      values_from = !!val,
       names_from = year
     )
 
@@ -910,7 +926,7 @@ table_diff <- function(
     ) |>
     tab_source_note(
       "Simulations 
-                    {if_else(mc, str_c('stochastique (',atrbts$params$p$draws,' tirages, valeurs médiannes'), 'déterministe')}" |>
+                    {if_else(mc, str_c('stochastique (', atrbts$params$p$draws, val_txt), 'déterministe')}" |>
         glue::glue()
     ) |>
     tab_source_note(

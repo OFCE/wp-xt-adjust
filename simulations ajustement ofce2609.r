@@ -38,7 +38,7 @@ cclr <- map_dfr(
 ## principales variantes, cible de dette --------------------------
 ccl <- map_dfr(
   c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_moins_r", 
-    "no2027", "d2037", "nomult", "highmult", "ogpers", "multivar"),
+    "no2027", "d2037", "d2030", "nomult", "highmult", "ogpers", "multivar"),
   ~ {
     phis <- calc_phis(
       brs25,
@@ -81,6 +81,18 @@ cli::cli_alert_info(phis$message)
 ccss <- run_model(brs25, out = "none", params = phis, full_mc = FALSE) |>
   mutate(ibs = "dstable", loss_ib = 5, sp = TRUE)
 
+phis <- calc_phis(
+  brs25,
+  algorithm = "cobyla",
+  params = list_modify(
+    ibs[["optimal1"]], 
+    dstar = 1.2, cons_d=0, cons_dt=0, cons_sp = 21, 
+    cons_spt = 5, loss_og = 5, loss_ib = 10, loss_ogpe = 0,
+    no_rule = 1, no_phi = c(1,1,0), 
+    add_spstar = c(0,0,0,0,0,0, 0, 0.0)))
+cli::cli_alert_info(phis$message)
+ccsd30 <- run_model(brs25, out = "none", params = phis, full_mc = FALSE) |>
+  mutate(ibs = "dstable30", loss_ib = 5, sp = TRUE)
 
 # table_scenarios(ccss |> filter(ibs == "optimal1"), dec = 2, bck = 0, fwd=8)
 # graph_scenarios(
@@ -102,7 +114,7 @@ brs25d60 <- setup_params(
 
 ccdd <- map_dfr(
   c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_plus_r8",
-    "no2027", "d2037", "nomult", "ogpers", "highmult", "multivar"),
+    "no2027", "d2037", "d2030", "nomult", "ogpers", "highmult", "multivar"),
   ~ {
     pp <- list_modify(
       ibs[[.x]], 
@@ -142,7 +154,7 @@ cli::cli_alert_info(phis$message)
 ccssdd <- run_model(brs25d60, out = "none", params = phis, full_mc = FALSE) |>
   mutate(ibs = "dstable", loss_ib = 5, sp = TRUE, ifd = TRUE)
 
-data <- bind_rows( ccl, cclr, ccss, ccsd) |> 
+data <- bind_rows( ccl, cclr, ccss, ccsd, ccsd30) |> 
   mutate(ifd = FALSE) |> 
   bind_rows(ccdd) |> 
   bind_rows(ccssdd) |> 

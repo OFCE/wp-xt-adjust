@@ -119,7 +119,7 @@ dog <- dog_auto +
 
 # on retarde de cette façon, cela permet de passer une condition initiale
 # l'échelle d'innovation reste annuelle (ogn_sigma*og_mce), rescalée par k_ogn
-update(og_noise) <- ogn_ar_m * og_noise + (1 - ogn_ar_m) * rnorm(0, ogn_sigma * og_mce * k_ogn)
+update(og_noise) <- ogn_ar_m * og_noise + (1 - ogn_ar_m) * rnorm(0, ogn_sigma * og_mce * k_ogn * stochastic)
 update(lagog) <- og
 update(lag2og) <- lagog
 
@@ -150,7 +150,7 @@ txppib_i <- lagtxppib_i +
   add_inf_m + inf_noise
 
 # l'écart-type mensuel est l'écart-type annuel multiplié par k_inf
-inf_noise <- rnorm(0, inf_sigma * inf_mce * k_inf)
+inf_noise <- rnorm(0, inf_sigma * inf_mce * k_inf * stochastic)
 
 ppib_i <- (1 + txppib_i)*lagppib_i
 update(lagppib_i) <- ppib_i
@@ -443,7 +443,7 @@ initial(lagib_sup_inf) <- 0
 initial(lagktau_og) <- 0
 initial(sppsd_o) <- 0
 initial(vog_o) <- 0
-initial(og_noise) <- (1-ogn_ar_m)*rnorm(0, ogn_sigma * og_mce * k_ogn)
+initial(og_noise) <- (1-ogn_ar_m)*rnorm(0, ogn_sigma * og_mce * k_ogn * stochastic)
 initial(lagib_dep_dec) <- 0
 initial(lagib_po_dec) <- 0
 initial(lagib_sup_dec) <- 0
@@ -558,6 +558,8 @@ tpo_inf <- user(0)
 pcpo <- user(1)
 ogn_ar <- user(0)
 ogn_sigma <- user(0.005)
+# stochastic : multiplicateur des écarts-types du bruit (0 = déterministe)
+stochastic <- user(1)
 # facteurs de rescalage du bruit infra-annuel (cf sub_noise_factors, R/dwr_sim.r)
 k_ogn <- user(1.0)
 k_inf <- user(1.0)

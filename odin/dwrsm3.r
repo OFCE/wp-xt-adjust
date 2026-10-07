@@ -38,7 +38,7 @@ dog <- dog_auto +
   og_noise 
   
 # on retarde de cette façon, cela permet de passer une condition initiale
-update(og_noise) <- ogn_ar * og_noise + (1-ogn_ar) * rnorm(0, ogn_sigma*og_mce)
+update(og_noise) <- ogn_ar * og_noise + (1-ogn_ar) * rnorm(0, ogn_sigma*og_mce*stochastic)
 update(lagog) <- og
 update(lag2og) <- lagog
 
@@ -67,7 +67,7 @@ txppib_i <- lagtxppib_i +
   - inf_mce * (lagtxppib_i - infstar + inf_tcho * (lagtcho - lagtvnairu)) +
   add_inf[step] + inf_noise
 
-inf_noise <- rnorm(0, inf_sigma*inf_mce)
+inf_noise <- rnorm(0, inf_sigma*inf_mce*stochastic)
 
 ppib_i <- (1 + txppib_i)*lagppib_i
 update(lagppib_i) <- ppib_i
@@ -297,7 +297,7 @@ initial(lagib_sup_inf) <- 0
 initial(lagktau_og) <- 0
 initial(sppsd_o) <- 0
 initial(vog_o) <- 0
-initial(og_noise) <- (1-ogn_ar)*rnorm(0, ogn_sigma*og_mce)
+initial(og_noise) <- (1-ogn_ar)*rnorm(0, ogn_sigma*og_mce*stochastic)
 
 # init ----------------
 i_lagog <- user(0)
@@ -405,6 +405,8 @@ tpo_inf <- user(0)
 pcpo <- user(1)
 ogn_ar <- user(0)
 ogn_sigma <- user(0.005)
+# stochastic : multiplicateur des écarts-types du bruit (0 = déterministe)
+stochastic <- user(1)
 r_dette <- user(0.01)
 r_dette_star <- user(0.01)
 ibcap <- user(0.01)
