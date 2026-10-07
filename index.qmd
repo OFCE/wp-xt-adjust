@@ -588,15 +588,15 @@ Mais un autre résultat apparaît : plus l'horizon est lointain, plus l'effort e
 
 data <- source_data("simofce2609horizons.r")
 
-data |> 
+gg <- data |> 
   pluck("summary") |> 
-  mutate(p = factor(p)) |> 
-  mutate(
+   mutate(
     tooltip = glue(
       "<b>Horizon (dette à 120%): {h}</b>
       Persistance (og_mce): {round(p, 1)}
       Amplitude (og_dep): {round(k,1)}
       Effort budgétaire: {fmt_pct(-effort)} du PIB / {round(-effort*3050,1)} milliards €" ) ) |> 
+  mutate(p = factor(p)) |> 
   ggplot()+
   aes(x = h, color = p, y = -effort , group = p) +
   geom_line() +
@@ -614,6 +614,8 @@ data |>
       ~.x*3050,
       name = "Effort budgétaire (milliards € 2026)")) + 
   guides(fill = "none") +
+  PrettyCols::scale_fill_pretty_d(
+    "Joyful") +
   PrettyCols::scale_color_pretty_d(
     "Joyful", 
     name = "Persitance (og_mce)") +
@@ -622,6 +624,8 @@ data |>
   ofce_caption(
       source = "Debtwatch v2.0, AMECO, prévision d'automne 2026 de l'OFCE",
       note = "l'effort budgétaire est l'opposé de la somme des impulsions de 2026 à l'horizon de stabilisation de la dette publique à 120% du PIB")
+
+girafy(gg)
 ```
 
 ## Et si la dette était à 60% ?
