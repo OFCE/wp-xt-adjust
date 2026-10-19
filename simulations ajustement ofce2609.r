@@ -37,22 +37,31 @@ cclr <- map_dfr(
 
 ## principales variantes, cible de dette --------------------------
 ccl <- map_dfr(
-  c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_moins_r", 
+  # c("optimal1", "ameco"),
+  c("optimal1", "ameco", "optimal2", "optimal1_plus_r", "optimal1_moins_r",
     "no2027", "d2037", "d2030", "nomult", "highmult", "ogpers", "multivar"),
   ~ {
+    pp <- list_modify(rs25, dstar = 1.2, loss_og = 5, loss_ib = 5, loss_ogpe = 0, !!!ibs[[.x]])
+    brs <- setup_params(
+      params = pp,
+      modele = "dwrsm3",
+      start_y = 2025,
+      ameco_version = "5/2026"
+    )
+    
     phis <- calc_phis(
-      brs25,
-      algorithm = "cobyla",
-      params = c(
-        c(dstar = 1.2, loss_og = 5, loss_ib = 5, loss_ogpe = 0),
-        ibs[[.x]] ) )
+      brs,
+      algorithm = "cobyla" )
     cli::cli_alert_info(phis$message)
-    run_model(brs25, out = "none", params = phis, full_mc = FALSE) |>
+    run_model(brs, out = "none", params = phis, full_mc = FALSE) |>
       mutate(ibs = .x)
   },
   .progress = TRUE
 ) |> 
   mutate(loss_ib = 5, sp = FALSE)
+
+# table_scenarios(ccl |> filter(ibs == "ameco"), dec = 2, bck = 0, fwd=8)
+# table_scenarios(ccl |> filter(ibs == "optimal1"), dec = 2, bck = 0, fwd=8)
 
 ## cible de solde -----------------
 

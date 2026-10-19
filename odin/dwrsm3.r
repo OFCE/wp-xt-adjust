@@ -99,7 +99,7 @@ laggvpib <- laggpib + lagtxppib
 gpot_v <- pibpot/lagpibpot-1
 
 # dette ------------
-dette <- lagdette + ddette + dette_oneoff[step]
+dette <- lagdette + ddette + dette_oneoff[step] * lagvpib
 update(lagdette) <- dette
 update(lag2dette) <- lagdette
 dettep <- dette/vpib

@@ -784,7 +784,7 @@ table_simulation <- function(
       style = cell_fill(color = "gray92"),
       locations = cells_body(columns = -(1:(bck + 2 + fwd)))
     ) |>
-    tab_style(style = cell_borders('top'), cells_body(rows = c(6, 13))) |>
+    tab_style(style = cell_borders('top'), cells_body(rows = c(4, 7, 10, 13, 14, 16, 17))) |>
     cols_label(label = "") |>
     cols_hide(c(note, max, `Max. 25-50`)) |>
     tab_footnote(

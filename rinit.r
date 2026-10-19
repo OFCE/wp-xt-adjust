@@ -81,24 +81,6 @@ margin_link <- function(data, output_name = "donnees", label = "données") {
     return(invisible(NULL))
 }
 
-girafe_opts <- function(x, ...) girafe_options(
-  x,
-  opts_hover(css = "stroke-width:1px;", nearest_distance = 60),
-  opts_tooltip(css = tooltip_css)) |>
-  girafe_options(...)
-
-girafy <- function(plot, r=2.5, o = 0.5,  ...) {
-  if(knitr::is_html_output()| interactive()) {
-    girafe(ggobj = plot) |>
-      girafe_options(
-        opts_hover_inv(css = glue("opacity:{o};")),
-        opts_hover(css = glue("r:{r}px;")),
-        opts_tooltip(css = tooltip_css)) |>
-      girafe_options(...)
-  } else {
-    plot
-  }
-}
 
 milliards <- function(x, n_signif = 3L) {
   stringr::str_c(

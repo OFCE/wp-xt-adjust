@@ -70,23 +70,24 @@ rs25 <- list(
   tpo_sstar = 0.5,
   tpo_dstar = -0.05,
   tpo_og = -0.25,
-  gpot = c(1.1, 1.1, 1.1, 1.1, 1.1, 1.0) / 100,
+  gpot = c(1.25, 1.25, 1.2, 1.15, 1.1, 1.0) / 100,
   use_gpot = TRUE,
-  i_og = 0.004,
+  i_og = 0.002,
   i_tpo = 0.0013,
   i_dette = -0.0048,
   pcpo = 0.5,
-  taut = -.001,
-  add_og = c(-0.006, -0.0025, rep(0.00, 25)),
-  add_inf = c(+0.0028, 0.0025, 0.001),
+  taut = c(-.001), 
+  add_og = c(-0.0063, -0.0054, rep(0.00, 25)),
+  add_inf = c(+0.0023, 0.0031, 0.001, 0),
   no_rule = 1,
   no_phi = 0,
   add_ib = c(-0.00, 0.0, 0.0, 0.0, 0.0, 0),
   nairu = 0.07,
-  add_tcho = c(0.0055, 0.00, 0.0),
+  add_tcho = c(0.00375, 0.00, 0.0),
   ecstar = 0.00,
   add_rinst = c(0.009, 0.01, 0.007, rep(0.0055, 25)),
-  add_rapp = c(0.06, 0.0) / 100
+  add_rapp = c(0.045, -0.05, 0) / 100,
+  dette_oneoff = c(0.5, 0.5, 0)/100
 )
 
 brs25 <- setup_params(
@@ -98,7 +99,7 @@ brs25 <- setup_params(
 
 ibs <- list(
   fildle = list(
-    add_ib = c(-0.006, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = 1,
     no_phi = 1,
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
@@ -110,37 +111,46 @@ ibs <- list(
     add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))
   ),
   optimal1 = list(
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
+    no_rule = c(1, 1, 0),
+    no_phi = c(1, 1, 0),
+    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+  ),
+  ameco = list(
+    i_og  = 0.0,
+    taut = c(-.00014),
+    add_tcho = c(0.0025, 0.00, 0.0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   optimal1_moins_r = list(
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))
   ),
   optimal1_plus_r = list(
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.017, rep(0.017, 25))
   ),
   optimal1_plus_r8 = list(
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.008, rep(0.008, 25))
   ),
   optimal2 = list(
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(0),
     no_phi = c( 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
     ),
   no2027 = list(
-    add_ib = c(-0.004, -0.0, 0),
+    add_ib = c(-0.005, 0, 0),
     no_rule = c(1, 1, 0, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
@@ -148,7 +158,7 @@ ibs <- list(
   d2037 = list(
     cons_d = 15,
     cons_dt = 12,
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
@@ -156,7 +166,7 @@ ibs <- list(
   d2030 = list(
     cons_d = 22,
     cons_dt = 5,
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
@@ -164,14 +174,14 @@ ibs <- list(
   nomult = list(
     og_po = 0,
     og_dep = 0,
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
   ),
   ogpers = list(
     og_mce = 0.3,
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
@@ -179,7 +189,7 @@ ibs <- list(
   highmult = list(
     og_po = 0.75,
     og_dep = 1.45,
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
@@ -192,7 +202,7 @@ ibs <- list(
     og_rn = 0.01,
     og_po_plus = 0.75,
     og_dep_plus = 1.5,
-    add_ib = c(-0.004, -0.007, 0),
+    add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
     add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
