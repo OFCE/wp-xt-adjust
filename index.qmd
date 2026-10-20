@@ -15,7 +15,7 @@ format-links:
 editor: visual                          
 bibliography:                           
   - references.bib
-citation: false        
+citation: false
 ---
 
 ```{r, include=FALSE}
@@ -184,6 +184,69 @@ ofce::margin_download(sims_sum, "ofce-xt-sims-tblsum", "Données du tableau", pr
 ofce::margin_download(sims, "ofce-xt-sims-adjust", "Simulations", prefix="")
 ```
 
+
+
+## De l'intuition à la simulation
+
+Pour stabiliser la dette publique, le solde public doit être égal au solde stabilisant la dette publique. L'équation principale de cette logique est rappelée dans l'@tip-dyndet. Le solde stabilisant la dette publique dépend du taux d'intérêt, du taux de croissance et du niveau de la dette.
+
+Pour stabiliser la dette publique à 120%, avec un taux apparent de 2,3% (le taux nominal apparent sur la dette publique française en 2026) et un taux de croissance nominal courant de 2,2% par an (la croissance de 2026 telle que prévue par l'OFCE en octobre 2026, voir @tbl-optimal1), il faut un solde primaire de 0.1 point de PIB. L'écart avec le déficit public primaire anticipé pour 2026 est donc de 3 points de PIB (92 milliards au PIB de 2026) (ligne 1 @tbl-naif).
+
+Si, au lieu de la croissance de 2026, on retient la croissance potentielle (1,1% par an en volume, 1,8 % d'inflation), d'une part et d'autre part, au lieu du déficit public primaire, le déficit public primaire structurel (i.e. corrigé de l'effet de la conjoncture), le solde stabilisant la dette publique est de -0.7 point de PIB et l'écart avec le solde primaire structurel est de 1,6 point de PIB, soit un peu plus de 48 milliards au PIB de 2026 (ligne 10 @tbl-naif).
+
+```{r}
+#| label: tbl-naif
+#| tbl-cap: "Effort budgétaire à réaliser, approche naïve"
+
+dd <- readxl::read_xlsx("data/effort naif.xlsx")
+
+dd |> 
+  gt() |> 
+  ofce::ofce_tab_options(
+    quarto.disable_processing = FALSE,  
+    data_row.padding = gt::px(2)) |> 
+  cols_hide(dstar) |>
+  tab_spanner("Solde public (2026)", c(sp, sps)) |> 
+  tab_spanner("Taux d'intérêt", c(r_app, r_ct, r_lt)) |> 
+  tab_spanner("Croissance du PIB", c(g, gpot)) |> 
+  tab_spanner("Effort budgétaire", c(ecart, ecart_m)) |> 
+  cols_label(
+    nrow ~ "",
+    sp ~ "primaire",
+    sps ~ "primaire structurel",
+    r_app ~ md("pondéré  \n courant"),
+    r_ct ~ md("de marché  \n courant"),
+    r_lt ~ md("long terme"),
+    g ~ "de 2026",
+    gpot ~ "potentielle",
+    spstab ~ md("Solde primaire  \n stabilisant  \n la dette"),
+    ecart ~ "% PIB",
+    ecart_m ~ md("milliards €  \n (PIB 2026)") ) |> 
+  fmt_missing() |> 
+  ofce::ofce_fmt_decimal() |> 
+  fmt_number(c(nrow, ecart_m) , decimals = 0) |> 
+  cols_width(
+    nrow ~px(40),
+    spstab ~ px(70),
+    everything() ~ px(70) ) |> 
+  tab_footnote(
+    "Ecart critique de 0,5%", cells_column_labels(r_lt) ) |> 
+  tab_footnote(
+    "Taux maximal d'octobre 2026 (20/10)", cells_column_labels(r_ct) ) |> 
+  tab_footnote(
+    md("<em>s<sub>p</sub> = d^*^ \u00d7 (r-g)/(1+g)</em>"), cells_column_labels(spstab) ) |> 
+  tab_footnote(
+    md("<em>e = s<sub>p</sub> - s<sub>stab</sub></em>"), cells_column_labels(c(ecart, ecart_m)) ) |> 
+  tab_style(
+      cell_fill(color = "grey90"),
+      cells_body(c(ecart, ecart_m))  )
+# |> 
+#   gt::opt_interactive(
+#     use_sorting = TRUE, 
+#     page_size_default = 12)
+  
+```
+
 Ces résultats découlent de simulations détaillées ci-dessous mises en œuvre dans @psmt et @timbeau2025, en s'appuyant sur la prévision d'automne 2026 de l'OFCE [@prev2609] dans un cadre théorique proche de @ragot2026 et @timbeau2025. Les éléments présentés sont assez largement comptatibles avec les hypothèses de @ratav, même si les conclusions s'en écartent.
 
 En particulier, @ratav retiennent que la dérive des finances publiques est presque uniquement dûe à la charge d'intérêt. La modélisation représente finement cette boucle de rétroaction, tout en offrant un spectre de scénario plus riches, puisque différentes trajectoires de taux d'intérêt (réel, ou de prime de risque sur $r-g$ et d'inflation) sont envisagées, aux conséquences plus ou moins fortes sur la trajectoire de charge d'intérêts.
@@ -249,12 +312,6 @@ gg <- ggplot(data_cc)+
 girafy(gg, r=1.5)
 
 ```
-
-## Quelques intuitions à propos de l'effort budgétaire à réaliser
-
-Pour stabiliser la dette publique, le solde public doit être égal au solde stabilisant la dette publique. L'équation principale de cette logique est rappelée dasn l'@tip-dyndet. Le solde stabilisant la dette publique dépend du taux d'intérêt, du taux de croissance et du niveau de la dette. Popur stabiliser la dette publique à 120%, avec un taux apparent de 2,3% (le taux nominal apparent sur la dette publique française en 2026) et un taux de croissance nominal courant de 2,2% par an (la croissance de 2026 telle que prévue par l'OFCE en octobre 2026, voir @tbl-optimal1), il faut un solde primaire de 0.1 point de PIB. L'écart avec le déficit public primaire anticipé pour 2026 est donc de 3 points de PIB (91 milliards au PIB de 2026).
-
-Si, au lieu de la croissance de 2026, on retient la croissance potentielle (1,1% par an en volume, 1,8 % d'inflation), d'une part et d'autre part, au lieu du déficit public primaire, le déficit public primaire structurel (i.e. corrigé de l'effet de la conjoncture), le solde stabilisant la dette publique est de -0.7 point de PIB et l'écart avec le solde primaire structurel est de 1,5 point de PIB, soit un peu plus de 45 milliards au PIB de 2026. 
 
 ::: {#tip-dyndet .callout-tip}
 ## la dynamique de la dette publique
