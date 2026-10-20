@@ -250,6 +250,12 @@ girafy(gg, r=1.5)
 
 ```
 
+## Quelques intuitions à propos de l'effort budgétaire à réaliser
+
+Pour stabiliser la dette publique, le solde public doit être égal au solde stabilisant la dette publique. L'équation principale de cette logique est rappelée dasn l'@tip-dyndet. Le solde stabilisant la dette publique dépend du taux d'intérêt, du taux de croissance et du niveau de la dette. Popur stabiliser la dette publique à 120%, avec un taux apparent de 2,3% (le taux nominal apparent sur la dette publique française en 2026) et un taux de croissance nominal courant de 2,2% par an (la croissance de 2026 telle que prévue par l'OFCE en octobre 2026, voir @tbl-optimal1), il faut un solde primaire de 0.1 point de PIB. L'écart avec le déficit public primaire anticipé pour 2026 est donc de 3 points de PIB (91 milliards au PIB de 2026).
+
+Si, au lieu de la croissance de 2026, on retient la croissance potentielle (1,1% par an en volume, 1,8 % d'inflation), d'une part et d'autre part, au lieu du déficit public primaire, le déficit public primaire structurel (i.e. corrigé de l'effet de la conjoncture), le solde stabilisant la dette publique est de -0.7 point de PIB et l'écart avec le solde primaire structurel est de 1,5 point de PIB, soit un peu plus de 45 milliards au PIB de 2026. 
+
 ::: {#tip-dyndet .callout-tip}
 ## la dynamique de la dette publique
 

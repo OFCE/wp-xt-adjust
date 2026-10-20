@@ -118,7 +118,8 @@ ibs <- list(
   ),
   ameco = list(
     i_og  = 0.0,
-    taut = c(-.00014),
+    add_og = c(-0.0069, -0.0061, rep(0.00, 25)),
+    taut = c(+.0001),
     add_tcho = c(0.0025, 0.00, 0.0),
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),

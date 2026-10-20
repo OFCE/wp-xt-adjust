@@ -10,6 +10,7 @@ cclr <- map_dfr(
   }, .progress = TRUE ) |> 
   mutate(loss_ib = NA, sp = NA)
 
+# table_scenarios(cclr |> filter(ibs == "ameco"), dec = 2, bck = 0, fwd=8)
 # table_scenarios(cclr |> filter(ibs == "fildle"), dec = 2, bck = 0, fwd=8)
 # table_scenarios(cclr |> filter(ibs == "fildle"), dec = 2, bck = 0, fwd=8)
 # graph_scenarios(
@@ -60,7 +61,7 @@ ccl <- map_dfr(
 ) |> 
   mutate(loss_ib = 5, sp = FALSE)
 
-# table_scenarios(ccl |> filter(ibs == "ameco"), dec = 2, bck = 0, fwd=8)
+table_scenarios(ccl |> filter(ibs == "ameco"), dec = 2, bck = 0, fwd=8)
 # table_scenarios(ccl |> filter(ibs == "optimal1"), dec = 2, bck = 0, fwd=8)
 
 ## cible de solde -----------------
