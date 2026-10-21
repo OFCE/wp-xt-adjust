@@ -826,7 +826,9 @@ table_simulation <- function(
     ofce::ofce_tab_options() |>
     sub_missing() |>
     cols_align_decimal(-label) |>
-    ofce::ofce_tab_options() |> 
+    ofce::ofce_tab_options(
+      typst_width = 90
+    ) |> 
     cols_width(
       label ~ px(220),
       `LT (2050)` ~ px(55),
@@ -934,5 +936,6 @@ table_diff <- function(
         glue::glue()
     ) |>
     tab_source_note("{note_f}" |> glue::glue()) |>
-    ofce::table_ofce()
+    ofce::table_ofce(
+      typst_width = 90    )
 }
