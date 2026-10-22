@@ -227,6 +227,11 @@ update(cum_no_d) <- cum_no_d +
 initial(cum_no_d) <- 0
 loss_no_d <- cum_ogp^2 + loss_mo * abs(minog) + cum_no_d
 
+update(cib) <- cib + ib_po + ib_dep
+initial(cib) <- 0
+update(cog) <- cog + og
+initial(cog) <- 0
+
 # sorties ------
 # dans dust c'est un peu capilotracté
 # sans output, on est obligé de faire un update()
@@ -263,6 +268,8 @@ update(loss_nd_o) <- loss_no_d
 update(sppsd_o) <- sppsd
 update(ec_o) <- ecart_c
 update(vog_o) <- vog
+update(cib_o) <- cib
+update(cog_o) <- cog
 
 initial(txppib_o) <- 0
 initial(gpib_o) <- 0
@@ -289,6 +296,8 @@ initial(spstar_o) <- 0
 initial(r_app_o) <- 0
 initial(r_inst_o) <- 0
 initial(ec_o) <- 0
+initial(cib_o) <- 0
+initial(cog_o) <- 0
 
 initial(loss_o) <- 0
 initial(loss_nd_o) <- 0

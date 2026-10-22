@@ -13,28 +13,6 @@ cclr <- map_dfr(
 # table_scenarios(cclr |> filter(ibs == "ameco"), dec = 2, bck = 0, fwd=8)
 # table_scenarios(cclr |> filter(ibs == "fildle"), dec = 2, bck = 0, fwd=8)
 # table_scenarios(cclr |> filter(ibs == "fildle"), dec = 2, bck = 0, fwd=8)
-# graph_scenarios(
-#   cclr |> filter(ibs == "fildle"),
-#   to = 2050,
-#   vars = c("og", "dettep", "ib", "spp")
-# )
-
-# ccnl <- map_dfr(
-#   c("optimal1", "optimal2", "optimal1_plus_r"),
-#   ~ {
-#     phis <- calc_phis(
-#       brs25,
-#       algorithm = "cobyla",
-#       params = c(
-#         c(dstar = 1.2, loss_og = 5, loss_ib = 0, loss_ogpe = 0),
-#         ibs[[.x]] ) )
-#     cli::cli_alert_info(phis$message)
-#     run_model(brs25, out = "none", params = phis, full_mc = FALSE) |>
-#       mutate(ibs = .x)
-#   },
-#   .progress = TRUE
-# ) |> 
-#   mutate(loss_ib = 0)
 
 ## principales variantes, cible de dette --------------------------
 ccl <- map_dfr(
@@ -54,7 +32,7 @@ ccl <- map_dfr(
       brs,
       algorithm = "cobyla" )
     cli::cli_alert_info(phis$message)
-    run_model(brs, out = "none", params = phis, full_mc = FALSE) |>
+    run <- run_model(brs, out = "none", params = phis, full_mc = FALSE) |> 
       mutate(ibs = .x)
   },
   .progress = TRUE

@@ -207,6 +207,7 @@ run_model <- function(
   dec = 2,
   vars = c("og", "dettep", "ib", "spp")
 ) {
+
   detail <- match.arg(detail)
   # détail mensuel : données et graphique mensuels ; seule la table reste annuelle
   if (detail == "monthly" && out == "table")

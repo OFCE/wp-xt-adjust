@@ -73,18 +73,32 @@ sims <- sourcoise::sourcoise(
   track = "simulations init.R") |> 
   filter(!ifd)
 debut <- 2025
+
+erreur <- sims |>
+  filter(variable%in%c("cib", "cog", "dettep")) |>
+  mutate( e = (q0.975 - q0.025)/2 ) |> 
+  select(variable, year, scenario, ibs, loss_ib, sp, ifd, e) |> 
+  mutate(  
+    date_cible = case_when(
+      ibs=="d2037" ~ 2037,
+      ibs=="d2030" ~ 2030,
+      ibs=="dstable30" ~ 2030,
+      TRUE ~ 2032) ) |>
+  pivot_wider(names_from = variable, values_from = e) |>
+  filter(year == date_cible) |> 
+  rename(ecib = cib,
+         ecog = cog,
+         edettep = dettep)
+
 sims_sum <- sims |>
-  #filter_out(ibs %in% c("d2030")) |> 
-  select(ibs, loss_ib, sp, variable, year, mean) |> 
-  pivot_wider(names_from = variable, values_from = mean) |> 
+  select(ibs, loss_ib, sp, variable, year, deter) |> 
+  pivot_wider(names_from = variable, values_from = deter) |> 
   filter(!is.na(sp)) |> 
   group_by(ibs, loss_ib, sp) |> 
   mutate(
     ibsna = replace_na(ib, 0),
-    ibc = cumsum(ibsna * (year > debut)),
-    ibc = ifelse(year <= debut, NA, ibc),
-    ogc = cumsum(og * (year > debut) ),
-    ogc = ifelse(year <= debut, NA, ogc)) |> 
+    ibc = cib,
+    ogc = cog) |> 
   mutate(  
     date_cible = case_when(
       ibs=="d2037" ~ 2037,
@@ -112,8 +126,9 @@ sims_sum <- sims |>
         "nomult", "ogpers", "highmult", "multivar"))) |>
   arrange(ibs) |> 
   mutate(
-    across(c(ibc32, ogc32, dettep32), ~.x - .x[ibs=="nomult"], .names = "d{.col}")) |> 
-  select(libs, cible, date_cible, ibc32, ogc32, dettep32, ibc37, ogc37, dettep37)
+    across(c(ibc32, ogc32, dettep32), ~.x - .x[ibs=="nomult"], .names = "d{.col}")) |>
+  left_join(erreur |> select(ibs, ecib, ecog, edettep), join_by(ibs)) |> 
+  select(libs, cible, date_cible, ibc32, ecib, ogc32, ecog, dettep32, edettep, ibc37, ogc37, dettep37)
 ```
 
 ## Principaux résultats

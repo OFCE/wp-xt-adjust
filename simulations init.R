@@ -68,7 +68,7 @@ rs25 <- list(
   r_dette_star = 0,
   r_dette = 0,
   tpo_sstar = 0.5,
-  tpo_dstar = -0.05,
+  tpo_dstar = -0.075,
   tpo_og = -0.25,
   gpot = c(1.25, 1.25, 1.2, 1.15, 1.1, 1.0) / 100,
   use_gpot = TRUE,
