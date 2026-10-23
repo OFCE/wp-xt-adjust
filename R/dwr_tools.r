@@ -815,14 +815,11 @@ table_simulation <- function(
     ) |>
     tab_footnote("% annuel", cells_body(label, note == "% annuel")) |>
     tab_footnote("Minimum", cells_body(`Max. 25-50`, max == "min")) |>
-    tab_source_note(
-      "Données {atrbts$globals$ameco_nom}{note_d}, première année de simulation : {year1}{note_s}" |>
-        glue::glue()
-    ) |>
-    tab_source_note(
-      "Simulation debtwatch v2.0 (github.com/OFCE/dwr), {pays}, {simulation}" |>
-        glue::glue()
-    ) |>
+    ofce::ofce_caption(
+      source = "Données {atrbts$globals$ameco_nom}{note_d}, debtwatch v2.0 (github.com/OFCE/dwr)" |>
+        glue::glue(),
+      note = "Première année de simulation : {year1}{note_s}. Simulation déterministe" |>
+        glue::glue()) |>
     tab_source_note("{note_f}" |> glue::glue()) |>
     ofce::ofce_tab_options() |>
     sub_missing() |>

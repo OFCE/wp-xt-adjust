@@ -1,0 +1,20 @@
+{
+  "timing": [1101.3257],
+  "date": ["2026-10-23 13:18:31.866224"],
+  "size": [31061312],
+  "args": [],
+  "lapse": ["never"],
+  "src": ["simofce2609taux.r"],
+  "src_hash": ["9b1ecae7ca3eea21ef5adefcaba1be8deb8ea78b"],
+  "arg_hash": ["4262323b"],
+  "track_hash": [0],
+  "track": [],
+  "wd": ["file"],
+  "qmd_file": [],
+  "src_in": ["project"],
+  "data_hash": ["da59feb11fcc6bff00b1bcf9053749f4"],
+  "priority": [10],
+  "file_size": [7341046],
+  "data_date": ["2026-10-23 13:18:32.158852"],
+  "data_file": ["simofce2609taux-4262323b_da59feb11fcc6bff00b1bcf9053749f4.qs2"]
+}

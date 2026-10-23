@@ -24,12 +24,9 @@ ccl <- pmap_dfr(
   .progress = TRUE ) 
 
 summary <- ccl |> 
-  select(variable, year, deter, h, p, k) |> 
-  pivot_wider(names_from = variable, values_from = deter) |> 
-  group_by(h, p, k) |> 
-  summarize(
-    effort = sum(ib[between(year, 2026, as.integer(h))]),
-    .groups = "drop")
+  filter(variable == "cib") |> 
+  select(year, deter, q0.5, q0.025, q0.975, h, p, k) |> 
+  filter(year == h) 
 
 return(list(sims = ccl, summary = summary))
 
