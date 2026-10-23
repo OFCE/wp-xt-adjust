@@ -1,15 +1,16 @@
 ---
-title: "Ajustement budgétaire 2026-2032" 
+title: "Combien coûte de réduire la dette ?" 
+subtitle: "De l'intuition aux simulations avec debtwatch 2.0"
 author: Xavier Timbeau                   
 date: 2026-09-24    
 format:                                  
-  note-html: default                    
-  note-typst:
+  ofce-html: default                    
+  ofce-typst:
     fig-format: svg
     fig-dpi: 1200
 format-links: 
   - typst
-  - format: note-typst
+  - format: ofce-typst
     text: xt-ajustement-2609.pdf
     icon: file-pdf  
 editor: visual                          
