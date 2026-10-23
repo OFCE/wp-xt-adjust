@@ -562,7 +562,7 @@ girafy(gg, r=1.5)
 
 ## Prévision de l'OFCE automne 2026 et PLF 2027 {#sec-main}
 
-L'ajustement "optimal" — tel que défini plus loin, voir [@sec-annexe1] — conduit à une impulsion de **-1,6 points de PIB** en 2028 (@tbl-optimal1) et une impulsion cumulée de 3,45 points de PIB en 2032 (approx. 107 milliards d'euros au PIB de 2026). C'est un résultat qui découle d'un déficit initial important (5,1% en 2025, 5,4% en 2026, 5,3% en 2027) et d'un objectif de dette à brève échéance (2032). L'ajustement (l'impulsion primaire) en 2026 est de -0,5% ce qui correspond à la prévision d'automne 2026 de l'OFCE. Cette prévision a été publiée le 15 octobre 2026, c'est-à-dire avant même la difficile négociation autour du vote du budget.
+L'ajustement "optimal" — tel que défini plus loin, voir [@sec-annexe1] — conduit à une impulsion de -1,6 points de PIB en 2028 (@tbl-optimal1) et une impulsion cumulée de 3,45 points de PIB en 2032 (approx. 107 milliards d'euros au PIB de 2026). C'est un résultat qui découle d'un déficit initial important (5,1% en 2025, 5,4% en 2026, 5,3% en 2027) et d'un objectif de dette à brève échéance (2032). L'ajustement (l'impulsion primaire) en 2026 est de -0,5% ce qui correspond à la prévision d'automne 2026 de l'OFCE. Cette prévision a été publiée le 15 octobre 2026, c'est-à-dire avant même la difficile négociation autour du vote du budget.
 
 La prévision de l'OFCE [@prev2609] anticipe un déficit de 5,4% du PIB en 2026, conforme à la communication du gouvernement et l'analyse du Haut Conseil des Finances Publiques (et supérieur à l'hypothèse de @ratav, qui était en juillet 2026 de 5,0%). La prévision de l'OFCE diffère sensiblement de celle du gouvernement quant à la croissance (0,4% en 2026) du fait d'un effet multiplicateur important. Malgré une impulsion de 0,4 point de PIB, le déficit public s'accroît entre 2025 et 2026 de 0,3 point de PIB. C'est dû à une spectaculaire hausse de la charge d'intérêt (0,4 point de PIB), une conjoncture particulièrement dégradée du fait de la hausse des prix de l'énergie et de l'incertitude politique.
 
@@ -717,19 +717,19 @@ gg <- data_rpk |>
    mutate(
     e = (q0.975-q0.025)/2,
     tooltip = glue(
-      "<b>\u00c9cart critique : {fmt_pct(r)}</b>
+      "<b>\u00c9cart critique : {fmt_pct(r,1)}</b>
       Persistance (og_mce): {round(p, 1)}
       Amplitude (og_dep): {round(k,1)}
-      Effort budgétaire: {fmt_pct(-deter)} (\u00b1{fmt_val(e*100)}) du PIB / {round(-deter*3050,1)} (\u00b1{fmt_val(e*3050)}) milliards €" ) ) |> 
-  mutate(p = factor(p)) |> 
+      Effort budgétaire: {fmt_pct(-deter,1)} (\u00b1{fmt_val(e*100)}) du PIB / {fmt_val(-deter*3050,0)} (\u00b1{fmt_val(e*3050,0)}) milliards €" ) ) |> 
+  mutate(k = factor(k)) |> 
   ggplot()+
-  aes(x = r, color = p, y = -deter , group = p) +
+  aes(x = r, color = k, y = -deter , group = k) +
   geom_ribbon(
-    aes(y = NULL, ymax = -q0.025, ymin = -q0.975, fill = p),
-    color = NA, alpha = 0.2)+
+    aes(y = NULL, ymax = -q0.025, ymin = -q0.975, fill = k),
+    color = NA, alpha = 0.1)+
   geom_line() +
   geom_point_interactive(
-    aes(tooltip = tooltip, data_id = r, fill = p),
+    aes(tooltip = tooltip, data_id = r, fill = k),
     hover_nearest = TRUE, shape = 21, color = "white"  ) +
   scale_x_continuous(
     labels = scales::label_percent()  ) +
@@ -740,15 +740,15 @@ gg <- data_rpk |>
       name = "Effort budgétaire (milliards € 2026)")) + 
   guides(fill = "none", color = "none") +
   PrettyCols::scale_fill_pretty_d(
-    "Joyful") +
+    "Blues") +
   PrettyCols::scale_color_pretty_d(
-    "Joyful", 
+    "Blues", 
     name = "Persistance (og_mce)") +
   ylab("Effort budgétaire à long terme (en % du PIB)")+
   xlab("Ecart critique à long terme (r-g)")+
   ofce_caption(
       source = "Debtwatch v2.0, AMECO, prévision d'automne 2026 de l'OFCE",
-      lecture = "Un écart critique à long terme de 1% induit un taux souverain de 3,9% à long terme",
+      lecture = "Un écart critique à long terme de 1% induit un taux souverain de 3,9% à long terme et pour un mulitplicateur de dépense de 1,2 un effort budgétaire de 4% du PIB.",
       note = "Simulations stochastiques, 256 tirages. Les bandes colorées représentent l'intervalle de confiance à 95%")
 
 girafy(gg, r=2)
