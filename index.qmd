@@ -4,13 +4,13 @@ subtitle: "De l'intuition aux simulations avec debtwatch 2.0"
 author: Xavier Timbeau                   
 date: 2026-09-24    
 format:                                  
-  ofce-html: default                    
-  ofce-typst:
+  note-html: default                    
+  note-typst:
     fig-format: svg
     fig-dpi: 1200
 format-links: 
   - typst
-  - format: ofce-typst
+  - format: note-typst
     text: xt-ajustement-2609.pdf
     icon: file-pdf  
 editor: visual                          
