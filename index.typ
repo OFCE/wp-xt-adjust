@@ -365,7 +365,8 @@
 )
 
 #show: doc => article(
-  title: [Ajustement budgétaire 2026-2032],
+  title: [Combien coûte de stabiliser la dette ?],
+  subtitle: [De l'intuition aux simulations avec debtwatch 2.0],
   authors: (
     ( name: [Xavier Timbeau],
       affiliation: [],

@@ -1,5 +1,5 @@
 ---
-title: "Combien coûte de réduire la dette ?" 
+title: "Combien coûte de stabiliser la dette ?" 
 subtitle: "De l'intuition aux simulations avec debtwatch 2.0"
 author: Xavier Timbeau                   
 date: 2026-09-24    
