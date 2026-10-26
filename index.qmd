@@ -1,16 +1,16 @@
 ---
-title: "Combien coûte de stabiliser la dette ?" 
+title: "Combien coûte de réduire la dette ?" 
 subtitle: "De l'intuition aux simulations avec debtwatch 2.0"
 author: Xavier Timbeau                   
-date: 2026-09-24    
+date: 2026-10-26    
 format:                                  
-  note-html: default                    
-  note-typst:
+  wp-html: default                    
+  wp-typst:
     fig-format: svg
     fig-dpi: 1200
 format-links: 
   - typst
-  - format: note-typst
+  - format: wp-typst
     text: xt-ajustement-2609.pdf
     icon: file-pdf  
 editor: visual                          
@@ -146,13 +146,13 @@ sims_sum <- sims |>
 
 ## Principaux résultats
 
-- Une cible de dette de 120% demande une impulsion primaire cumulée de 3,7 points de PIB (approx. 112 milliards d'euros au PIB de 2026) en 2032, sur la base du scénario de la prévision d'automne 2026 de l'OFCE. Le déficit public passe en dessous de 3,0% en 2031 (@sec-main). En 2028, le creusement moyen de l'activité (de 2026 à 2032) (@tbl-sum) est de 1,5 point de PIB, marquant un sérieux ralentissement 4 années de suite. Le chômage atteindrait 9,2% de la population active en 2029 dans ce scénario.
+- Une cible de dette de 120% demande une impulsion primaire cumulée (appelée effort budgétaire) de 3,7 points de PIB (approx. 112 milliards d'euros au PIB de 2026) en 2032, sur la base du scénario de la prévision d'automne 2026 de l'OFCE. Le déficit public passe en dessous de 3,0% en 2031 (@sec-main). En 2028, le creusement moyen de l'activité (de 2026 à 2032) (@tbl-sum) est de 1,5 point de PIB, marquant un sérieux ralentissement 4 années de suite. Le chômage atteindrait 9,2% de la population active en 2029 dans ce scénario.
 
-- La stabilisation de la dette en 2032, puis sa décroissance d'un demi point par an (cible de solde) implique une impulsion cumulée de 3,1% du PIB, soit 0,6 point de moins, avec un maximum de dette publique de presque 125% du PIB en 2031 et une dette publique supérieure de 4,4 points de PIB en 2032 (@sec-annexe3). L'impact sur l'activité serait moins négatif (1,2% du PIB en moyenne entre 2026 et 2032), le chômage atteignant au plus haut 8,6% en 2029.
+- La stabilisation de la dette en 2032, puis sa décroissance d'un demi point par an (cible de solde) implique une impulsion cumulée de 2,7% du PIB, soit 1 point de moins, avec un maximum de dette publique de presque 125% du PIB en 2031 et une dette publique supérieure de 4,4 points de PIB en 2032 (@sec-annexe3). L'effort est moindre parce que la cible de dette est moins ambitieuse, et il augmente dans le temps parce que l'écart critique augmente sous l'effet de taux de marché supérieur aux taux pondérés. Choisir une cible de solde plutôt qu'une cible de dette reporte l'effort et a un impact sur l'activité moins négatif (1,3% du PIB en moyenne entre 2026 et 2032), le chômage atteignant au plus haut 8,8% en 2028.
 
-- Repousser la cible de dette de 5 années à 2037 au lieu de 2032 réduit marginalement l'effort fiscal à faire (@sec-d2037) mais très nettement l'impact sur l'activité. L'effort est moindre parce que les multiplicateurs jouent moins en fin de période et le moindre impact moyen sur l'activité résulte d'un effort moins important étalé sur plus de temps.
+- Repousser la cible de dette de 5 années à 2037 au lieu de 2032 réduit marginalement l'effort fiscal à faire (-0,2 point de PIB, @sec-d2037) mais très nettement l'impact sur l'activité (-0,6 point de PIB d'écart de production moyen). L'effort est moindre parce que les multiplicateurs jouent moins en fin de période et le moindre impact moyen sur l'activité découle d'un effort moins important étalé sur plus de temps.
 
-- Plus le multiplicateur budgétaire est bas, plus l'ajustement est facile. Entre un multiplicateur nul et un multiplicateur persistant, l'écart d'ajustement nécessaire est de 1,4 point de PIB (42 milliards d'euros au PIB de 2026) (@sec-multinuloufort). La proposition de @ratav d'une année blanche (à l'exclusion des minimas sociaux) est incompatible avec l'hypothèse d'un multiplicateur nul. À défaut de pouvoir atteindre un multiplicateur aussi faible, privilégier des mesures qui associeraient baisse d'épargne et réduction du déficit — par exemple des hausses d'impôts sur les plus riches, une taxe exceptionnelle sur les patrimoines, un gel des prestations retraites les plus élevées — est une piste plus solide à même de réduire significativement l'effort à faire.
+- Plus le multiplicateur budgétaire est bas, plus l'ajustement est facile. Entre un multiplicateur nul et un multiplicateur persistant, l'écart d'ajustement nécessaire est de 1,4 point de PIB (42 milliards d'euros au PIB de 2026) (@sec-multinuloufort). La prise en compte des mulutplicateurs budgétaires est donc incontournable. Ainsi la proposition de @ratav d'une année blanche (à l'exclusion des minimas sociaux) est incompatible avec l'hypothèse d'un multiplicateur nul. À défaut de pouvoir atteindre un multiplicateur aussi faible, privilégier des mesures qui associeraient baisse d'épargne et réduction du déficit — par exemple des hausses d'impôts sur les plus riches, une taxe exceptionnelle sur les patrimoines, un gel des prestations retraites les plus élevées — est une piste plus solide, à même de réduire significativement l'effort budgétaire à faire.
 
 - Un taux souverain inférieur de 0,5 point réduit l'impulsion primaire nécessaire de 0,4 points de PIB en 2032 (12 milliards d'euros de 2026) (@sec-annexe4). Plus précisément, 1 point de taux "coûte" 22,5 milliards d'euros (au PIB de 2026) d'effort budgétaire supplémentaire — ce coût est légèrement croissant avec les multiplicateurs. Ce facteur est donc particulièrement important.
 
@@ -169,13 +169,17 @@ L'évolution du ratio de dette publique suit une loi simple où $d$ est le ratio
 
 $$ 
 \Delta d = \frac{r-g}{1+g} d_{-1} + s_p
-$$ La modélisation employée repose sur cette équation en intégrant : 1. les éléments de dynamique des différentes variables, 2. les interactions entre les variables, certaines n'apparaissant pas dans cette équation (l'écart de production, l'inflation notamment).
+$$
+
+La modélisation employée repose sur cette équation en intégrant : 1. les éléments de dynamique des différentes variables, 2. les interactions entre les variables, certaines n'apparaissant pas dans cette équation (l'écart de production, l'inflation notamment).
 
 On peut déduire de cette équation le solde stabilisant la dette publique à chaque instant, ainsi qu'une condition d'équilibre de la dette dans un équilibre stationnaire (i.e. dans lequel toutes les variables sont constantes en fonction du temps). Ainsi le solde stabilisant la dette peut s'écrire :
 
 $$ 
 s_p^* = - \frac{r-g}{1+g} d_{-1}
-$$ Chacune des variables changeant dans le temps, par exemple, le taux apparent sous l'effet du roulement de la dette, le solde stabilisant la dette publique peut évoluer dans le temps.
+$$
+
+Chacune des variables changeant dans le temps, par exemple, le taux apparent sous l'effet du roulement de la dette, le solde stabilisant la dette publique peut évoluer dans le temps.
 
 Le @fig-dette illustre ces concepts pour le cas français de 2007 à 2026.
 
@@ -337,7 +341,7 @@ Pour stabiliser la dette publique à 120%, avec un taux apparent de 2,3% (le tau
 
 Si, au lieu de la croissance de 2026, on retient la croissance potentielle (1,1% par an en volume, 1,8 % d'inflation), d'une part et d'autre part, au lieu du déficit public primaire, le déficit public primaire structurel (i.e. corrigé de l'effet de la conjoncture), le solde stabilisant la dette publique est de -0,7 point de PIB et l'écart avec le solde primaire structurel est de 1,6 point de PIB, soit un peu plus de 48 milliards au PIB de 2026 (ligne 10 @tbl-naif).
 
-Le @tbl-naif balaye 12 configurations que l'on peut imaginer suivant que l'on part du déficit primaire ou structurel (i.e. corrigé de la conjoncture), de ce qu'on prend le taux observé sur les marchés, moyen pondéré ou estimé à long terme (à partir d'un écart critique $r-g$ postulé à 0,5%) et de la référence de croissance nominale que l'on emploie (la valeur anticipée de la croissance en volume et de la croissance du prix du PIB en 2026 ou la croissance potentielle et l'inflation cible de la Banque Centrale). Cependant, chacune de ces combinaisons est insatisfaisante d'autant que l'éventail d'efforts évalués (de 49 à 190 milliards d'euros) est large.
+Le @tbl-naif balaye 12 configurations suivant que l'on part du déficit primaire ou structurel (i.e. corrigé de la conjoncture), de ce qu'on prend le taux observé sur les marchés, moyen pondéré ou estimé à long terme (à partir d'un écart critique $r-g$ postulé à 0,5%) et de la référence de croissance nominale que l'on emploie (la valeur anticipée de la croissance en volume et de la croissance du prix du PIB en 2026 ou la croissance potentielle et l'inflation cible de la Banque Centrale). Cependant, chacune de ces combinaisons est insatisfaisante d'autant que l'éventail d'efforts évalués (de 49 à 190 milliards d'euros) est large.
 
 ```{r}
 #| label: tbl-naif
@@ -393,7 +397,9 @@ dd |>
   
 ```
 
-L'objet de ce document est d'aller plus loin que l'approche naïve. Le taux d'intérêt pris en compte, décisif dans l'équation de la dette, est le taux souverain pondéré. Mais ce taux n'est pas une donnée fixe, il évolue en fonction du taux de marché courant et de l'évolution de ce taux. Il dépend aussi du niveau de la dette et de son renouvellement. Le taux de croissance du PIB, autre variable importante, dépend de la croisance potentielle à long terme, mais aussi des efforts budgétaires, à travers le mécanisme du multiplicateur budgétaire, mais aussi par la dynamique propre de l'écart de croissance et le temps caractéristique qu'il faut pour retourner sur la trajectoire d'activité potentielle. L'inflation elle-même suit un processus qui dépend de l'écart d'activité mais aussi de chocs propres. À chaque période, chacune des variables de l'équation fondamentale de la dynamique de la dette suit une trajectoire et interagit avec les choix budgétaires opérés. La méthode naïve ne permet donc qu'un calcul grossier que les simulations permettent de préciser.
+L'objet de ce document est d'aller plus loin que l'approche naïve et de prendre en compte le plus possible la dynamique et les intercations de chacune des variables du problème.
+
+Le taux d'intérêt pris en compte, décisif dans l'équation de la dette, est le taux souverain pondéré. Mais ce taux n'est pas une donnée fixe, il évolue en fonction du taux de marché courant et de l'évolution de ce taux. Il dépend aussi du niveau de la dette et de son renouvellement. Le taux de croissance du PIB, autre variable importante, dépend de la croisance potentielle à long terme, mais aussi des efforts budgétaires, à travers le mécanisme du multiplicateur budgétaire, mais aussi par la dynamique propre de l'écart de croissance et le temps caractéristique qu'il faut pour retourner sur la trajectoire d'activité potentielle. L'inflation elle-même suit un processus qui dépend de l'écart d'activité mais aussi de chocs propres. À chaque période, chacune des variables de l'équation fondamentale de la dynamique de la dette suit une trajectoire et interagit avec les choix budgétaires opérés. La méthode naïve ne permet donc qu'un calcul grossier que les simulations permettent de préciser.
 
 Les simulations détaillées ci-dessous ont été mises en œuvre dans @psmt et @timbeau2025, en s'appuyant sur la prévision d'automne 2026 de l'OFCE [@prev2609] dans un cadre théorique proche de @ragot2026 et @timbeau2025. Les éléments présentés sont compatibles avec les hypothèses de @ratav ou les évaluations naïves du @tbl-naif, même si les conclusions s'en écartent[^1]. En particulier, le cas central des simulations (@tbl-optimal1) aboutit à une impulsion cumulée – l'effort budgetaire – de 3,7 points de PIB (113 milliards d'euros au PIB de 2026) pour des hypothèses qui convergent à long terme avec celle de la ligne 12 du @tbl-naif. L'écart supplémentaire de 0,8 points de PIB (25 milliards d'euros au PIB de 2026) découle des éléments accroissant l'effort ({{< fa circle-plus >}}) ou le réduisant ({{< fa circle-minus >}}) pris en compte dans la simulation :
 
@@ -415,7 +421,7 @@ Les simulations détaillées ci-dessous ont été mises en œuvre dans @psmt et 
 
 {{< fa circle-plus >}} La persistance d'un écart de production négatif et donc d'un chômage au dessus du chômage d'équilibre réduit marginalement l'inflation et augmente l'effet boule de neige.
 
-Le @tbl-sum résume les simulations -- décrites pour la plupart dans la @sec-resvar en détail -- qui permettent d'apprécier l'ampleur de chacun de ces facteurs sur l'effort budgétaire à accomplir. Les simulations sont réalisées avec une méthode de Monte-Carlo en introduisant des variables aléatoires (voir @sec-annexe5). On ne réalise pas une optimisation complète pour chaque tirage aléatoire, la politique budgétaire est déterminée par une règle linéaire. Ainsi, pour des perturbations aléatoires de l'écart de production et de l'inflation correspondant à l'historique de la France, on estime une erreur à 95% de \u00b1 0,5 point de PIB pour l'effort bdugétaire.
+Le @tbl-sum résume les simulations -- décrites pour la plupart dans la @sec-resvar en détail -- qui permettent d'apprécier l'ampleur de chacun de ces facteurs sur l'effort budgétaire à accomplir. Les simulations sont réalisées avec une méthode de Monte-Carlo en introduisant des variables aléatoires (voir @sec-annexe5). On ne réalise pas une optimisation complète pour chaque tirage aléatoire, la politique budgétaire est déterminée par une règle linéaire. Ainsi, pour des perturbations aléatoires de l'écart de production et de l'inflation correspondant à l'historique de la France, on estime une erreur à 95% de ± 0,5 point de PIB pour l'effort bdugétaire.
 
 ```{r}
 #| label: tbl-sum
@@ -506,7 +512,7 @@ ofce::margin_download(sims, "ofce-xt-sims-adjust", "Simulations", prefix="")
 
 data_cc <- sims |> 
   filter(
-    ibs %in% c("optimal1", "optimal2", "ddecroit", "highmult"),
+    ibs %in% c("optimal1", "ddecroit", "highmult"),
     #ibs %in% c("optimal1", "d2030"),
     !is.na(sp),
     between(year, 2025, 2050), 
@@ -563,15 +569,15 @@ girafy(gg, r=1.5)
 
 ## Prévision de l'OFCE automne 2026 et PLF 2027 {#sec-main}
 
-L'ajustement "optimal" — tel que défini plus loin, voir [@sec-annexe1] — conduit à une impulsion de -1,6 points de PIB en 2028 (@tbl-optimal1) et une impulsion cumulée de 3,45 points de PIB en 2032 (approx. 107 milliards d'euros au PIB de 2026). C'est un résultat qui découle d'un déficit initial important (5,1% en 2025, 5,4% en 2026, 5,3% en 2027) et d'un objectif de dette à brève échéance (2032). L'ajustement (l'impulsion primaire) en 2026 est de -0,5% ce qui correspond à la prévision d'automne 2026 de l'OFCE. Cette prévision a été publiée le 15 octobre 2026, c'est-à-dire avant même la difficile négociation autour du vote du budget.
+L'ajustement "optimal" — tel que défini dans [@sec-annexe1] — conduit à une impulsion de -1,6 points de PIB en 2028 (@tbl-optimal1) et une impulsion cumulée de 3,7 points de PIB en 2032 (approx. 112 milliards d'euros au PIB de 2026). C'est un résultat qui découle d'un déficit initial important (5,1% en 2025, 5,5% en 2026, 5,4% en 2027) et d'un objectif de dette à brève échéance (2032). L'ajustement (l'impulsion primaire) en 2026 est de -0,5% ce qui correspond à la prévision d'automne 2026 de l'OFCE. Cette prévision a été publiée le 15 octobre 2026, c'est-à-dire avant même la difficile négociation autour du vote du budget.
 
-La prévision de l'OFCE [@prev2609] anticipe un déficit de 5,4% du PIB en 2026, conforme à la communication du gouvernement et l'analyse du Haut Conseil des Finances Publiques (et supérieur à l'hypothèse de @ratav, qui était en juillet 2026 de 5,0%). La prévision de l'OFCE diffère sensiblement de celle du gouvernement quant à la croissance (0,4% en 2026) du fait d'un effet multiplicateur important. Malgré une impulsion de 0,4 point de PIB, le déficit public s'accroît entre 2025 et 2026 de 0,3 point de PIB. C'est dû à une spectaculaire hausse de la charge d'intérêt (0,4 point de PIB), une conjoncture particulièrement dégradée du fait de la hausse des prix de l'énergie et de l'incertitude politique.
+La prévision de l'OFCE [@prev2609] anticipe un déficit de 5,5% du PIB en 2026, conforme à la communication du gouvernement et l'analyse du Haut Conseil des Finances Publiques (et supérieur à l'hypothèse de @ratav, qui était en juillet 2026 de 5,0%). La prévision de l'OFCE diffère sensiblement de celle du gouvernement quant à la croissance (0,4% en 2026) du fait d'un effet multiplicateur important. Malgré une impulsion de 0,5 point de PIB, le déficit public s'accroît entre 2025 et 2026 de 0,4 point de PIB. C'est dû à une spectaculaire hausse de la charge d'intérêts (+0,3 point de PIB), une conjoncture particulièrement dégradée du fait de la hausse des prix de l'énergie et de l'incertitude politique.
 
-En 2027, l'OFCE anticipe un cocktail similaire à celui de 2026 : l'activité est dégradée du fait d'une conjoncture internationale morose, d'une prudence des acteurs économiques nationaux dans un moment politique tendu et d'une impulsion négative assez forte. La hausse de la charge d'intérêt se poursuit (0,3 point en 2027). La possibilité d'un budget approuvé par une majorité politique étant presque écartée, le budget résulte d'un compromis complexe, mélange de loi spéciale et d'une non censure comme en 2026.
+En 2027, l'OFCE anticipe un cocktail similaire à celui de 2026 : l'activité est dégradée du fait d'une conjoncture internationale morose, d'une prudence des acteurs économiques nationaux dans un moment politique tendu et d'une impulsion négative assez forte. La hausse de la charge d'intérêt se poursuit (+0,3 point en 2027). La possibilité d'un budget approuvé par une majorité politique étant presque écartée, le budget résulte d'un compromis complexe, mélange de loi spéciale et d'une non censure comme en 2026.
 
-Au-delà de 2027, la simulation procède par l'établissement d'une politique économique "optimale" pour atteindre un objectif (*e.g*. une cible de dette à une date donnée) tout en minimisant l'impact sur l'activité sur l'ensemble des périodes concernées (@sec-annexe5). L'ajustement en 2028 est presque égal à celui de 2027. La raison est que l'ajustement anticipé pour 2027 par l'OFCE en octobre 2026 est assez proche d'un ajustement "optimal" et coïncide avec les règles du PSC. L'ajustement s'atténue progressivement. C'est en partie lié à la détente des taux souverains en 2029. Cette détente permet une relative stabilisation de la charge d'intérêt (autour de 3,5 points de PIB en 2032, 1,55 points de PIB si on tient compte de la taxe inflationniste).
+Au-delà de 2027, la simulation procède par l'établissement d'une politique économique "optimale" pour atteindre un objectif (*e.g*. une cible de dette à une date donnée) tout en minimisant l'impact sur l'activité sur l'ensemble des périodes concernées (@sec-annexe5). L'ajustement en 2028 est presque égal à celui de 2027. La raison est que l'ajustement anticipé pour 2027 par l'OFCE en octobre 2026 est assez proche d'un ajustement "optimal" et coïncide avec les règles du PSC. L'ajustement s'atténue progressivement. C'est en partie lié à la détente des taux souverains en 2029. Cette détente permet une relative stabilisation de la charge d'intérêt (autour de 3,5 points de PIB en 2032, 1,5 points de PIB si on tient compte de la taxe inflationniste).
 
-Les conséquences de cet ajustement sont le creusement de l'écart de production entre 2026 et 2028. À partir de 2029, les impulsions sont plus faibles et la dynamique du multiplicateur fait que l'ajustement perd en effet sur l'écart de production qui se réduit lentement pour redevenir positif à partir de 2035 (@fig-optimal, trait bleu).
+Les conséquences de cet ajustement sont le creusement de l'écart de production entre 2026 et 2028. À partir de 2029, les impulsions sont plus faibles et la dynamique du multiplicateur fait que l'ajustement perd en effet sur l'écart de production qui se réduit lentement pour redevenir positif à partir de 2033 (@fig-optimal, trait bleu).
 
 À plus long terme, le déficit public qui stabilise la dette publique est de 3,3% du PIB, un peu au-delà de la règle des 3%.
 
@@ -579,11 +585,13 @@ Cet ajustement limite la hausse de la dette publique à 121,6% du PIB (@tbl-opti
 
 Notons que cet écart est construit sous des hypothèses particulières [voir @timbeau2025] et doit être interprété en fonction. En simplifiant à l'extrême, il s'agit de la prise en compte de la variabilité historique de la croissance, mais en supposant que la moyenne (de la croissance) est stable et qu'il y a peu d'autocorrélation dans ce processus (il est stationnaire). Cette hypothèse induit un retour à la moyenne de l'écart de production et donc limite le renforcement d'une déviation médiane de la trajectoire de dette.
 
-Dans ce scénario, la dette publique passe par un maximum en 2031 et le solde public français est inférieur à -3,0% en 2033. À long terme, il est en dessous de -3% parce que pour ce niveau de dette le solde stabilisant la dette est de l'ordre de -3,3% ($-2,75\% \times 120\%$). Ceci conduit à un profil en bosse pour le solde public : il faut atteindre un solde plus haut pour réduire la dette, puis revenir au déficit stabilisant la dette.
+Dans ce scénario, la dette publique passe par un maximum en 2031 et le solde public français est inférieur à -3,0% en 2033. À long terme, il est en dessous de -3% parce que pour ce niveau de dette le solde stabilisant la dette est de l'ordre de -3,3% (-2,75% ⨉ 120%). Ceci conduit à un profil en bosse pour le solde public : il faut atteindre un solde plus haut pour réduire la dette, puis revenir au déficit stabilisant la dette[^2].
+
+[^2]: Cette propriété est habituelle dans les programmes de contrôle optimal lorsqu'on dispose d'un instrument qui joue sur l'accélération et que l'on vise un objectif en position (la cible de dette) et en vitesse (la dette ne bouge plus).
 
 ```{r}
 #| label: tbl-optimal1
-#| tbl-cap: Ajustement optimal à partir de 2028, 120% de dette en 2032 (scénario de référence)
+#| tbl-cap: Prev2609 jusqu'en 2027, 120% de dette en 2032 (scénario de référence)
 
 table_scenarios(
   sim = sims |> filter(ibs == "optimal1", loss_ib == 5, !sp),
@@ -594,9 +602,9 @@ table_scenarios(
 
 ### Ajustement optimal en 2026 et 2027 {#sec-maintenant}
 
-Le @tbl-maintenant décrit un monde légèrement différent de la prévision de l'OFCE [@prev2609]. Au lieu des impulsions prévues, on suppose une impulsion optimale. C'est un résultat classique de la politique budgétaire optimale : le *backloading* n'est justifié qu'en cas d'une forte préférence pour le présent, une préférence pour des impulsions les moins variées possibles ou des multiplicateurs budgétaires qui varient dans le cycle. Comme nous n'avons aucun de ces éléments dans la simulation, l'impulsion optimale est celle d'une brutale récession en 2026, suivie d'un ajustement plus contrôlé ensuite. Le creux d'activité se produit en 2027, il est moins marqué que celui de 2028 dans le scénario "prévision de l'OFCE" (@tbl-optimal1). La perte cumulée d'activité entre 2026 et 2032 est de 8,2 points de PIB contre 9,1 dans le scénario "prévision de l'OFCE".
+Le @tbl-maintenant décrit un monde légèrement différent de la prévision de l'OFCE [@prev2609]. Au lieu des impulsions prévues, on suppose une impulsion optimale. C'est un résultat classique de la politique budgétaire optimale dès 2026 : le *backloading* (report de l'ajustement dans le temps) n'est justifié qu'en cas d'une forte préférence pour le présent, une préférence pour des impulsions les moins variées possibles ou des multiplicateurs budgétaires qui varient dans le cycle. Comme nous n'avons aucun de ces éléments dans la simulation, l'impulsion optimale est celle d'une brutale récession en 2026, suivie d'un ajustement plus contrôlé ensuite. Le creux d'activité se produit en 2027, il est moins marqué que celui de 2028 dans le scénario "prévision de l'OFCE (prev2609)" (@tbl-optimal1). La perte moyenne d'activité entre 2026 et 2032 est de 1,4 contre 1,5 point de PIB dans le scénario "prévision de l'OFCE (prev2609)".
 
-L'effort budgétaire est sensiblement inférieur dans ce scénario (3,1% du PIB cumulés contre 3,5%). Une impulsion négative immédiate réduit la hausse de la dette et le cumul des intérêts. Cette stratégie est peu ou prou (en effort budgétaire, en coût en activité et en chômage) équivalente à celle qui consiste à simplement stabiliser la dette en 2032 (@sec-annexe3) -- le niveau de dette atteint cependant un peu plus de 3 points inférieur.
+L'effort budgétaire est sensiblement inférieur dans ce scénario (3,3% du PIB cumulés contre 3,7%). Une impulsion négative immédiate réduit la hausse de la dette et le cumul des intérêts. Cette stratégie est peu ou prou (en effort budgétaire, en coût en activité et en chômage) équivalente à celle qui consiste à simplement stabiliser la dette en 2032 (@sec-annexe3) – dans ce dernier scénario la dette est cependant plus élevée.
 
 ```{r}
 #| label: tbl-maintenant
@@ -703,7 +711,7 @@ table_scenarios(
 
 ```
 
-Le @fig-taux indique la sensibilité de l'effort à l'écart critique. Il est de 22,5 milliards pour un point d'écart de taux. 
+Le @fig-taux indique la sensibilité de l'effort à l'écart critique. Il est de 22,5 milliards pour un point d'écart de taux.
 
 ```{r}
 #| label: fig-taux
@@ -754,7 +762,6 @@ gg <- data_rpk |>
 
 girafy(gg, r=2)
 ```
-
 
 ### Multiplicateurs nuls ou plus forts {#sec-multinuloufort}
 
@@ -816,9 +823,9 @@ gg <- data_hpk |>
       name = "Effort budgétaire (milliards € 2026)")) + 
   guides(fill = "none") +
   PrettyCols::scale_fill_pretty_d(
-    "Joyful") +
+    "Summer") +
   PrettyCols::scale_color_pretty_d(
-    "Joyful", 
+    "Summer", 
     name = "Persistance (og_mce)") +
   ylab("Effort budgétaire (en % du PIB)")+
   xlab("Horizon de stabilisation de la dette")+
@@ -923,9 +930,9 @@ L'explication de ce résultat très contre intuitif est assez simple. Le paramè
 
 Or, dans le cas de la France en 2025, ce paramètre joue en la faveur des finances publiques françaises, puisque le taux apparent sur la dette publique française est inférieur au taux de croissance nominal. Sur la période 2026-2032, le taux souverain pondéré est de 2,7 points de pourcentage, ce qui est inférieur au taux de croissance potentiel nominal espéré sur la période (2,8% par an), et même du taux de croissance espéré en tenant compte de l'effort budgétaire (2,9% par an) (@tbl-optimal1). L'écart critique reste négatif et, toutes choses égales par ailleurs, plus de dette induit un effet boule de neige négatif, qui contribue (modestement) à réduire la dette.
 
-Un taux souverain de marché plus élevé fera fondre cet avantage plus rapidement. Le @tbl-plustaux illustre cet effet. Le taux souverain moyen pondéré est de 2,9% par an de 2026 à 2032, au lieu de 2,8% par an dans le scénario de référence. Il atteint lentement une valeur supérieure à la croissance potentielle nominale et augmente petit à petit. Il faut attendre 2028 pour que cet écart critique devienne nul, puis positif. À très long terme il aboutit à une valeur rédhibitoire. La ligne "effet boule de neige" quantifie cette dynamique délétère. Malgré une dette importante, cet effet reste modeste face à l'ampleur du déficit à combler. Le scénario "fil de l'eau" (@tbl-fildle) indique ainsi que, avec un écart critique faible (+0,5% par an), l'effet boule de neige s'accroît dans le temps, et serait de 0,1 point par an en 2032 (c'est-à-dire la dette publique s'accroît de son propre poids de 0,1 point par an). Il faut attendre au-delà de 2040 pour que cela soit supérieur à 1/2 point de pourcentage par an. Un écart critique plus important augmente directement cet effet boule de neige. Cela illustre pourquoi la charge d'intérêts n'est pas un indicateur budgétaire pertinent : c'est la charge nette de la taxe inflationniste ou mieux nette de la croissance nominale (l'effet boule de neige) qui est intéressante, et tant que l'écart critique est faible ou négatif, la dette n'est pas un fardeau -- et même peut faciliter la stabilisation des finances publiques[^2].
+Un taux souverain de marché plus élevé fera fondre cet avantage plus rapidement. Le @tbl-plustaux illustre cet effet. Le taux souverain moyen pondéré est de 2,9% par an de 2026 à 2032, au lieu de 2,8% par an dans le scénario de référence. Il atteint lentement une valeur supérieure à la croissance potentielle nominale et augmente petit à petit. Il faut attendre 2028 pour que cet écart critique devienne nul, puis positif. À très long terme il aboutit à une valeur rédhibitoire. La ligne "effet boule de neige" quantifie cette dynamique délétère. Malgré une dette importante, cet effet reste modeste face à l'ampleur du déficit à combler. Le scénario "fil de l'eau" (@tbl-fildle) indique ainsi que, avec un écart critique faible (+0,5% par an), l'effet boule de neige s'accroît dans le temps, et serait de 0,1 point par an en 2032 (c'est-à-dire la dette publique s'accroît de son propre poids de 0,1 point par an). Il faut attendre au-delà de 2040 pour que cela soit supérieur à 1/2 point de pourcentage par an. Un écart critique plus important augmente directement cet effet boule de neige. Cela illustre pourquoi la charge d'intérêts n'est pas un indicateur budgétaire pertinent : c'est la charge nette de la taxe inflationniste ou mieux nette de la croissance nominale (l'effet boule de neige) qui est intéressante, et tant que l'écart critique est faible ou négatif, la dette n'est pas un fardeau -- et même peut faciliter la stabilisation des finances publiques[^3].
 
-[^2]: Voir à ce sujet les échanges de François Geerolf avec le DG de l'INSEE [@geerolf:hal-05506068].
+[^3]: Voir à ce sujet les échanges de François Geerolf avec le DG de l'INSEE [@geerolf:hal-05506068].
 
 Des taux de marché encore plus élevés pourraient accélérer cette évolution. Il faudrait un taux de l'ordre de 8% par an pour propulser le taux souverain pondéré à 2,8% en 2026. La conclusion est donc simple : il faut des taux de marché élevés pendant une longue période pour que la dette publique devienne une contrainte véritable. C'est un sérieux risque pour le très long terme qui n'a pas de conséquences immédiates. Ce même raisonnement s'applique à des pays comme l'Italie ou le Japon qui n'ont pas basculé à cause d'une dette publique trop importante. En revanche, l'effet des politiques budgétaires pour réduire rapidement la dette a un impact à court terme qu'il ne faut absolument pas négliger au risque de graves déconvenues.
 
@@ -1152,9 +1159,9 @@ $\lambda_{og}$, $\lambda_{ib}$ et $\lambda_{max}$ permettent de donner un poids 
 
 Le premier terme s'interprète comme la minimisation de la "variance" des écarts de production, c'est-à-dire une trajectoire qui s'écarte le moins possible de 0 et qui recherche des trajectoires où l'écart est le plus constant possible. On minimise ainsi l'impact de la politique restrictive. La partie en $ib_t^2$ est l'équivalent, mais pour les instruments. Elle permet de représenter un monde où il est difficile de modifier le budget. Cette inertie, si elle n'est pas rationnelle, est réaliste. Le mélange entre les deux fonctions de perte conduit à associer les deux arguments. Le facteur d'actualisation consiste à préférer des conséquences lointaines plutôt qu'immédiates et constitue une façon simple de justifier la *backloading* par rapport au *frontloading*.
 
-Enfin, le troisième terme conduit à prendre en compte le creux d'écart de production. Cette fonction de perte conduit, comme on le verra plus loin, à produire des trajectoires dont la partie $og_t$ négative est la plus limitée possible. Ce terme de la fonction de perte induit un *backloading* assez fort, par construction. Pour faciliter le calcul numérique, on utilise une approximation continue de la fonction $max$[^3].
+Enfin, le troisième terme conduit à prendre en compte le creux d'écart de production. Cette fonction de perte conduit, comme on le verra plus loin, à produire des trajectoires dont la partie $og_t$ négative est la plus limitée possible. Ce terme de la fonction de perte induit un *backloading* assez fort, par construction. Pour faciliter le calcul numérique, on utilise une approximation continue de la fonction $max$[^4].
 
-[^3]: par une fonction $max(x_1,x_2) \approx (x_1^\sigma + x_2^\sigma)^{1/\sigma}$ avec $\sigma$ assez grand (en pratique on prendra 8).
+[^4]: par une fonction $max(x_1,x_2) \approx (x_1^\sigma + x_2^\sigma)^{1/\sigma}$ avec $\sigma$ assez grand (en pratique on prendra 8).
 
 $$\mathcal{L} = max(-og_t)$$ {#eq-perte-min}
 

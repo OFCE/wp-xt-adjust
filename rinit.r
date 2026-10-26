@@ -29,7 +29,7 @@ options(
   ofce.background_color = "transparent",
   ofce.source_data.src_in = "project",
   ofce.caption.ofce = FALSE,
-  ofce.marquee = TRUE,
+  ofce.marquee = "munch",
   ofce.caption.srcplus = NULL,
   ofce.caption.wrap = 0)
 
@@ -40,7 +40,7 @@ if(knitr::is_html_output())
     ggplot2::update_theme(text = element_text(size = 8))
 
 tooltip_css  <-
-  "font-family:Open Sans;
+  "font-family:Arimo;
   background-color:snow;
   border-radius:5px;
   border-color:gray;
@@ -50,8 +50,6 @@ tooltip_css  <-
   padding:4px;
   box-shadow: 2px 2px 2px gray;
   r:20px;"
-
-gdtools::register_gfont("Open Sans")
 
 margin_download <- function(data, output_name = "donnees", label = "données") {
   if(knitr::is_html_output()) {
