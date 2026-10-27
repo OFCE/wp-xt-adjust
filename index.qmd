@@ -4,13 +4,13 @@ subtitle: "De l'intuition aux simulations avec debtwatch 2.0"
 author: Xavier Timbeau                   
 date: 2026-09-24    
 format:                                  
-  note-html: default                    
-  note-typst:
+  wp-html: default                    
+  wp-typst:
     fig-format: svg
     fig-dpi: 1200
 format-links: 
   - typst
-  - format: note-typst
+  - format: wp-typst
     text: xt-ajustement-2609.pdf
     icon: file-pdf  
 editor: visual                          
@@ -506,7 +506,7 @@ ofce::margin_download(sims, "ofce-xt-sims-adjust", "Simulations", prefix="")
 
 data_cc <- sims |> 
   filter(
-    ibs %in% c("optimal1", "optimal2", "ddecroit", "highmult"),
+    ibs %in% c("optimal1", "ddecroit", "highmult"),
     #ibs %in% c("optimal1", "d2030"),
     !is.na(sp),
     between(year, 2025, 2050), 
@@ -516,6 +516,7 @@ data_cc <- sims |>
       ibs == "ddecroit" ~ "Dette décroissance à partir de 2032",
       ibs == "dstable" ~ "Dette stable à partir de 2032",
       ibs == "optimal1" ~ "120% en 2032",
+      ibs == "optimal2" ~ "Impulsions depuis 2026",
       ibs == "ameco" ~ "og AMECO, 120% en 2032",
       ibs == "nomult" ~ "120% en 2032, multiplicateurs nuls",
       ibs == "highmult" ~ "120% en 2032, multiplicateurs plus élevés",
@@ -703,7 +704,7 @@ table_scenarios(
 
 ```
 
-Le @fig-taux indique la sensibilité de l'effort à l'écart critique. Il est de 22,5 milliards pour un point d'écart de taux. 
+Le @fig-taux indique la sensibilité de l'effort à l'écart critique. Il est de 22,5 milliards pour un point d'écart de taux.
 
 ```{r}
 #| label: fig-taux
@@ -754,7 +755,6 @@ gg <- data_rpk |>
 
 girafy(gg, r=2)
 ```
-
 
 ### Multiplicateurs nuls ou plus forts {#sec-multinuloufort}
 

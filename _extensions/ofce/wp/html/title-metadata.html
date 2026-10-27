@@ -9,15 +9,7 @@ $if(categories)$
 $endif$
 
 $if(draft)$
-<div>
-  <div class="quarto-title-meta-contents">
-    $if(french)$
-    <span class="badge-draft" id="ofce-badge-draft">Version préliminaire ($version$)&middot;ne pas citer&middot;ne pas diffuser</span>
-    $else$
-    <span class="badge-draft" id="ofce-badge-draft">Preliminary version ($version$)&middot;do not quote&middot;do not disseminate</span>
-    $endif$
-  </div>
-</div>
+
 <script>
 (function () {
   fetch("push-count.json")
@@ -34,11 +26,6 @@ $if(draft)$
 $endif$
 
 $if(author)$
-    $if(french)$
-      <summary class ="quarto-title-meta-heading"><b>Auteurs&résumé</b></summary>
-    $else$
-      <summary class ="quarto-title-meta-heading"><b>Authors&Summary</b></summary>
-    $endif$
     $if(by-affiliation/first)$
     <div class="quarto-title-meta-author">
       <div class="quarto-title-meta-heading">$labels.authors$</div>
