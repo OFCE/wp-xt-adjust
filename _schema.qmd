@@ -1,0 +1,78 @@
+---
+title: "schema"
+format:
+  html:
+    mermaid:
+      theme: neutral
+---
+
+La @fig-schema-modele résume les principaux liens de causalité du modèle. Les équations sont détaillées ci-dessous.
+
+```{mermaid}
+%%| label: fig-schema-modele
+%%| fig-cap: Principaux liens de causalité du modèle
+flowchart TB
+  subgraph EXO["Exogènes et cibles"]
+    gpot["Croissance potentielle"]
+    nstar["NAIRU cible"]
+    pstar["Cible d'inflation"]
+    estar["Prime de risque cible"]
+  end
+
+  subgraph REEL["Activité, chômage, prix"]
+    og["Écart de production"]
+    tcho["Taux de chômage"]
+    nairu["NAIRU"]
+    infl["Inflation du prix du PIB"]
+    pibpot["PIB potentiel"]
+    pib["PIB nominal"]
+  end
+
+  subgraph FIN["Taux d'intérêt"]
+    ec["Prime de risque"]
+    rinst["Taux instantané"]
+    rapp["Taux apparent"]
+  end
+
+  subgraph BUD["Finances publiques"]
+    regle["Règle budgétaire<br>ou optimisation"]
+    ib["Impulsion budgétaire"]
+    dep["Dépenses primaires"]
+    rec["Recettes"]
+    spp["Solde primaire"]
+    cin["Charge d'intérêts"]
+    dette["Dette publique"]
+  end
+
+  %% Impulsion et multiplicateurs
+  ib -->|"multiplicateurs"| og
+  og -->|"MCE : retour à 0"| og
+
+  %% Taux
+  gpot --> rinst
+  infl --> rinst
+  ec --> rinst
+  rinst -->|"lissage sur r_mat ans"| rapp
+  
+  %% Finances publiques
+  rapp --> cin
+  dette --> cin
+  cin --> dette
+  spp --> dette
+  pib --> rec
+  pib --> dep
+  dep --> spp
+  rec --> spp
+  ib -->|"part pcpo sur recettes"| rec
+  ib -->|"part 1 - pcpo sur dépenses"| dep
+  cin -.->|"og_cin, nul"| og
+
+  %% Règle
+  dette --> regle
+  spp --> regle
+  og --> regle
+  ec --> regle
+  infl --> regle
+  regle --> ib
+```
+

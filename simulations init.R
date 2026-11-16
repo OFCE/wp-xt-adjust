@@ -1,7 +1,8 @@
+library(scales)
 library(future)
+library(futurize)
 library(furrr)
 library(progressr)
-library(scales)
 library(paletteer)
 library(lubridate)
 library(glue)
@@ -10,21 +11,24 @@ library(tidyverse)
 library(patchwork)
 library(countrycode)
 library(ofce)
+
 # devtools::install_github("mrc-ide/odin.dust")
 # devtools::install_github("mrc-ide/odin")
 # devtools::install_github("mrc-ide/dust")
-future::plan("multisession", workers = 16)
 progressr::handlers(progressr::handler_progress(
   format = ":bar :percent :eta",
-  width = 80
+  width = 70
 ))
-source(pathify("/R/dwr_sim.r"))
-source(pathify("/R/dwr_optim.r"))
-source(pathify("/R/dwr_utils.r"))
-source(pathify("/R/dwr_tools.r"))
-source(pathify("/R/dwr_mongo.r"))
+source(pathify("R/dwr_sim.r"))
+source(pathify("R/dwr_optim.r"))
+source(pathify("R/dwr_utils.r"))
+source(pathify("R/dwr_tools.r"))
+source(pathify("R/dwr_mongo.r"))
+
+workers <- 4
 
 ofce::init_qmd()
+options(OutDec=".")
 rs25 <- list(
   draws = 256,
   start_hist = 2007,
@@ -76,7 +80,7 @@ rs25 <- list(
   i_tpo = 0.0013,
   i_dette = -0.0048,
   pcpo = 0.5,
-  taut = c(-.001), 
+  taut = c(-.001),
   add_og = c(-0.0063, -0.0054, rep(0.00, 25)),
   add_inf = c(+0.0023, 0.0031, 0.001, 0),
   no_rule = 1,

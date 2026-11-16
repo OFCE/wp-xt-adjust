@@ -1,0 +1,20 @@
+{
+  "timing": [273.4066],
+  "date": ["2026-11-16 10:19:16.23654"],
+  "size": [8604200],
+  "args": [],
+  "lapse": ["never"],
+  "src": ["simofce2609decomposition.r"],
+  "src_hash": ["38ecf87a2d2c0a442763cdc112dad2efe9d70d46"],
+  "arg_hash": ["4262323b"],
+  "track_hash": [0],
+  "track": [],
+  "wd": ["file"],
+  "qmd_file": [],
+  "src_in": ["project"],
+  "data_hash": ["42d7e81c5e09fd7500ed6c993992fb81"],
+  "priority": [10],
+  "file_size": [1326592],
+  "data_date": ["2026-11-16 10:19:16.384382"],
+  "data_file": ["simofce2609decomposition-4262323b_42d7e81c5e09fd7500ed6c993992fb81.qs2"]
+}
