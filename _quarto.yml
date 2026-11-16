@@ -1,18 +1,81 @@
 project: 
-  type: website
-lang: fr
+  type: ofce-website
 website:
-  title: "Ajustement bugdétaire 2609"
-  repo-url: https://github.com/xtimbeau/budget/
+  repo-url: https://github.com/OFCE/wp-xt-adjust/
+  favicon: www/fofce-wp.png
+  draft-mode: visible
+  site-url: https://staging.ofce.fr/wp-xt-adjust/
+  navbar:
+    left:
+      - text: L'OFCE
+        menu:
+          - text: À propos
+            href: https://www.ofce.fr/ofce/ofce.html
+          - text: Rapport d'activité
+            href: https://www.ofce.fr/ofce/rapports.html
+          - text: Réseaux de recherche
+            href: https://www.ofce.fr/ofce/reseaux.html
+          - text: Nous rejoindre
+            href: https://www.ofce.fr/ofce/recrute.html
+          - text: Contact
+            href: https://www.ofce.fr/ofce/contact.html
+          - text: Mentions légales
+            href: https://www.ofce.fr/legal/mentions_legales.html
+          - text: Conditions générales
+            href: https://www.ofce.fr/legal/conditions_generales.html
+          - text: Politique des cookies
+            href: https://www.ofce.fr/legal/cookies.html
+      - text: Blog
+        href: https://www.ofce.fr/blog2024/
+      - text: Publications
+        menu:
+          - text: Policy Briefs
+            href: https://www.ofce.fr/publications/policy.html
+          - text: Documents de travail
+            href: https://www.ofce.fr/publications/working_papers.html
+          - text: Etudes & Rapports
+            href: https://www.ofce.fr/publications/rapports.html
+          - text: Revue de l'OFCE
+            href: https://www.ofce.fr/publications/revue.html
+      - text: Prévisions
+        menu:
+          - text: Prévision France & Monde
+            href: https://www.ofce.fr/prev/derniere/
+          - text: Nowcast
+            href: https://www.ofce.fr/nowcast/
+          - text: Anciennes prévisions
+            href: https://www.ofce.fr/indic_prev/prevision.html
+      - text: Outils & Ressources
+        menu:
+          - text: DEBTWATCH
+            href: https://ofce.shinyapps.io/debtwatchr/
+          - text: Modèle ThreeME
+            href: https://www.ofce.fr/recherche/threeme.html
+          - text: Modèle Evamodi
+            href: https://www.ofce.fr/recherche/evamodi.html
+    tools:
+      - icon: envelope
+        href: '#'
+      - icon: bluesky
+        href: https://bsky.app/profile/ofce.bsky.social
+      - icon: linkedin
+        href: https://www.linkedin.com/company/ofce/posts/
+      - icon: facebook
+        href: https://www.facebook.com/ofcesciencespo/
+    logo: /www/ifeofce.png
+    logo-href: https://www.ofce.fr/
+    logo-alt: logo de l'IFE|OFCE
 comments:
   hypothesis: true
 
-author: 
-  - name: "Xavier Timbeau" 
-    email: "xavier.timbeau@sciencespo.fr"
-    affiliation: OFCE,  Sciences Po Paris
-    affiliation-url: "http://www.ofce.fr"
-    orcid: "0000-0002-6198-5953"
+lang: en
+quot-lang: en
+
+author: Xavier Timbeau
 date: 2026-09-24
 format:
-  ofce-html: default
+  # ofce-html: default
+  wp-html: default
+draft: true
+stage-target: auto
+ofce_wp: true

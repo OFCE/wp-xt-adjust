@@ -1,77 +1,97 @@
 ---
-title: "Combien coûte de réduire la dette ?" 
-subtitle: "De l'intuition aux simulations avec debtwatch 2.0"
-author: Xavier Timbeau                   
+title: "What does it cost to reduce public debt?" 
+subtitle: "From intuition to simulations with debtwatch 2.0"
+# author: Xavier Timbeau                   
 date: 2026-10-26    
+# the ofce extension sets tip-prefix/tip-title, which front-matter validation rejects
 format:                                  
   wp-html: default                    
   wp-typst:
     fig-format: svg
     fig-dpi: 1200
-format-links: 
+    output-file: ofce-draft-wp-xt-adjust-en.pdf
+format-links:
   - typst
   - format: wp-typst
-    text: xt-ajustement-2609.pdf
-    icon: file-pdf  
+    text: ofce-draft-wp-xt-adjust-en.pdf
+    icon: file-pdf
 editor: visual                          
 bibliography:                           
   - references.bib
 citation: false
-thanks: Je remercie Eric Heyer pour des commentaires attentifs qui, une fois de plus, m'ont permis de débusquer des erreurs. Celles qui restent ne lui doivent rien, elles sont de ma seule responsabilité.
+thanks: I am grateful to Eric Heyer for his careful comments which, once again, enabled me to track down errors. Those that remain are in no way attributable to him and are my sole responsibility.
 ---
 
 ```{r, include=FALSE}
 ofce::init_qmd()
 
+# English conventions: captions, dwr tables, number formatting, quarter labels
+options(ofce.caption.lang = "en", dwr.lang = "en")
+
+fmt_val <- function(x, digits = 1, scale = 1, suffix = "", plus = FALSE) {
+  s <- stringr::str_c(
+    base::formatC(x = x * scale, digits = digits, big.mark = ",",
+                  decimal.mark = ".", format = "f"),
+    suffix)
+  if (plus) s <- ifelse(x > 0, stringr::str_c("+", s), s)
+  s
+}
+fmt_pct <- function(x, digits = 0, plus = FALSE) {
+  fmt_val(x, scale = 100, digits = digits, suffix = "%", plus = plus)
+}
+date_trim <- function(date) {
+  stringr::str_c("Q", lubridate::quarter(date), " ", lubridate::year(date))
+}
+
 vlabels <- tibble::tribble(
       ~name,                                                         ~value,
-   "dettep",                                       "Dette publique (% PIB)",
-     "tdep",                         "Dépenses publiques primaires (% PIB)",
-      "spp",                                       "Solde primaire (% PIB)",
-       "ci",                                    "Charge d'intérêts (% PIB)",
-       "og",                                  "Ecart de production (% PIB)",
-     "tcho",                                "Taux de chômage (% pop. act.)",
-   "txppib",                                         "Inflation (% annuel)",
-     "gpib",                         "Croissance du PIB (volume, % annuel)",
-     "gpot",             "Croissance potentielle du PIB (volume, % annuel)",
-   "ib_dep",                         "Impulsion dépenses publiques (% PIB)",
-      "tpo",                    "Taux de prélèvements obligatoires (% PIB)",
-    "r_app",                                 "Taux souverain moyen pondéré",
-  "tvnairu",   "Taux de chômage n'accélérant pas l'inflation (% pop. act.)",
-    "ib_po",                  "Impulsion prélèvements obligatoires (% PIB)",
-       "ib",                                 "Impulsion budgétaire (% PIB)",
-      "ssp",                              "Solde public structurel (% PIB)",
-      "sep",                                         "Solde public (% PIB)",
-  "vog_dep",                                    "Multiplicateur (dépenses)",
-   "vog_po",                                      "Multiplicateur (impôts)",
-   "r_inst",                     "Taux souverain 10 ans courant (% annuel)"
+   "dettep",                                       "Public debt (% of GDP)",
+     "tdep",                        "Primary public expenditure (% of GDP)",
+      "spp",                                   "Primary balance (% of GDP)",
+       "ci",                                 "Interest payments (% of GDP)",
+       "og",                                       "Output gap (% of GDP)",
+     "tcho",                        "Unemployment rate (% of labour force)",
+   "txppib",                                        "Inflation (annual %)",
+     "gpib",                               "GDP growth (volume, annual %)",
+     "gpot",                     "Potential GDP growth (volume, annual %)",
+   "ib_dep",                              "Expenditure impulse (% of GDP)",
+      "tpo",                                "Tax-to-GDP ratio (% of GDP)",
+    "r_app",                              "Weighted average sovereign rate",
+  "tvnairu", "Non-accelerating inflation rate of unemployment (% of labour force)",
+    "ib_po",                                  "Revenue impulse (% of GDP)",
+       "ib",                                   "Fiscal impulse (% of GDP)",
+      "ssp",                        "Structural government balance (% of GDP)",
+      "sep",                                   "Government balance (% of GDP)",
+  "vog_dep",                                     "Multiplier (expenditure)",
+   "vog_po",                                           "Multiplier (taxes)",
+   "r_inst",                    "Current 10-year sovereign rate (annual %)"
   ) |> pull(value, name = name)
 
 if(knitr::is_html_output())
   options(ofce.tab.font.size = 12) else
     options(ofce.tab.font.size = 10) 
 
-ibs_labs <- c("optimal1"  =  "Prév. IFE|OFCE 2609",
-              "ameco" = "Prév. IFE|OFCE 2609, og AMECO",
-              "nomult" = "Multiplicateurs nuls",
-              "optimal1_plus_r" = "Taux plus élevés (e.c. +1,7%)",
-              "optimal1_plus_r8" = "Taux plus élevés (e.c. +0,8%)",
-              "optimal1_moins_r" = "Taux moins élevés (e.c. 0%)",
-              "no2027" = "Pas d'impulsion en 2027",
-              "d2037" = "5 ans de plus",
-              "d2030" = "2 ans plutôt",
-              "optimal2" = "Impulsions optimales dès 2026",
-              "solde" = "Décroissance de la dette en 2032",
-              "multivar" = "Mult. variables dans le cycle",
-              "ogpers" = "Ecart de prod. plus persistant",
-              "highmult" = "Multiplicateurs plus élevés",
-              "dstable" = "Stabilité de la dette en 2032",
-              "dstable30" = "Stabilité de la dette en 2030",
-              "ddecroit" = "Décroissance de la dette en 2032",
-              "noognok" = "OG nul en 2025 et ec nul et k nul",
-              "noog" = "OG nul en 2025 et ec nul",
-              "noogec" = "OG nul en 2025 et ec 0.5",
-              "noogib28" = "OG nul et impulsion 26-27 et ec 0.5" )  
+ibs_labs <- c("optimal1"  =  "IFE|OFCE forecast 2609",
+              "ameco" = "IFE|OFCE forecast 2609, AMECO output gap",
+              "nomult" = "Zero multipliers",
+              "optimal1_plus_r" = "Higher rates (r-g: +1.7%)",
+              "optimal1_plus_r8" = "Higher rates (r-g: +0.8%)",
+              "optimal1_moins_r" = "Lower rates (r-g: 0%)",
+              "no2027" = "No impulse in 2027",
+              "d2037" = "Five years later",
+              "d2030" = "Two years earlier",
+              "optimal2" = "Optimal impulses from 2026",
+              "solde" = "Debt declining from 2032",
+              "multivar" = "Cycle-dependent multipliers",
+              "ogpers" = "More persistent output gap",
+              "highmult" = "Higher multipliers",
+              "dstable" = "Debt stabilisation in 2032",
+              "dstable30" = "Debt stabilisation in 2030",
+              "ddecroit" = "Debt declining from 2032",
+              "noognok" = "Zero OG in 2025, zero r-g and zero k",
+              "noog" = "Zero OG in 2025 and zero r-g",
+              "noogec" = "Zero OG in 2025 and r-g of 0.5",
+              "noogib28" = "Zero OG, 2026-27 impulse and r-g of 0.5" )  
 
 source(ofce::pathify("simulations init.R"))
 sims <- sourcoise::sourcoise(
@@ -116,7 +136,7 @@ sims_sum <- sims |>
       ibs=="d2030" ~ 2030,
       ibs=="dstable30" ~ 2030,
       TRUE ~ 2032),
-    cible = if_else(sp, "Solde", "Dette")) |> 
+    cible = if_else(sp, "Balance", "Debt")) |> 
   group_by(ibs, loss_ib, sp, date_cible, cible) |> 
   summarize(
     ibclt = -ibc[year==2050],
@@ -149,54 +169,54 @@ sims_sum <- sims |>
     detteplt, edetteplt)
 ```
 
-## Principaux résultats
+## Key findings
 
-- Une cible de dette de 120% demande un effort budgétaire de 2026 à 2032[^1] de 3,5 points de PIB (107 milliards d'euros au PIB de 2026), sur la base du scénario de la prévision d'automne 2026 de l'IFE\|OFCE en intégrant une trajectoire réaliste pour le taux souverain pondéré et un effet multiplicateur (@sec-main). En 2028, le creusement moyen de l'activité (entre 2026 et 2032) est de 1,5 point de PIB (@tbl-sum)[^2], marquant un sérieux ralentissement 4 années de suite. Le chômage atteindrait 9,4% de la population active en 2029 dans ce scénario.
+- A debt target of 120% of GDP requires a fiscal effort[^1] of 3.5 points of GDP between 2026 and 2032 (€107 billion at 2026 GDP), on the basis of the IFE\|OFCE autumn 2026 forecast scenario, incorporating a realistic path for the weighted sovereign rate and a multiplier effect (@sec-main). The average output loss (between 2026 and 2032) amounts to 1.5 points of GDP (@tbl-sum)[^2], with 2028 marking the trough of a severe slowdown lasting four consecutive years. In this scenario, unemployment would reach 9.4% of the labour force in 2029.
 
-- La stabilisation de la dette en 2032 (cible de solde, @tbl-stable) implique un effort budgétaire de 2,8% du PIB entre 2026 et 2032 (85 milliards d'euros au PIB de 2026) ; 0,7 point de moins que le scénario précédent, avec un maximum de dette publique de presque 125% du PIB en 2031. L'effort budgétaire est moindre parce que la cible de dette est moins ambitieuse, et il augmente dans le temps parce que l'écart critique augmente sous l'effet de taux de marché supérieur aux taux pondérés. Choisir une cible de solde plutôt qu'une cible de dette reporte l'effort et a un impact sur l'activité moins négatif (1,3% du PIB en moyenne entre 2026 et 2032), le chômage atteignant au plus haut 8,8% en 2028.
+- Stabilising the debt ratio in 2032 (balance target, @tbl-stable) implies a fiscal effort of 2.8% of GDP between 2026 and 2032 (€85 billion at 2026 GDP), i.e. 0.7 point less than in the previous scenario, with public debt peaking at almost 125% of GDP in 2031. The fiscal effort is smaller because the debt target is less ambitious, and it increases over time because the interest–growth differential widens as market rates exceed weighted rates. Choosing a balance target rather than a debt target defers the effort and has a less adverse impact on activity (an average output loss of 1.3% of GDP between 2026 and 2032), with unemployment peaking at 8.8% in 2028.
 
-- Si au lieu de stabiliser, on cherche à mettre la dette sur une trajectoire de réduction d'un demi point par an à partir de 2023, l'effort budgétaire nécessaire est de 3,3 points (100 milliards d'euros au PIB de 2026), inférieur de 0,2 point à la stabilisation de la dette à 120% du PIB (@tbl-decroit). La dette passe par un plus haut (124,7 % de PIB en 2031), mais décroit ensuite. C'est une alternative sérieuse à la stabilisation à 120% de la dette publique.
+- If, instead of stabilising the debt ratio, the aim is to put it on a path of decline of half a point per year from 2032, the required fiscal effort is 3.3 points of GDP (€100 billion at 2026 GDP), 0.2 point less than for stabilising debt at 120% of GDP (@tbl-decroit). Debt peaks (at 124.7% of GDP in 2031) but declines thereafter. This is a credible alternative to stabilising public debt at 120% of GDP.
 
-- Repousser la cible de dette de 5 années à 2037 au lieu de 2032 réduit marginalement l'effort budgétaire à faire (-0,2 point de PIB, @sec-d2037 et @tbl-sum) mais nettement l'impact sur l'activité (-0,6 point de PIB d'écart de production moyen, @tbl-sum). L'effort est moindre parce que les multiplicateurs jouent moins en fin de période et le moindre impact moyen sur l'activité découle d'un effort moins important étalé sur plus de temps.
+- Postponing the debt target by five years, to 2037 instead of 2032, only marginally reduces the fiscal effort required (−0.2 point of GDP, @sec-d2037 and @tbl-sum) but substantially reduces the impact on activity (−0.6 point of GDP in terms of the average output gap, @tbl-sum). The effort is smaller because multipliers matter less towards the end of the period, and the smaller average impact on activity stems from a smaller effort spread over a longer period.
 
-- Plus le multiplicateur budgétaire est bas, moins l'effort budgétaire est grand. Entre un multiplicateur nul et un multiplicateur élevé ou persistant, l'écart d'effort nécessaire est de 1 point de PIB (31 milliards d'euros au PIB de 2026) (@sec-multinuloufort). La prise en compte des multiplicateurs budgétaires est donc incontournable. Ainsi la proposition de @ratav d'une année blanche (à l'exclusion des minimas sociaux) est incompatible avec l'hypothèse d'un multiplicateur nul. À défaut de pouvoir atteindre un multiplicateur aussi faible, privilégier des mesures qui associeraient baisse d'épargne et réduction du déficit — par exemple des hausses d'impôts sur les plus riches, une taxe exceptionnelle sur les patrimoines, un gel des prestations retraites les plus élevées — est une piste plus solide, à même de réduire significativement l'effort budgétaire à faire.
+- The lower the fiscal multiplier, the smaller the fiscal effort. Between a zero multiplier and a high or persistent multiplier, the difference in the required effort is 1 point of GDP (€31 billion at 2026 GDP) (@sec-multinuloufort). Taking fiscal multipliers into account is therefore indispensable. Accordingly, the proposal by @ratav for an *année blanche* (a one-year nominal freeze, excluding minimum social benefits) is inconsistent with the assumption of a zero multiplier. If such a low multiplier cannot be achieved, favouring measures that combine lower private saving with deficit reduction — for example tax increases on the wealthiest households, an exceptional wealth levy, or a freeze of the highest pensions — is a sounder avenue, capable of significantly reducing the required fiscal effort.
 
-- Un taux souverain inférieur de 0,5 point réduit l'effort budgétaire nécessaire de 0,4 point de PIB de 2026 à 2032 (12 milliards d'euros de 2026) (@sec-annexe4). Plus précisément, 1 point de taux "coûte" 20 milliards d'euros (au PIB de 2026) d'effort budgétaire de 2026 à 2032 supplémentaire — ce coût est légèrement croissant avec les multiplicateurs. Ce facteur est donc particulièrement important.
+- A sovereign rate 0.5 point lower reduces the required fiscal effort by 0.4 point of GDP over 2026–2032 (€12 billion at 2026 GDP) (@sec-annexe4). More precisely, 1 percentage point on the interest rate "costs" an additional €20 billion (at 2026 GDP) of fiscal effort over 2026–2032 — a cost that increases slightly with the size of the multipliers. This factor is therefore particularly important, but not the only one to play ( @fig-contributions).
 
-- Le niveau de la dette importe peu tant que l'écart critique $r-g$ reste faible (@sec-d60). En revanche, si celui-ci devenait élevé — ce qui prend du temps du fait de la maturité de la dette publique — alors l'effet boule de neige peut devenir significatif. Comme vu au paragraphe précédent, pour une dette de l'ordre de 120% du PIB, un point d'écart critique induit un effort budgétaire accru de 18% (19,6 milliards) alors que ce coût n'est que de 9,5 milliards (9%) si la dette est à 60% du PIB[^3]. Plus précisemment donc, un écart critique élevé est un écart critique qui accroit significativement l'effort budgétaire et lorsque la dette est de 120% du PIB, 1 point d'écart critique entre dasn cette catégorie.
+- The level of debt matters little as long as the interest–growth differential $r-g$ remains small (@sec-d60). Conversely, should it become large — which takes time owing to the maturity structure of public debt — the snowball effect could become significant. As noted in the previous paragraph, for debt of around 120% of GDP, one point of interest–growth differential raises the fiscal effort by 18% (€19.6 billion), whereas this cost is only €9.5 billion (9%) (@fig-taux) when debt stands at 60% of GDP[^3]. More precisely, then, a high differential is one that significantly increases the fiscal effort, and when debt is 120% of GDP, a differential of 1 point falls into this category.
 
-- L'analyse stochastique conduite (@sec-annexe5), qui ne prend en compte que partiellement les risques et aléas possibles, montre une incertitude de l'ordre de plus ou moins 0,5 point de PIB sur les efforts budgétaires de 2026 à 2032 (@tbl-sum).
+- The stochastic analysis (@sec-annexe5), which captures the possible risks and shocks only partially, points to an uncertainty of around plus or minus 0.5 point of GDP on the 2026–2032 fiscal effort (@tbl-sum).
 
-[^1]: On appelle dans ce texte effort budgétaire l'opposé des impulsions budgétaires cumulés sur plusieurs années (la période d'intérêt pour l'ajustement budgétaire). Le terme "effort budgétaire" est parfois, et en particulier dans cette prévision, utilisé pour désigner l'impulsion corrigée des stabilisateurs automatiques et de l'élasticité des prélèvements obligatoires à leurs bases ou au PIB. Le cumul est ici fait de 2026 à 2032. Si on considère que 2026 est acquis, il suffit d'enlever à cet effort budgétaire l'opposé de l'impulsion de 2026, qui est de 0,5 point de PIB (15 milliards d'euros au PIB de 2026) à l'effort budgétaire de 2026 à 2032.
+[^1]: In this paper, *fiscal effort* denotes the opposite of fiscal impulses cumulated over several years (the period relevant to the fiscal adjustment). The term "fiscal effort" is sometimes used — notably in the forecast referred to here — to denote the impulse corrected for automatic stabilisers and for the elasticity of taxes and social contributions to their bases or to GDP. Here, impulses are cumulated from 2026 to 2032. If 2026 is regarded as a given, the opposite of the 2026 impulse, i.e. 0.5 point of GDP (€15 billion at 2026 GDP), simply needs to be subtracted from the 2026–2032 fiscal effort.
 
-[^2]: Les effets cumulés des scénarios sur l'effort budgétaire et sur l'écart de production sont évalués par rapport à la situation de 2025. Une alternative est de les considérer en différence avec un scénario de référence, qui pourrait être le scénario fil de l'eau (@sec-annexe2) ou le scénario pas de multiplicateur (@sec-multinuloufort). L'évaluation de la perte de production est par exemple augmenté de l'écart de production négatif initial qui persiste qui pèse pour 0,9 dans le scénario fil de l'eau ou -0,5 dans le cas du multiplicateur nul. Nous choisissons pour la simplicité d'écarter cette comparaison avec une scénario de référence bien que cela ne permette pas directement de répondre à la question "quel impact des hypothèses sur la perte cumulée de production".
+[^2]: The cumulative effects of the scenarios on the fiscal effort and on the output gap are assessed relative to the 2025 situation. An alternative would be to measure them as deviations from a reference scenario, such as the no-policy-change scenario (@sec-annexe2) or the zero-multiplier scenario (@sec-multinuloufort). The estimated output loss, for instance, is increased by the persistent initial negative output gap, which accounts for 0.9 in the no-policy-change scenario or −0.5 in the zero-multiplier case. For the sake of simplicity, we do not make this comparison with a reference scenario, even though this means we cannot directly answer the question "what is the impact of the assumptions on the cumulative output loss?".
 
-[^3]: Il est intuitif que le coût soit divisé par 2 quand la dette publique est divisée par 2. En revanche l'effort budgétaire supplémentaire ne correspond pas à l'intuition. Un point d'écart critique à terme devrait entraîner un coût supplémentaire de 1,2 point de PIB (120% de dette fois 1 point d'écart critique), soit 36 milliards au PIB de 2026. Ce montant se retrouve dans les colonnes "LT" des tableaux de similations. A l'horizon de 2032, l'effet écart critique encore négatif induit que la dette n'est pas un coût mais un avantage.
+[^3]: It is intuitive that the cost should be halved when public debt is halved. By contrast, the additional fiscal effort runs counter to intuition. In the long run, one point of interest–growth differential should entail an additional cost of 1.2 points of GDP (120% debt times 1 point of differential), i.e. €36 billion at 2026 GDP. This amount is found in the "LT" columns of the simulation tables. At the 2032 horizon, because the interest–growth differential is still negative, debt is not a cost but an advantage.
 
-## De l'intuition à la simulation
+## From intuition to simulation
 
-La stabilisation de la dette publique demande que le solde public doit être égal à une valeur particulière, qu'on appelle "le solde stabilisant la dette". L'équation principale de la dynamique de la dette publique est rappelée dans l'@tip-dyndet. Le solde stabilisant la dette publique (en point de PIB) dépend du taux d'intérêt (apparent, qui change à chaque période), du taux de croissance (nominal de chaque période) et du ratio dette sur PIB (qui évolue dans le temps).
+Stabilising public debt requires the government balance to be equal to a specific value, referred to as the *debt-stabilising balance*. The core equation of public debt dynamics is recalled in @tip-dyndet. The debt-stabilising balance (in points of GDP) depends on the interest rate (the implicit rate, which changes every period), the growth rate (nominal, for each period) and the debt-to-GDP ratio (which evolves over time).
 
 ::: {#tip-dyndet .callout-tip}
-## la dynamique de la dette publique
+## Public debt dynamics
 
-L'évolution du ratio de dette publique suit une loi simple où $d$ est le ratio dette sur PIB, $r$ le taux d'intérêt sur la dette publique (apparent, nominal), $g$ la croissance du PIB (nominal) et $s_p$ le solde public hors charge d'intérêts, i.e. primaire :
+The public debt ratio evolves according to a simple law, where $d$ is the debt-to-GDP ratio, $r$ the interest rate on public debt (implicit, nominal), $g$ GDP growth (nominal) and $s_p$ the government balance excluding interest payments, i.e. the primary balance:
 
 $$ 
 \Delta d = \frac{r-g}{1+g} d_{-1} + s_p
 $$
 
-La modélisation employée repose sur cette équation en intégrant : 1. les éléments de dynamique des différentes variables, 2. les interactions entre les variables, certaines n'apparaissant pas dans cette équation (l'écart de production, l'inflation notamment).
+The modelling used here relies on this equation while incorporating: 1. the dynamics of the various variables, 2. the interactions between variables, some of which do not appear in this equation (notably the output gap and inflation).
 
-On peut déduire de cette équation le solde stabilisant la dette publique à chaque instant, ainsi qu'une condition d'équilibre de la dette dans un équilibre stationnaire (i.e. dans lequel toutes les variables sont constantes en fonction du temps). Ainsi le solde stabilisant la dette peut s'écrire :
+From this equation one can derive the debt-stabilising balance at each point in time, as well as an equilibrium condition for debt in a steady state (i.e. one in which all variables are constant over time). The debt-stabilising balance can thus be written:
 
 $$ 
 s_p^* = - \frac{r-g}{1+g} d_{-1}
 $$
 
-Chacune des variables changeant dans le temps, par exemple, le taux apparent sous l'effet du roulement de la dette, le solde stabilisant la dette publique peut évoluer dans le temps.
+Since each of the variables changes over time — for example, the implicit rate as debt is rolled over — the debt-stabilising balance may itself change over time.
 
-Le @fig-dette illustre ces concepts pour le cas français de 2007 à 2026.
+@fig-dette illustrates these concepts for France from 2007 to 2026.
 
 ```{r, include=FALSE}
 dette_trim <- source_data("dette_trim.r")$trim |> 
@@ -206,31 +226,31 @@ dette_trim <- source_data("dette_trim.r")$trim |>
   mutate(
     tta = glue(
       "<b>{date_trim(time)}</b>
-      Taux souverain 10 ans trimestre en cours: {round(r10ans,2)}%/an
-      Croissance: {fmt_pct(g,2)}/an
-      Ecart critique (trimestre): {fmt_pct(ec,2)}/an
-      BdN (trimestre): {fmt_pct(ec*dm/(1+g),2)}/an"  ),
+      Current-quarter 10-year sovereign rate: {round(r10ans,2)}%/yr
+      Growth: {fmt_pct(g,2)}/yr
+      Interest–growth differential (quarter): {fmt_pct(ec,2)}/yr
+      Snowball effect (quarter): {fmt_pct(ec*dm/(1+g),2)}/yr"  ),
     ttb = glue(
       "<b>{date_trim(time)}</b>
-      Taux souverain 10 ans pondéré: {fmt_pct(rapp,2)}/an
-      Croissance: {fmt_pct(g,2)}/an
-      Ecart critique (pondéré): {fmt_pct(ec_app,2)}/an
-      BdN (pondéré): {fmt_pct(ec_app*dm/(1+g),2)}/an"  ),
+      Weighted 10-year sovereign rate: {fmt_pct(rapp,2)}/yr
+      Growth: {fmt_pct(g,2)}/yr
+      Interest–growth differential (weighted): {fmt_pct(ec_app,2)}/yr
+      Snowball effect (weighted): {fmt_pct(ec_app*dm/(1+g),2)}/yr"  ),
     ttcdm = glue(
       "<b>{date_trim(time)}</b>
-      \u2192Déficit au sens de Maastricht: {fmt_pct(-def_ma,2)} du PIB
-      Déficit stabilisant la dette: {fmt_pct(-ss,2)} du PIB"  ),
+      \u2192Maastricht deficit: {fmt_pct(-def_ma,2)} of GDP
+      Debt-stabilising deficit: {fmt_pct(-ss,2)} of GDP"  ),
     ttcss = glue(
       "<b>{date_trim(time)}</b>
-      Déficit au sens de Maastricht: {fmt_pct(-def_ma,2)} du PIB
-      \u2192Déficit stabilisant la dette: {fmt_pct(-ss,2)} du PIB"  ),
+      Maastricht deficit: {fmt_pct(-def_ma,2)} of GDP
+      \u2192Debt-stabilising deficit: {fmt_pct(-ss,2)} of GDP"  ),
     ttd = glue(
       "<b>{year(time)}</b>
-      Dette publique au sens de Maastricht: {fmt_pct(dm,1)} du PIB"  ) )
+      Maastricht public debt: {fmt_pct(dm,1)} of GDP"  ) )
 txt <- tribble(
   ~x, ~y, ~text, ~hjust, ~width,
-  "2024-01-01", -0.02, "avec le taux souverain pondéré", 0, 1,
-  "2016-01-01", -0.035, "avec le taux souverain courant", 1, 2 )
+  "2024-01-01", -0.02, "with the weighted sovereign rate", 0, 1,
+  "2016-01-01", -0.035, "with the current sovereign rate", 1, 2 )
 sx <- scale_x_discrete(
   breaks = str_c(seq(2007, 2026, by=1), "-01-01"),
   minor_breaks = str_c(seq(2007, 2026, by=1), "-01-01"),
@@ -240,7 +260,7 @@ sx <- scale_x_discrete(
 
 ```{r}
 #| label: fig-dette
-#| fig-cap: La dette et sa dynamique de 2007 à 2026
+#| fig-cap: Public debt and its dynamics, 2007–2026
 #| fig-asp: 1.2
 
 gec <- ggplot(dette_trim) +
@@ -252,9 +272,9 @@ gec <- ggplot(dette_trim) +
     aes(y = ec*dm/(1+g), tooltip = tta),
     size = 1, col = "transparent", 
     hover_nearest = TRUE ) +
-  labs(y="% par an",
+  labs(y="% per year",
        x = NULL,
-       subtitle= "(a) d \u00d7 (r-g)/(1+g) (effet boule de neige), taux de l'année") +
+       subtitle= "(a) d \u00d7 (r-g)/(1+g) (snowball effect), current-year rate") +
   scale_fill_manual(values = c("p" = "red", "n"= "green"))+
   sx+
   scale_y_continuous(
@@ -272,9 +292,9 @@ gecapp <- ggplot(dette_trim) +
     aes(y = ec_app*dm/(1+g), tooltip = ttb),
     size = 1, col = "transparent", 
     hover_nearest = TRUE ) +
-  labs(y="% par an",
+  labs(y="% per year",
        x = NULL,
-       subtitle= "(b) d \u00d7 (r-g)/(1+g) (effet boule de neige), taux pondéré") +
+       subtitle= "(b) d \u00d7 (r-g)/(1+g) (snowball effect), weighted rate") +
   scale_fill_manual(values = c("p" = "red", "n"= "green"))+
   sx+
   scale_y_continuous(
@@ -284,8 +304,8 @@ gecapp <- ggplot(dette_trim) +
 
 txt <- tribble(
   ~x, ~y, ~text, ~hjust, ~width,
-  "2011-04-01", -0.07, "Solde public effectif", 0, 1,
-  "2010-04-01", 0.015, "Solde stabilisant la dette publique", 0, 2 )
+  "2011-04-01", -0.07, "Actual government balance", 0, 1,
+  "2010-04-01", 0.015, "Debt-stabilising balance", 0, 2 )
 
 gssp <- ggplot(dette_trim) +
   aes(x=time) +
@@ -309,15 +329,15 @@ gssp <- ggplot(dette_trim) +
     aes(x, y, hjust = hjust, label = text),
     width = 2,
     size = 6, size.unit = "pt") + 
-  labs(y="% du PIB",
+  labs(y="% of GDP",
        x = NULL, 
-       subtitle= "(c) Solde et solde stabilisant la dette") +
+       subtitle= "(c) Government balance and debt-stabilising balance") +
   sx +
   scale_y_continuous(labels = label_percent(1),
                      limits = c(-0.11, 0.06)) +
   guides(x = guide_axis(minor.ticks = TRUE))
 
-# dette publique au sens de Maastricht
+# Maastricht public debt
 
 gdm <- ggplot(dette_trim) +
   aes(x=time) +
@@ -327,9 +347,9 @@ gdm <- ggplot(dette_trim) +
   geom_point_interactive(
     aes(y = dm, tooltip = ttd),
     size = 1, col = "transparent", hover_nearest = TRUE )+
-  labs(y="% du PIB",
+  labs(y="% of GDP",
        x = NULL,
-       subtitle= "(d) Dette publique au sens de Maastricht") +
+       subtitle= "(d) Maastricht public debt") +
   sx +
   scale_y_continuous(labels = label_percent(1), 
                      limits = c(0.6, NA)) +
@@ -345,24 +365,24 @@ gfinal <- gec/gecapp/gssp/gdm  +
 gd <- gfinal +
   ofce_caption(
     source = "INSEE, Banque de France",
-    lecture = "Le panneau (b) indique la contribution de l'écart critique à la dynamique de la dette. Le panneau (a) ce que serait cette contribution si le taux pondéré (ou apparent) était le taux souverain à 10 ans instantané"
+    lecture = "Panel (b) shows the contribution of the interest–growth differential to debt dynamics. Panel (a) shows what this contribution would be if the weighted (or implicit) rate were equal to the instantaneous 10-year sovereign rate"
   )
 
 girafy(gd)
 ```
 :::
 
-### Le calcul naïf de l'effort budgétaire
+### The naive calculation of the fiscal effort
 
-Pour stabiliser la dette publique à 120%, avec un taux apparent de 2,3% (le taux nominal apparent sur la dette publique française en 2026) et un taux de croissance nominal courant de 2,2% par an (la croissance de 2026 telle que prévue par l'IFE\|OFCE en octobre 2026, voir @tbl-optimal1), il faut un solde primaire de 0,1 point de PIB. L'écart avec le déficit public primaire anticipé pour 2026 est donc de 3 points de PIB (91 milliards au PIB de 2026) (ligne 5 @tbl-naif).
+To stabilise public debt at 120% of GDP, with an implicit rate of 2.3% (the nominal implicit rate on French public debt in 2026) and a current nominal growth rate of 2.2% per year (growth in 2026 as forecast by IFE\|OFCE in October 2026, see @tbl-optimal1), a primary balance of 0.1 point of GDP is required. The gap with the primary deficit expected for 2026 is therefore 3 points of GDP (€91 billion at 2026 GDP) (row 5 of @tbl-naif).
 
-Si, au lieu de la croissance de 2026, on retient la croissance potentielle (1,1% par an en volume, 1,8 % d'inflation), au lieu du déficit public primaire, le déficit public primaire structurel (i.e. corrigé de l'effet de la conjoncture, -2,2% du PIB en 2026) et pour le taux d'intérêt le taux pondéré courant, le solde stabilisant la dette publique est de -0,7 point de PIB et l'écart avec le solde primaire structurel est de 1,5 point de PIB, soit un peu plus de 44 milliards au PIB de 2026 (ligne 8 @tbl-naif). En utilisant les mêmes hypothèses mais en considérant le taux de long terme (écart critique de 0,5%), on aboutit à un effort budgétaire de 85 milliards d'euros (ligne 12 @tbl-naif).
+If, instead of 2026 growth, one uses potential growth (1.1% per year in volume, with 1.8% inflation); instead of the primary deficit, the structural primary deficit (i.e. adjusted for the cycle, −2.2% of GDP in 2026); and, for the interest rate, the current weighted rate, the debt-stabilising balance is −0.7 point of GDP and the gap with the structural primary balance is 1.5 points of GDP, i.e. slightly more than €44 billion at 2026 GDP (row 8 of @tbl-naif). Using the same assumptions but with the long-term rate (an interest–growth differential of 0.5%), the fiscal effort amounts to €85 billion (row 12 of @tbl-naif).
 
-Le @tbl-naif balaye 12 configurations suivant que l'on part du déficit primaire ou structurel (i.e. corrigé de la conjoncture), de ce qu'on prend le taux observé sur les marchés, moyen pondéré ou estimé à long terme (à partir d'un écart critique $r-g$ postulé à 0,5%) et de la référence de croissance nominale que l'on emploie (la valeur anticipée de la croissance en volume et de la croissance du prix du PIB en 2026 ou la croissance potentielle et l'inflation cible de la Banque Centrale). Cependant, chacune de ces combinaisons est insatisfaisante d'autant que l'éventail des efforts budgétaires évalués va de 46 à 192 milliards d'euros, ce qui est très large.
+@tbl-naif covers 12 configurations, depending on whether one starts from the primary or the structural (i.e. cyclically adjusted) deficit; on whether one uses the rate observed on markets, the weighted average rate or an estimated long-term rate (based on an interest–growth differential $r-g$ assumed to be 0.5%); and on the nominal growth benchmark (expected volume growth and GDP deflator growth in 2026, or potential growth and the central bank's inflation target). Each of these combinations is nonetheless unsatisfactory, all the more so as the estimated fiscal efforts range from €46 billion to €192 billion, a very wide interval.
 
 ```{r}
 #| label: tbl-naif
-#| tbl-cap: "Effort budgétaire 2026 à 2032, approche naïve"
+#| tbl-cap: "Fiscal effort 2026–2032, naive approach"
 
 dd <- readxl::read_xlsx("data/effort naif.xlsx")
 
@@ -373,33 +393,33 @@ dd |>
     data_row.padding = gt::px(2),
     typst_width = 90) |> 
   cols_hide(dstar) |>
-  tab_spanner("Solde public (2026)", c(sp, sps)) |> 
-  tab_spanner("Taux d'intérêt", c(r_app, r_ct, r_lt)) |> 
-  tab_spanner("Croissance du PIB", c(g, gpot)) |> 
-  tab_spanner("Effort budgétaire", c(ecart, ecart_m)) |> 
+  tab_spanner("Government balance (2026)", c(sp, sps)) |> 
+  tab_spanner("Interest rate", c(r_app, r_ct, r_lt)) |> 
+  tab_spanner("GDP growth", c(g, gpot)) |> 
+  tab_spanner("Fiscal effort", c(ecart, ecart_m)) |> 
   cols_label(
     nrow ~ "",
-    sp ~ "primaire",
-    sps ~ "primaire structurel",
-    r_app ~ md("pondéré  \n courant"),
-    r_ct ~ md("de marché  \n courant"),
-    r_lt ~ md("de long terme"),
-    g ~ "de 2026",
-    gpot ~ "potentielle",
-    spstab ~ md("Solde primaire  \n stabilisant  \n la dette"),
-    ecart ~ "% PIB",
-    ecart_m ~ md("milliards €  \n (PIB 2026)") ) |> 
+    sp ~ "primary",
+    sps ~ "structural primary",
+    r_app ~ md("weighted  \n current"),
+    r_ct ~ md("market  \n current"),
+    r_lt ~ md("long-term"),
+    g ~ "2026",
+    gpot ~ "potential",
+    spstab ~ md("Debt-  \n stabilising  \n primary balance"),
+    ecart ~ "% of GDP",
+    ecart_m ~ md("€ billion  \n (2026 GDP)") ) |> 
   fmt_missing() |> 
-  ofce::ofce_fmt_decimal() |> 
+  fmt_number(decimals = 1) |> 
   fmt_number(c(nrow, ecart_m) , decimals = 0) |> 
   cols_width(
     nrow ~px(30),
     spstab ~ px(68),
     everything() ~ px(70) ) |> 
   tab_footnote(
-    "Ecart critique (r-g) de 0,5%", cells_column_labels(r_lt) ) |> 
+    "Interest–growth differential (r-g) of 0.5%", cells_column_labels(r_lt) ) |> 
   tab_footnote(
-    "Taux maximal d'octobre 2026 (20/10)", cells_column_labels(r_ct) ) |> 
+    "Highest rate in October 2026 (20 October)", cells_column_labels(r_ct) ) |> 
   tab_footnote(
     md("<em>s<sub>p</sub> = d^*^ \u00d7 (r-g)/(1+g)</em>"), cells_column_labels(spstab) ) |> 
   tab_footnote(
@@ -407,52 +427,48 @@ dd |>
   tab_style(
       cell_fill(color = "grey90"),
       cells_body(c(ecart, ecart_m))  )
-# |> 
-#   gt::opt_interactive(
-#     use_sorting = TRUE, 
-#     page_size_default = 12)
   
 ```
 
-### Le calcul de l'effort budgétaire par les simulations
+### Calculating the fiscal effort through simulations
 
-L'objet de ce document est d'aller plus loin que l'approche naïve et de prendre en compte le plus possible la dynamique et les interactions de chacune des variables du problème.
+The aim of this paper is to go beyond the naive approach and to account, as far as possible, for the dynamics of each of the variables involved and for the interactions between them.
 
-Le taux d'intérêt pris en compte, décisif dans l'équation de la dette, est le taux souverain pondéré. Mais ce taux n'est pas une donnée fixe, il évolue en fonction du taux de marché courant et de l'évolution de ce taux. Il dépend aussi du niveau de la dette et de son renouvellement. Le taux de croissance du PIB, autre variable importante, dépend de la croissance potentielle à long terme, mais aussi des efforts budgétaires, à travers le mécanisme du multiplicateur budgétaire, mais aussi par la dynamique propre de l'écart de croissance et le temps caractéristique qu'il faut pour retourner sur la trajectoire d'activité potentielle. L'inflation elle-même suit un processus qui dépend de l'écart d'activité mais aussi de chocs propres. À chaque période, chacune des variables de l'équation fondamentale de la dynamique de la dette suit une trajectoire et interagit avec les choix budgétaires opérés. La méthode naïve ne permet donc qu'un calcul grossier que les simulations permettent de préciser.
+The interest rate considered, which is decisive in the debt equation, is the weighted sovereign rate. This rate, however, is not fixed: it evolves with the current market rate and with changes in that rate. It also depends on the level of debt and on its rollover. The GDP growth rate, another key variable, depends on long-term potential growth, but also on fiscal effort, through the fiscal multiplier mechanism, as well as on the intrinsic dynamics of the output gap and the characteristic time required to return to the potential output path. Inflation itself follows a process that depends on the output gap but also on its own shocks. In each period, every variable in the fundamental equation of debt dynamics follows a path and interacts with the fiscal choices made. The naive method therefore provides only a rough estimate, which the simulations allow us to refine.
 
-Les simulations détaillées ci-dessous ont été mises en œuvre dans @psmt et @timbeau2025 dans un cadre théorique proche de @ragot2026 et @timbeau2025. Cette modélisation découle de travaux antérieurs par @heyertimbeau2017 et @timbeauelliotaurisserguesericheyer2021. Une première version du modèle debtwatch a été développé pour le rapport iAGS (notamment @iags13 et l'[annexe de modélisation](https://www.iags-project.org/documents/iags_appendix2013.pdf), mais aussi les rapports de 2014 à 2019, voir le [site iAGS](https://www.iags-project.org)). Les simulations s'appuient sur la prévision d'automne 2026 de l'IFE\|OFCE [@prev2609]
+The simulations detailed below were implemented in @psmt and @timbeau2025, within a theoretical framework close to that of @ragot2026 and @timbeau2025. This modelling builds on earlier work by @heyertimbeau2017 and @timbeauelliotaurisserguesericheyer2021. A first version of the debtwatch model was developed for the iAGS report (notably @iags13 and its [modelling appendix](https://www.iags-project.org/documents/iags_appendix2013.pdf), as well as the 2014 to 2019 reports; see the [iAGS website](https://www.iags-project.org)). The simulations are based on the IFE\|OFCE autumn 2026 forecast [@prev2609].
 
-Les éléments présentés sont compatibles avec les hypothèses de @ratav ou les évaluations naïves du @tbl-naif, même si les conclusions s'en écartent[^4]. En particulier, le cas central des simulations (@tbl-optimal1) aboutit à un effort budgetaire de 2026 à 2032 de 3,5 points de PIB (113 milliards d'euros au PIB de 2026)[^5] pour des hypothèses qui convergent à long terme avec celle de la ligne 12 du @tbl-naif.
+The elements presented here are consistent with the assumptions of @ratav and with the naive estimates of @tbl-naif, even though the conclusions differ[^4]. In particular, the central case of the simulations (@tbl-optimal1) yields a fiscal effort of 3.5 points of GDP over 2026–2032 (€113 billion at 2026 GDP)[^5] under assumptions that converge in the long run with those of row 12 of @tbl-naif.
 
-[^4]: Voir à ce sujet les échanges de François Geerolf avec le DG de l'INSEE [@geerolf:hal-05506068].
+[^4]: See, on this subject, the exchanges between François Geerolf and the Director General of INSEE [@geerolf:hal-05506068].
 
-[^5]: Comme indiqué plus haut, si l'on considère 2026 acquis, l'effort budgétaire de 2027 à 2032 est de 3,0% du PIB soit 91 milliards au PIB de 2026.
+[^5]: As indicated above, if 2026 is regarded as a given, the fiscal effort over 2027–2032 is 3.0% of GDP, i.e. €91 billion at 2026 GDP.
 
-L'écart supplémentaire de 0,7 point de PIB (21 milliards d'euros au PIB de 2026) découle de la somme des éléments accroissant l'effort ({{< fa circle-plus >}}) ou le réduisant ({{< fa circle-minus >}}) et qui sont pris en compte dans les simulations. La relative proximité des résultats masque donc des effets massifs mais de sens contraire.
+The additional gap of 0.7 point of GDP (€21 billion at 2026 GDP) results from the sum of the factors that increase the effort ({{< fa circle-plus >}}) or reduce it ({{< fa circle-minus >}}) and that are taken into account in the simulations. The relative closeness of the results thus masks large effects of opposite sign.
 
-{{< fa circle-minus >}} Le taux pondéré est plus faible et augmente progressivement, l'effet boule de neige est nul voire négatif au départ puis s'accroît avec la hausse du taux pondéré dès que le taux courant est élevé. Si l'écart critique était resté nul, l'effort budgétaire aurait été inférieur 0,4 point de PIB.
+{{< fa circle-minus >}} The weighted rate is lower and rises only gradually; the snowball effect is zero or even negative at first, then increases with the rise in the weighted rate once the current rate is high. Had the interest–growth differential remained at zero, the fiscal effort would have been 0.4 point of GDP lower.
 
-{{< fa circle-minus >}} La dynamique de l'écart de production accroît la croissance effective (en volume) par rapport au potentiel dans les premières périodes.
+{{< fa circle-minus >}} The dynamics of the output gap raise actual growth (in volume) relative to potential growth in the early periods.
 
-{{< fa circle-minus >}} L'inflation est supérieure à la cible initialement, et contribue à un effet boule de neige nul ou négatif les premières années, bien qu'ensuite, du fait d'un écart de croissance négatif, elle passe en dessous de la cible de la banque centrale.
+{{< fa circle-minus >}} Inflation is initially above target and contributes to a zero or negative snowball effect in the first years, although it subsequently falls below the central bank's target owing to a negative output gap.
 
-{{< fa circle-plus >}} Les impulsions budgétaires réduisent la croissance, par l'effet multiplicateur budgétaire, ce qui induit un écart critique plus élevé (et donc qui est moins favorable et accroît l'effort).
+{{< fa circle-plus >}} Fiscal impulses reduce growth through the fiscal multiplier, which raises the interest–growth differential (making it less favourable and increasing the effort).
 
-{{< fa circle-plus >}} L'écart de production est creusé en 2026, du fait de la conjoncture internationale et des chocs antérieurs (notamment budgétaires).
+{{< fa circle-plus >}} The output gap widens in 2026, owing to the international environment and to past shocks (notably fiscal ones).
 
-{{< fa circle-plus >}} Le taux d'intérêt est plus élevé en 2026 du fait de tensions, que l'on suppose temporaires (@sec-main).
+{{< fa circle-plus >}} The interest rate is higher in 2026 owing to market tensions, which are assumed to be temporary (@sec-main).
 
-{{< fa circle-plus >}} L'accumulation des déficits (au dessus du déficit stabilisant la dette publique) accroît la dette, accroît la charge d'intérêt et augmente le solde stabilisant la dette.
+{{< fa circle-plus >}} The accumulation of deficits (above the debt-stabilising deficit) increases debt, raises interest payments and increases the debt-stabilising balance.
 
-{{< fa circle-plus >}} La persistance d'un écart de production négatif et donc d'un chômage au dessus du chômage d'équilibre réduit marginalement l'inflation et augmente l'effet boule de neige.
+{{< fa circle-plus >}} The persistence of a negative output gap, and hence of unemployment above its equilibrium level, marginally reduces inflation and increases the snowball effect.
 
-Lorsque le multiplicateur dépend de l'écart de croissance (multiplicateurs variables dans le cycle) certaines des boucles de rétroaction sont amplifiées.
+When the multiplier depends on the output gap (cycle-dependent multipliers), some of these feedback loops are amplified.
 
-Le @tbl-sum résume les simulations -- décrites pour la plupart dans la @sec-resvar en détail -- qui permettent d'apprécier l'ampleur de chacun de ces facteurs sur l'effort budgétaire à accomplir. Les simulations sont réalisées avec une méthode de Monte-Carlo en introduisant des variables aléatoires (voir @sec-annexe5). On ne réalise pas une optimisation complète pour chaque tirage aléatoire, la politique budgétaire est déterminée par une règle linéaire pour la partie stiochastique et par une optimation sous contrainte pour la partie déterministe. Ainsi, pour des perturbations aléatoires de l'écart de production et de l'inflation correspondant à l'historique de la France, on estime une erreur à 95% de ± 0,6 point de PIB pour l'effort budgétaire de 2026 à 2032 dans le scénario prev2609 (ligne 1 @tbl-sum).
+@tbl-sum summarises the simulations — most of which are described in detail in @sec-resvar — that make it possible to gauge the contribution of each of these factors to the required fiscal effort. The simulations are carried out using a Monte Carlo method by introducing random variables (see @sec-annexe5). A full optimisation is not performed for each random draw: fiscal policy is determined by a linear rule for the stochastic component and by constrained optimisation for the deterministic component. Thus, for random disturbances to the output gap and inflation consistent with French historical experience, the 95% error band is estimated at ± 0.6 point of GDP for the 2026–2032 fiscal effort in the prev2609 scenario (row 1 of @tbl-sum).
 
 ```{r}
 #| label: tbl-sum
-#| tbl-cap: Résumé des simulations
+#| tbl-cap: Summary of simulations
 
 sims_sum |> 
   slice(1:15) |> 
@@ -478,50 +494,50 @@ sims_sum |>
   relocate(i) |> 
   gt() |> 
   tab_spanner(
-    "De 2026 à la cible",
+    "From 2026 to target year",
     c(ibc, ogc, dettep)) |>
   tab_spanner(
-    "\u00c0 long terme",
+    "Long term",
     id = "lt",
     c(ibclt)) |>
   cols_label(
     i = "",
-    libs ="", cible = "Cible", date_cible = "Année",
-    ogc = "Perte d'activité", ibc = "Effort budgétaire", dettep = "Dette",
-    ibclt = "Effort budgétaire") |> 
+    libs ="", cible = "Target", date_cible = "Year",
+    ogc = "Output loss", ibc = "Fiscal effort", dettep = "Debt",
+    ibclt = "Fiscal effort") |> 
   cols_align("right", -c(libs, cible, date_cible)) |>
   fmt_number(
     -c(i, libs, cible, date_cible),
     scale_by = 100, 
     decimals = 1,
-    sep_mark = " ",
-    dec_mark = ",") |> 
+    sep_mark = ",",
+    dec_mark = ".") |> 
   cols_width(
     i ~ px(20),
     libs ~ px(220),
     cible ~ px(40),
     date_cible ~ px(40),
     everything() ~ px(70)  ) |> 
-  tab_footnote("og = écart de production, AMECO 5/2026", 
+  tab_footnote("og = output gap, AMECO 5/2026", 
                cells_body(libs, row = str_detect(libs, "AMECO"))) |>
-  tab_footnote("% du PIB", cells_column_labels(-c(i, libs, cible, date_cible))) |>
+  tab_footnote("% of GDP", cells_column_labels(-c(i, libs, cible, date_cible))) |>
   tab_footnote(
-    "Opposé du cumul des impulsions de 2026 à l'année de la cible de dette ou de solde",
+    "Opposite of cumulative impulses from 2026 to the target year (debt or balance target)",
     cells_column_labels(ibc)) |>
   tab_footnote(
-    "Perte d'activité moyenne de 2026 à l'année de la cible de dette ou de solde", 
+    "Average output loss from 2026 to the target year (debt or balance target)", 
     cells_column_labels(ogc)) |>
   tab_footnote(
-    "Dette en % du PIB l'année ciblée", 
+    "Debt as % of GDP in the target year", 
     cells_column_labels(dettep)) |>
   tab_footnote(
-    "La simulation fonctionne sans règle budgétaire, l'impulsion n'est donc pas stochastique", 
-    cells_body("libs", rows = cible == "Solde" ) ) |>
+    "The simulation runs without a fiscal rule; the impulse is therefore not stochastic", 
+    cells_body("libs", rows = cible == "Balance" ) ) |>
   tab_footnote(
     "2050", cells_column_spanners(spanners = "lt")) |>
   ofce_caption(
-      source = "Données AMECO mai 2026, debtwatch 2.0",
-      note = "256 tirages, la simulation démarre en 2026. Les chiffres principaux sont ceux de la simulation détermiste et entre paranthèse l'intervalle de confiance à 95% issue des simulations stochastiques") |> 
+      source = "AMECO data May 2026, debtwatch 2.0",
+      note = "256 draws; the simulation starts in 2026. Headline figures are those of the deterministic simulation; figures in brackets give the 95% confidence interval derived from the stochastic simulations") |> 
   ofce::ofce_tab_options(
     typst_width = 90 ) |> 
   tab_style(
@@ -531,32 +547,32 @@ sims_sum |>
 ```
 
 ```{r, results='asis'}
-ofce::margin_download(sims_sum, "ofce-xt-sims-tblsum", "Données du tableau", prefix="")
+ofce::margin_download(sims_sum, "ofce-xt-sims-tblsum-en", "Table data", prefix="")
 ```
 
 ```{r, results='asis'}
-ofce::margin_download(sims, "ofce-xt-sims-adjust", "Simulations", prefix="")
+ofce::margin_download(sims, "ofce-xt-sims-adjust-en", "Simulations", prefix="")
 ```
 
-### Une décomposition de l'effort budgétaire de 2026 à 2032
+### A decomposition of the 2026–2032 fiscal effort
 
-Si on isole 4 facteurs principaux pour l'effort fiscal (simplifiant donc @tbl-sum) qui sont :
+Four main drivers of the fiscal effort can be isolated (thereby simplifying @tbl-sum):
 
-1.  l'écart négatif de production en 2026, résultat des ajustements budgétaires passés, de la géopolitique (hausse du prix du pétrole après la fermeture du détroit d'Ormuz) et de la sécheresse et la canicule en 2026
+1.  the negative output gap in 2026, resulting from past fiscal adjustments, from geopolitics (the rise in oil prices following the closure of the Strait of Hormuz) and from the 2026 drought and heatwave;
 
-2.  Un effet multiplicateur. Un monde sans multiplicateur est une abstraction mais cela permet d'isoler l'impact de ce facteur spécifique.
+2.  a multiplier effect. A world without a multiplier is an abstraction, but it makes it possible to isolate the impact of this specific factor;
 
-3.  Un écart critique nul de 2026 à 2032 et donc l'effacement de la hausse des taux qui n'est pas liée à l'inflation sur la période
+3.  a zero interest–growth differential from 2026 to 2032, and hence the removal, over the period, of the rise in interest rates unrelated to inflation;
 
-4.  Un ajustement plus précoce, qui remplace les impulsions prévues par l'IFE\|OFCE en 2026 et 2027 par des impulsions "optimales" (voir @sec-main et @sec-annexe5 pour la définition exacte) et qui permet de prendre en compte l'écart entre la réalisation de la politique budgétaire et ce qu'il aurait été souhaite pour les deux premières années de la simulation.
+4.  an earlier adjustment, which replaces the impulses forecast by IFE\|OFCE for 2026 and 2027 with "optimal" impulses (see @sec-main and @sec-annexe5 for the exact definition), thereby capturing the gap between the fiscal policy actually implemented and what would have been desirable in the first two years of the simulation.
 
-En réalisant l'ensemble des simulations pour les 16 cas où chacun de ces facteurs est présent ou absent, on peut ensuite imputer la différence entre le monde où aucun de ces facteurs n'est présent et celui où ils sont tous présents (le scénario de référence). Lorsqu'aucun des facteurs n'est présent (pas de multiplicateur, pas de prime de risque, ajustement optimal dès 2026, pas d'écart de production initial), l'effort fiscal est de 2,2% du PIB (67 milliards d'euros au PIB de 2026) ; lorsqu'il sont tous présents il est de 3,5% du PIB (107 milliards d'euros au PIB de 2026). Le @fig-contributions indique les contributions pour ces facteurs calculés par les valeurs de Shapley[^6].
+By running the simulations for all 16 cases in which each of these factors is either present or absent, one can then attribute the difference between the world in which none of these factors is present and the world in which all of them are (the reference scenario). When none of the factors is present (no multiplier, no risk premium, optimal adjustment from 2026, no initial output gap), the fiscal effort is 2.2% of GDP (€67 billion at 2026 GDP); when all of them are present, it is 3.5% of GDP (€107 billion at 2026 GDP). @fig-contributions shows the contributions of these factors computed using Shapley values[^6].
 
-[^6]: Les valeurs de Shapley, issues de la théorie des jeux coopératifs, permettent de répartir un effet total entre plusieurs facteurs. La contribution d'un facteur est son effet marginal moyen, calculé sur toutes les combinaisons et tous les ordres possibles d'activation des autres facteurs. La somme des contributions est égale à l'écart total, et la décomposition ne dépend pas de l'ordre retenu. Formellement, si $v$ est la fonction de gain, $S$ sont des coalitions entre $s$ des $N$ joueurs, alors la valeur de Shapley $\phi$ du joueur $i$ vaut $\phi_i(v) = \sum_{S \subseteq N \setminus \{i\}} \frac{s!\,(n-s-1)!}{n!}\,\Big[v(S \cup \{i\}) - v(S)\Big]$.
+[^6]: Shapley values, derived from cooperative game theory, allocate a total effect among several factors. The contribution of a factor is its average marginal effect, computed over all combinations and all possible orders of activation of the other factors. The contributions sum to the total difference, and the decomposition does not depend on the order chosen. Formally, if $v$ is the payoff function and $S$ denotes coalitions of $s$ of the $N$ players, the Shapley value $\phi$ of player $i$ is $\phi_i(v) = \sum_{S \subseteq N \setminus \{i\}} \frac{s!\,(n-s-1)!}{n!}\,\Big[v(S \cup \{i\}) - v(S)\Big]$.
 
 ```{r}
 #| label: fig-contributions
-#| fig-cap: Décomposition de l'effort budgétaire de 2026 à 2032
+#| fig-cap: Decomposition of the 2026–2032 fiscal effort
 #| fig-asp: 0.7
 
 data_shap <- source_data("simofce2609decomposition.r")
@@ -571,12 +587,12 @@ ibs2627 <- data_shap$sims |>
 ibc2627 <- cumsum(-ibs2627)
 
 facteurs <- c(
-  noog = "Écart de production initial",
-  nok = "Multiplicateurs",
-  noec = "Prime de risque",
-  noib = "Ajustement tardif")
+  noog = "Initial output gap",
+  nok = "Multipliers",
+  noec = "Risk premium",
+  noib = "Delayed adjustment")
 
-# Effort = opposé de l'impulsion cumulée ; contribution à l'effort = phi
+# Effort = opposite of the cumulative impulse; contribution to the effort = phi
 effort <- data_shap$sims |>
   filter(variable == "cib", year == 2033) |>
   summarise(
@@ -591,7 +607,7 @@ data_wf <- data_shap$shapley |>
     ymin = effort$base + cumsum(phi) - phi,
     ymax = effort$base + cumsum(phi)) |>
   bind_rows(
-    tibble(etape = "Aucun facteur", type = "total", ymin = 0, ymax = effort$base, phi = effort$base),
+    tibble(etape = "No factor", type = "total", ymin = 0, ymax = effort$base, phi = effort$base),
     tibble(
       etape = "prev2609 (ref.)",
       type = "total",
@@ -599,19 +615,19 @@ data_wf <- data_shap$shapley |>
       phi = c(ibs2627, effort$ref),
       year = c(2026, 2027, NA))) |>
   mutate(
-    etape = factor(etape, levels = c("Aucun facteur", facteurs, "prev2609 (ref.)")),
+    etape = factor(etape, levels = c("No factor", facteurs, "prev2609 (ref.)")),
     x = as.integer(etape),
     label = paste0("**",
       stringr::str_wrap(etape, 25), "**  \n",
-      if_else(type == "total", fmt_pct(phi, 1), fmt_pct(phi, 2)), " du PIB  \n",
-      fmt_val(phi * 3050, 0), " Md€"),
+      if_else(type == "total", fmt_pct(phi, 1), fmt_pct(phi, 2)), " of GDP  \n",
+      "€", fmt_val(phi * 3050, 0), "bn"),
     label = ifelse(phi%in%ibs2627, year, label),
     tooltip = glue(
-      "<b>{etape}</b><br>{if_else(type == 'total', 'Effort', 'Contribution')} : {fmt_pct(phi, 1)} du PIB ({fmt_val(phi*3050, 0)} milliards €)"),
+      "<b>{etape}</b><br>{if_else(type == 'total', 'Effort', 'Contribution')}: {fmt_pct(phi, 1)} of GDP (€{fmt_val(phi*3050, 0)} billion)"),
     tooltip = ifelse(
       phi%in%ibs2627,
       glue("<b>prev2609</b>
-           Impulsions en {year} : -{fmt_pct(phi,1)} du PIB"),
+           Impulse in {year}: -{fmt_pct(phi,1)} of GDP"),
       tooltip),
     vjust = ifelse(phi%in%ibs2627, 1.5, -0.2), 
     textcolor = ifelse(phi%in%ibs2627, "white", "black")) |> 
@@ -636,7 +652,7 @@ gg <- ggplot(data_wf) +
   scale_y_continuous(
     labels = scales::label_percent(),
     expand = expansion(mult = c(0.02, 0.25)),
-    sec.axis = sec_axis(~.x * 3050, name = "Effort budgétaire 2026-2032 (milliards € 2026)")) +
+    sec.axis = sec_axis(~.x * 3050, name = "Fiscal effort 2026–2032 (€ billion, 2026)")) +
   scale_color_identity()+
   PrettyCols::scale_fill_pretty_d("Joyful") +
   guides(fill = "none") +
@@ -651,41 +667,40 @@ gg <- ggplot(data_wf) +
     axis.line.y.right = element_blank(),
     axis.ticks.y = element_blank(),
     axis.ticks.y.right = element_blank()) +
-  labs(x = NULL, y = "Effort budgétaire 2026-2032 (en % du PIB)") +
+  labs(x = NULL, y = "Fiscal effort 2026–2032 (% of GDP)") +
   ofce_caption(
-    source = "Debtwatch v2.0, AMECO, prévision d'automne 2026 de l'OFCE",
-    note = "Effort budgétaire : opposé de l'impulsion cumulée de 2026 à 2033. Simulation déterministe, valeurs de Shapley des quatre facteurs.")
+    source = "Debtwatch v2.0, AMECO, OFCE autumn 2026 forecast",
+    note = "Fiscal effort: opposite of the cumulative impulse from 2026 to 2032. Deterministic simulation, Shapley values of the four factors.")
 
 girafy(gg, r = 1.5)
 ```
 
 ```{r}
 #| label: fig-optimal
-#| fig-cap: Ajustements optimaux
+#| fig-cap: Optimal adjustments
 #| fig-asp: 0.8
 
 data_cc <- sims |> 
   filter(
     ibs %in% c("optimal1", "ddecroit", "highmult"),
-    #ibs %in% c("optimal1", "d2030"),
     !is.na(sp),
     between(year, 2025, 2050), 
     variable %in% c("og", "ib", "dettep", "sep")) |> 
   mutate(
     cas = case_when(
-      ibs == "ddecroit" ~ "Dette décroissance à partir de 2032",
-      ibs == "dstable" ~ "Dette stable à partir de 2032",
-      ibs == "optimal1" ~ "120% en 2032",
-      ibs == "optimal2" ~ "Impulsions depuis 2026",
-      ibs == "ameco" ~ "og AMECO, 120% en 2032",
-      ibs == "nomult" ~ "120% en 2032, multiplicateurs nuls",
-      ibs == "highmult" ~ "120% en 2032, multiplicateurs plus élevés",
-      ibs == "multivar" ~ "120% en 2032, multiplicateurs variables",
-      ibs == "d2030" ~ "120% en 2030",
-      ibs == "d2037" ~ "120% en 2037") ) |> 
+      ibs == "ddecroit" ~ "Debt declining from 2032",
+      ibs == "dstable" ~ "Debt stable from 2032",
+      ibs == "optimal1" ~ "120% in 2032",
+      ibs == "optimal2" ~ "Impulses from 2026",
+      ibs == "ameco" ~ "AMECO OG, 120% in 2032",
+      ibs == "nomult" ~ "120% in 2032, zero multipliers",
+      ibs == "highmult" ~ "120% in 2032, higher multipliers",
+      ibs == "multivar" ~ "120% in 2032, cycle-dependent multipliers",
+      ibs == "d2030" ~ "120% in 2030",
+      ibs == "d2037" ~ "120% in 2037") ) |> 
   mutate(
     tooltip = glue(
-      "<b>{cas}</b><br><em>{vlabels[variable]}</em><br>En {year} : {round(q0.5*100,1)}%" ))
+      "<b>{cas}</b><br><em>{vlabels[variable]}</em><br>In {year}: {round(q0.5*100,1)}%" ))
 
 gg <- ggplot(data_cc)+
   theme_ofce(base_size = 10)+
@@ -715,128 +730,128 @@ gg <- ggplot(data_cc)+
          x = guide_axis(minor.ticks = TRUE))+
   labs(color = NULL, fill=NULL) +
   ofce_caption(
-    source = "Debtwatch v2.0, AMECO, prévision d'automne 2026 de l'OFCE",
-    note = "Les impulsions sont celle de l'OFCE, prévision d'automne 2026, pour 2026 et 2027")
+    source = "Debtwatch v2.0, AMECO, OFCE autumn 2026 forecast",
+    note = "Impulses for 2026 and 2027 are those of the OFCE autumn 2026 forecast")
 
 girafy(gg, r=1.5)
 
 ```
 
-## Prévision de l'IFE\|OFCE de l'automne 2026 et PLF 2027 {#sec-main}
+## The IFE\|OFCE autumn 2026 forecast and the 2027 Budget Bill {#sec-main}
 
-L'ajustement "optimal" — on cherche à minimiser l'impact (négatif) sur l'activité sous contrainte de repsecter l'objectif d'une dette à 120% du PIB en 2032 [@sec-annexe1] — conduit à une impulsion de -1,6 point de PIB en 2028 (@tbl-optimal1) et une impulsion cumulée de 3,5 points de PIB en 2032 (approx. 107 milliards d'euros au PIB de 2026). C'est un résultat qui découle d'un déficit initial important (5,1% en 2025, 5,5% en 2026, 5,4% en 2027) et d'un objectif de dette à brève échéance (2032). L'ajustement (l'impulsion primaire) en 2026 est de -0,5% ce qui correspond à la prévision d'automne 2026 de l'IFE\|OFCE [@prev2609] (prev2609). Cette prévision a été publiée le 15 octobre 2026, avant la difficile négociation autour du vote du budget 2026.
+The "optimal" adjustment — which seeks to minimise the (negative) impact on activity subject to meeting the objective of debt at 120% of GDP in 2032 [@sec-annexe1] — leads to an impulse of −1.6 points of GDP in 2028 (@tbl-optimal1) and a cumulative impulse of 3.5 points of GDP by 2032 (approx. €107 billion at 2026 GDP). This result stems from a large initial deficit (5.1% in 2025, 5.5% in 2026, 5.4% in 2027) and from a short-dated debt objective (2032). The adjustment (the primary impulse) in 2026 is −0.5%, which corresponds to the IFE\|OFCE autumn 2026 forecast [@prev2609] (prev2609). This forecast was published on 15 October 2026, before the difficult negotiations surrounding the vote on the 2027 budget.
 
-La prévision prev2609 anticipe un déficit de 5,5% du PIB en 2026, conforme à la communication du gouvernement et l'analyse du Haut Conseil des Finances Publiques (et supérieur à l'hypothèse de @ratav, qui était en juillet 2026 de 5,0%). La prévision de l'IFE\|OFCE diffère sensiblement de celle du gouvernement quant à la croissance (0,4% en 2026), entre autres, du fait d'un effet multiplicateur important. Malgré une impulsion de -0,5 point de PIB, le déficit public s'accroît entre 2025 et 2026 de 0,4 point de PIB. C'est dû à une spectaculaire hausse de la charge d'intérêts (+0,3 point de PIB), une conjoncture particulièrement dégradée du fait de la hausse des prix de l'énergie et de l'incertitude politique.
+The prev2609 forecast projects a deficit of 5.5% of GDP in 2026, in line with the government's communication and with the assessment of the High Council of Public Finance (*Haut Conseil des finances publiques*), and higher than the assumption of @ratav (5.0% in July 2026). The IFE\|OFCE forecast differs markedly from the government's as regards growth (0.4% in 2026), owing, among other things, to a large multiplier effect. Despite an impulse of −0.5 point of GDP, the government deficit widens by 0.4 point of GDP between 2025 and 2026. This is due to a sharp rise in interest payments (+0.3 point of GDP) and to particularly weak economic conditions resulting from higher energy prices and political uncertainty.
 
-En 2027, l'IFE\|OFCE anticipe un cocktail similaire à celui de 2026 : l'activité est dégradée du fait d'une conjoncture internationale morose, d'une prudence des acteurs économiques nationaux dans un moment politique tendu et d'une impulsion négative assez forte. La hausse de la charge d'intérêt se poursuit (+0,3 point en 2027). La possibilité d'un budget approuvé par une majorité politique étant presque écartée, le budget résulte d'un compromis complexe, mélange de loi spéciale et d'une non censure comme en 2026.
+For 2027, IFE\|OFCE anticipates a combination of factors similar to that of 2026: activity is weighed down by a sluggish international environment, by caution among domestic economic agents at a time of political tension, and by a fairly strong negative impulse. The rise in interest payments continues (+0.3 point in 2027). With a budget approved by a political majority all but ruled out, the budget results from a complex compromise, combining a special stopgap law (*loi spéciale*) and the absence of a successful censure motion, as in 2026.
 
-Au-delà de 2027, la simulation procède par l'établissement d'une politique économique "optimale" pour atteindre un objectif (*e.g*. une cible de dette à une date donnée) tout en minimisant l'impact sur l'activité sur l'ensemble des périodes concernées (@sec-annexe5). L'ajustement en 2028 est presque égal à celui de 2027. La raison est que l'ajustement anticipé pour 2027 par l'IFE\|OFCE en octobre 2026 est assez proche d'un ajustement "optimal" et coïncide avec les règles du PSC. L'ajustement s'atténue progressivement. C'est en partie lié à la détente des taux souverains en 2029. Cette détente permet une relative stabilisation de la charge d'intérêt (autour de 3,5 points de PIB en 2032, 1,5 point de PIB si on tient compte de la taxe inflationniste).
+Beyond 2027, the simulation proceeds by determining an "optimal" economic policy that achieves an objective (*e.g.* a debt target at a given date) while minimising the impact on activity over all the periods concerned (@sec-annexe5). The adjustment in 2028 is almost equal to that of 2027. The reason is that the adjustment anticipated for 2027 by IFE\|OFCE in October 2026 is fairly close to an "optimal" adjustment and is consistent with the rules of the Stability and Growth Pact (SGP). The adjustment then gradually eases. This is partly due to the easing of sovereign rates in 2029, which allows interest payments to stabilise relatively (at around 3.5 points of GDP in 2032, or 1.5 points of GDP once the inflation tax is taken into account).
 
-Les conséquences de cet ajustement sont le creusement de l'écart de production entre 2026 et 2028. À partir de 2029, les impulsions sont plus faibles et la dynamique du multiplicateur fait que l'ajustement perd en effet sur l'écart de production qui se réduit lentement pour redevenir positif à partir de 2033 (@fig-optimal, trait bleu).
+This adjustment results in a widening of the output gap between 2026 and 2028. From 2029 onwards, impulses are smaller and, owing to the multiplier dynamics, the adjustment has less effect on the output gap, which narrows slowly before turning positive from 2033 (@fig-optimal, blue line).
 
-Le maximum de dette publique dans ce scénario est de 123,3% du PIB (@tbl-optimal1), bien que l'intervalle de confiance soit assez important (@fig-optimal), en particulier sur la dette publique. Notons que cet écart est construit sous des hypothèses particulières [voir @timbeau2025] et doit être interprété en fonction. En simplifiant à l'extrême, il s'agit de la prise en compte de la variabilité historique de la croissance, mais en supposant que la moyenne (de la croissance) est stable et qu'il y a peu d'autocorrélation dans ce processus (il est stationnaire). Cette hypothèse induit un retour à la moyenne de l'écart de production et donc limite le renforcement d'une déviation médiane de la trajectoire de dette.
+The peak in public debt in this scenario is 123.3% of GDP (@tbl-optimal1), although the confidence interval is fairly wide (@fig-optimal), particularly for public debt. Note that this interval is constructed under specific assumptions [see @timbeau2025] and should be interpreted accordingly. To simplify to the extreme, it reflects the historical variability of growth, while assuming that mean growth is stable and that there is little autocorrelation in this process (i.e. that it is stationary). This assumption implies mean reversion of the output gap and therefore limits the amplification of a median deviation of the debt path.
 
-Dans ce scénario, la dette publique passe par un maximum en 2031 et le déficit public français est inférieur à 3,0% dès 2031. À long terme, il est en supérieur de 3% parce que pour ce niveau de dette le solde stabilisant la dette est de l'ordre de -3,3% (-2,75% ⨉ 120%). Ceci conduit à un profil en bosse pour le solde public : il faut atteindre un solde plus haut pour réduire la dette, puis revenir au déficit stabilisant la dette[^7].
+In this scenario, public debt peaks in 2031 and the French government deficit falls below 3.0% from 2031. In the long run, the deficit is above 3% because, at this level of debt, the debt-stabilising balance is around −3.3% (−2.75% ⨉ 120%). This leads to a hump-shaped profile for the government balance: a higher balance must first be reached to reduce debt, before returning to the debt-stabilising deficit[^7].
 
-[^7]: Cette propriété est habituelle dans les programmes de contrôle optimal lorsqu'on dispose d'un instrument qui joue sur l'accélération et que l'on vise un objectif en position (la cible de dette) et en vitesse (la dette ne bouge plus).
+[^7]: This property is common in optimal control problems when the available instrument acts on acceleration and the objective is defined in terms of both position (the debt target) and velocity (debt no longer changes).
 
 ```{r}
 #| label: tbl-optimal1
-#| tbl-cap: Prev2609 jusqu'en 2027, 120% de dette en 2032 (scénario de référence)
+#| tbl-cap: Prev2609 until 2027, debt at 120% in 2032 (reference scenario)
 
 table_scenarios(
   sim = sims |> filter(ibs == "optimal1", loss_ib == 5, !sp),
   dec = 1 , bck = 0, fwd = 7)
 ```
 
-## Détails des simulations {#sec-resvar}
+## Detailed simulations {#sec-resvar}
 
-### Ajustement optimal en 2026 et 2027 {#sec-maintenant}
+### Optimal adjustment in 2026 and 2027 {#sec-maintenant}
 
-Le @tbl-maintenant décrit un monde légèrement différent de la prévision de l'IFE\|OFCE [@prev2609]. Au lieu des impulsions prévues, on suppose une impulsion optimale. C'est un résultat classique de la politique budgétaire optimale dès 2026 : le *backloading* (report de l'ajustement dans le temps) n'est justifié qu'en cas d'une forte préférence pour le présent, une préférence pour des impulsions les moins variées possibles ou des multiplicateurs budgétaires qui varient dans le cycle. Comme nous n'avons aucun de ces éléments dans la simulation, l'impulsion optimale est celle d'une brutale récession en 2026, suivie d'un ajustement plus contrôlé ensuite. Le creux d'activité se produit en 2027, il est moins marqué que celui de 2028 dans le scénario prev2609 (@tbl-optimal1). La perte moyenne d'activité entre 2026 et 2032 est de 1,4 contre 1,5 point de PIB dans le scénario prev2609.
+@tbl-maintenant describes a world slightly different from the IFE\|OFCE forecast [@prev2609]. Instead of the forecast impulses, an optimal impulse is assumed. Applying optimal fiscal policy from 2026 yields a standard result: *backloading* (deferring adjustment over time) is justified only by a strong preference for the present, by a preference for impulses that vary as little as possible, or by fiscal multipliers that vary over the cycle. As none of these features is present in the simulation, the optimal impulse is that of a sharp recession in 2026, followed by a more gradual adjustment thereafter. The trough in activity occurs in 2027 and is less pronounced than that of 2028 in the prev2609 scenario (@tbl-optimal1). The average output loss between 2026 and 2032 is 1.4 points of GDP, compared with 1.5 points in the prev2609 scenario.
 
-L'effort budgétaire est sensiblement inférieur dans ce scénario (3,2% du PIB cumulés contre 3,5%). Une impulsion négative immédiate réduit la hausse de la dette et le cumul des intérêts. Cette stratégie est peu ou prou (en effort budgétaire, en coût en activité et en chômage) équivalente à celle qui consiste à simplement stabiliser la dette en 2032 (@sec-annexe3) – dans ce dernier scénario la dette est cependant plus élevée.
+The fiscal effort is appreciably lower in this scenario (3.2% of GDP cumulated, compared with 3.5%). An immediate negative impulse curbs the rise in debt and in cumulative interest payments. This strategy is broadly equivalent (in terms of fiscal effort, output cost and unemployment) to simply stabilising debt in 2032 (@sec-annexe3) — although debt ends up higher in the latter scenario.
 
 ```{r}
 #| label: tbl-maintenant
-#| tbl-cap: Ajustement optimal dès 2026, 120% de dette en 2032
+#| tbl-cap: Optimal adjustment from 2026, debt at 120% in 2032
 
 table_scenarios(
   sim = sims |> filter(ibs == "optimal2", loss_ib == 5, !sp),
   dec = 1  , bck = 0, fwd = 7)
 ```
 
-### 120% de dette en 2037 {#sec-d2037}
+### Debt at 120% in 2037 {#sec-d2037}
 
-Le @tbl-d2037 optimise la politique budgétaire pour atteindre 120% de dette publique en 2037 contre 2032, soit 5 ans plus tard.
+@tbl-d2037 optimises fiscal policy so that public debt reaches 120% of GDP in 2037 instead of 2032, i.e. five years later.
 
-Ce scénario demande une séquence d'impulsions moins brutales. L'effort budgétaire est de même importance que dans le cas cible de dette en 2032 (@tbl-optimal1), les effets des intérêts supplémentaires dûs à une dette plus importante étant de second ordre parce que l'écart critique est proche de 0 ou négatif.
+This scenario requires a sequence of less abrupt impulses. The fiscal effort is of the same magnitude as with a 2032 debt target (@tbl-optimal1), as the additional interest payments arising from higher debt are a second-order effect, the interest–growth differential being close to zero or negative.
 
-La perte d'activité moyenne (1,4 points de PIB) ou le pic de chômage (9,1% de la population active) sont moins importants. À partir de 2034, des impulsions positives (@fig-optimal) stimulent la croissance et produisent un écart de production positif.
+The average output loss (1.4 points of GDP) and the peak in unemployment (9.1% of the labour force) are smaller. From 2034, positive impulses (@fig-optimal) stimulate growth and produce a positive output gap.
 
 ```{r}
 #| label: tbl-d2037
-#| tbl-cap: Ajustement optimal dès 2028, 120% de dette en 2037
+#| tbl-cap: Optimal adjustment from 2028, debt at 120% in 2037
 
 table_scenarios(
   sim = sims |> filter(ibs == "d2037", loss_ib == 5, !sp),
   dec = 1  , bck = 0, fwd = 7)
 ```
 
-### Coût de l'inaction : pas d'impulsion en 2027 {#sec-inaction}
+### The cost of inaction: no impulse in 2027 {#sec-inaction}
 
-Le @tbl-no2027 décrit un monde légèrement différent. Au lieu d'une impulsion de -0,8% du PIB en 2027, on suppose une impulsion nulle. L'optimisation reporte l'effort après 2027, ce qui est un résultat central dans le calcul d'une politique budgétaire optimale : le *backloading* n'est justifié qu'en cas d'une forte préférence pour le présent, une préférence pour des impulsions les moins variées possibles ou des multiplicateurs budgétaires qui varient dans le cycle.
+@tbl-no2027 describes a slightly different world. Instead of an impulse of −0.8% of GDP in 2027, a zero impulse is assumed. The optimisation shifts the effort beyond 2027, which is a central result in the computation of an optimal fiscal policy: *backloading* is justified only by a strong preference for the present, by a preference for impulses that vary as little as possible, or by fiscal multipliers that vary over the cycle.
 
-Cependant, ce que montrent les simulations faites ici est aussi compatible avec les analyses dites de l'austérité auto-échouante (*self-defeating austerity*). Si l'échéance de la cible de dette est trop proche dans le temps, l'effort à réaliser est amplifié par le jeu du multiplicateur budgétaire. Une fois la cible atteinte, et une fois la dynamique négative des multiplicateurs atténuée, l'activité retrouve un niveau normal – c'est ainsi qu'est modélisé le multiplicateur et la dynamique d'activité, avec un retour à la tendance toujours assuré à moyen terme avec une super-neutralité des dépenses publiques (voir @sec-multiplicateurs pour la définition de la super-neutralité) aucun effet d'hystérèse allant du chômage à la croissance potentielle, par exemple. Mais dans le court terme, qui inclut l'échéance de la cible de dette, le multiplicateur budgétaire atténue le gain en réduction du déficit, réduit le dénominateur du ratio de dette, et implique donc un effort plus important pour atteindre l'objectif.
+However, what the simulations show here is also consistent with analyses of so-called *self-defeating austerity*. If the deadline for the debt target is too close, the effort required is amplified through the fiscal multiplier. Once the target has been reached, and once the negative dynamics of the multipliers have faded, activity returns to a normal level — this is how the multiplier and activity dynamics are modelled, with a return to trend always ensured in the medium term, super-neutrality of public spending (see @sec-multiplicateurs for the definition of super-neutrality) and no hysteresis effect running, for instance, from unemployment to potential growth. In the short term, however, which includes the debt target deadline, the fiscal multiplier erodes the gain from deficit reduction and reduces the denominator of the debt ratio, and therefore implies a larger effort to achieve the objective.
 
-Nous n'incluons pas de tensions supplémentaires sur les taux dans ce scénario qui marque une stratégie différente à court terme. Pour tenir l'objectif de 120% de dette en 2032, l'effort est très important en 2028 et la perte moyenne d'activité atteint 1,6 points de PIB, le pic du chômage étant de 9,7% de la population active. L'effort budgétaire cumulé est un peu supérieur (de +0,2 point de PIB) du fait des effets induits sur la dette et donc les intérêts versés cumulés sur la période.
+We do not include additional pressure on interest rates in this scenario, which reflects a different short-term strategy. To meet the objective of 120% debt in 2032, the effort is very large in 2028 and the average output loss reaches 1.6 points of GDP, with unemployment peaking at 9.7% of the labour force. The cumulative fiscal effort is slightly higher (+0.2 point of GDP) owing to the induced effects on debt and hence on cumulative interest paid over the period.
 
 ```{r}
 #| label: tbl-no2027
-#| tbl-cap: Ajustement optimal, inaction en 2027
+#| tbl-cap: Optimal adjustment, inaction in 2027
 
 table_scenarios(
   sim = sims |> filter(ibs == "no2027", loss_ib == 5, !sp),
   dec = 1  , bck = 0, fwd = 7)
 ```
 
-### Stabilité ou décroissance de la dette en 2032 (cible de solde) {#sec-annexe3}
+### Debt stabilisation or decline in 2032 (balance target) {#sec-annexe3}
 
-Nous procédons ici à un calcul sensiblement différent dans le principe, dont se rapproche l'analyse de @ragot2026. Il s'agit de stabiliser la dette publique à une date donnée indépendamment de son niveau à une date donnée (2032 en l'occurrence) puis de viser un écart avec le solde stabilisant la dette publique de 0,5 point de PIB (soit une diminution de 0,5 point de PIB du ratio dette sur PIB).
+Here we carry out a calculation that differs substantially in principle, and to which the analysis of @ragot2026 is close. The aim is to stabilise public debt at a given date (2032 in this case) regardless of its level at that date, and then to target a primary balance 0.5 point of GDP above the debt-stabilising balance (i.e. a reduction of 0.5 point of GDP per year in the debt-to-GDP ratio).
 
-Le schéma d'optimisation est plus simple, puisqu'il faut atteindre le solde stabilisant la dette (qui dans un monde stationnaire et avec un écart critique $r-g$ nul est 0). C'est le cas dans le scénario "taux bas", alors que l'écart critique est de 0,5 point dans le scénario de référence et de 1,7 point dans le scénario "taux élevés". En première approximation une réduction régulière (quasi linéaire) du point de départ jusqu'au point d'arrivée en 2032 est la trajectoire optimale. Quelques rétroactions et surtout la dynamique du multiplicateur budgétaire modifient cette première approximation.
+The optimisation scheme is simpler, since the debt-stabilising balance must be reached (which, in a stationary world with a zero interest–growth differential $r-g$, is 0). This is the case in the "low rates" scenario, whereas the differential is 0.5 point in the reference scenario and 1.7 points in the "high rates" scenario. To a first approximation, a steady (quasi-linear) reduction from the starting point to the end point in 2032 is the optimal path. A few feedback effects, and above all the dynamics of the fiscal multiplier, alter this first approximation.
 
-Le @tbl-stable résulte de l'optimisation complète. La dette attteint un maximum de 124,9% du PIB en 2032. L'impulsion nécessaire est sensiblement inférieure (un cumul de 2,8 points de PIB en 2032 contre 3,5 points de PIB, soit une différence de 21 milliards d'euros au PIB de 2026). La perte d'activité moyenne est de 1,3 points de PIB, sensiblement inférieure à celle du scénario prev2609 (1,5 point de PIB).
+@tbl-stable results from the full optimisation. Debt peaks at 124.9% of GDP in 2032. The required impulse is appreciably smaller (a cumulative 2.8 points of GDP by 2032 compared with 3.5 points, i.e. a difference of €21 billion at 2026 GDP). The average output loss is 1.3 points of GDP, appreciably lower than in the prev2609 scenario (1.5 points of GDP).
 
 ```{r}
 #| label: tbl-stable
-#| tbl-cap: Ajustement optimal, stabilité de la dette en 2032
+#| tbl-cap: Optimal adjustment, debt stabilisation in 2032
 
 table_scenarios(
   sim = sims |> filter(ibs == "dstable", loss_ib==5),
   dec = 1, bck = 0, fwd = 7)
 ```
 
-Alternativement, au lieu de viser une stabilisation de la dette en 2032, on vise dans le @tbl-decroit une décroissance régulière de la dette publique à partir de 2032, le solde primaire public s'établissant à 0,5 point de PIB au dessus de celui stabilisant la dette publique.
+Alternatively, instead of targeting debt stabilisation in 2032, @tbl-decroit targets a steady decline in public debt from 2032, with the primary balance set 0.5 point of GDP above the debt-stabilising level.
 
 ```{r}
 #| label: tbl-decroit
-#| tbl-cap: Ajustement optimal, décroissance de la dette à partir de 2032
+#| tbl-cap: Optimal adjustment, debt declining from 2032
 
 table_scenarios(
   sim = sims |> filter(ibs == "ddecroit", loss_ib==5),
   dec = 1, bck = 0, fwd = 7)
 ```
 
-### Impact de taux d'intérêt moins élevés {#sec-annexe4}
+### Impact of lower interest rates {#sec-annexe4}
 
-La variante présentée dans cette annexe repose sur des taux d'intérêt moins élevés à partir de 2028, accentuant l'écart observé aujourd'hui. Au lieu d'un écart critique ($r-g$) de 0,5 point de pourcentage comme dans le scénario de référence, l'écart critique est de 0, ce qui correspond à peu près à la situation des années 2015-2019.
+The variant presented in this section is based on lower interest rates from 2028, accentuating the gap observed today. Instead of an interest–growth differential ($r-g$) of 0.5 percentage point as in the reference scenario, the differential is zero, which roughly corresponds to the situation in 2015–2019.
 
-À l'horizon de l'année 2032, l'effort budgétaire serait inférieur de 0,4 point de PIB (à peu près 12 milliards d'euros), ce qui constitue une bonne règle pour approximer l'effet des taux d'intérêt sur les trajectoires d'ajustement. La perte cumulée d'activité est de 8,4 points de PIB, soit 0,7 point de moins que dans le scénario de référence (@tbl-optimal1)
+At the 2032 horizon, the fiscal effort would be 0.4 point of GDP lower (approximately €12 billion), which provides a useful rule of thumb for approximating the effect of interest rates on adjustment paths. The cumulative output loss is 8.4 points of GDP, i.e. 0.7 point less than in the reference scenario (@tbl-optimal1).
 
 ```{r}
 #| label: tbl-moinstaux
-#| tbl-cap: Ajustement optimal, 120% de dette en 2032, taux moins élevés (-0,5)
+#| tbl-cap: Optimal adjustment, debt at 120% in 2032, lower interest rates (−0.5)
 
 table_scenarios(
   sim = sims |> filter(ibs == "optimal1_moins_r", loss_ib==5, !sp),
@@ -844,17 +859,17 @@ table_scenarios(
 
 ```
 
-### Impact de taux d'intérêt plus élevés {#sec-plustaux}
+### Impact of higher interest rates {#sec-plustaux}
 
-La variante présentée dans cette annexe repose sur des taux d'intérêt plus élevés à partir de 2028, c'est-à-dire le taux observé en septembre 2026 (4,5%). Cette fois l'écart critique à long terme est de 1,7 point de pourcentage.
+The variant presented in this section is based on higher interest rates from 2028, namely the rate observed in September 2026 (4.5%). In this case, the long-term interest–growth differential is 1.7 percentage points.
 
-L'impact est assez massif, puisque l'effort cumulé est de 4,15% du PIB, soit 21 milliards d'euros au PIB de 2026 en plus par rapport au scénario de référence (@tbl-optimal1) où la dette est à 115% en 2025. La perte d'activité cumulée est supérieure d'un point (10,2 contre 9,1 dans le scénario de référence).
+The impact is substantial: the cumulative effort is 4.15% of GDP, i.e. an additional €21 billion at 2026 GDP relative to the reference scenario (@tbl-optimal1), in which debt stands at 115% in 2025. The cumulative output loss is one point higher (10.2 compared with 9.1 in the reference scenario).
 
-Entre ce scénario (taux élevés) et le précédent (taux plus bas), l'écart d'ajustement cumulé est de l'ordre de 30 milliards d'euros (au PIB de 2026) et de 1,8 points de perte cumulée d'activité.
+Between this scenario (high rates) and the previous one (lower rates), the difference in cumulative adjustment is of the order of €30 billion (at 2026 GDP) and 1.8 points of cumulative output loss.
 
 ```{r}
 #| label: tbl-plustaux
-#| tbl-cap: Ajustement optimal, 120% de dette en 2032, taux plus élevés (stables à partir de fin 2026)
+#| tbl-cap: Optimal adjustment, debt at 120% in 2032, higher interest rates (stable from end-2026)
 
 table_scenarios(
   sim = sims |> filter(ibs == "optimal1_plus_r", loss_ib==5, !sp),
@@ -862,9 +877,9 @@ table_scenarios(
 
 ```
 
-Le @fig-taux indique la sensibilité de l'effort à l'écart critique. Il est de 20 milliards (au PIB de 2026) pour un point d'écart de taux et une dette publique autour de 120% du PIB (115% en début de période, 120% à terme). Si la dette est hypothètiquement réduite (autour de 60% du PIB, voir @sec-d60 pour le détail des hypothèses), le coût est divisé par 2, étant égal à 9,5 milliards d'euros (au PIB de 2026). Parce qu'au début de la période de simulation l'écart critique courant (ou apparent) est négatif, la dette publique plus élevée réduit l'effet boule de neige. Plus loin dans la simulation, cet effet s'estompe et l'écart critique augmente sous le poids du taux d'interêt courant. Pour un écart critique de 0,4% et un horizon de 2032, les deux effets s'annulent.
+@fig-taux shows the sensitivity of the effort to the interest–growth differential. The sensitivity amounts to €20 billion (at 2026 GDP) per point of differential for public debt of around 120% of GDP (115% at the start of the period, 120% at the end). If debt were hypothetically lower (around 60% of GDP; see @sec-d60 for details of the assumptions), the cost would be halved, at €9.5 billion (at 2026 GDP). Because the current (or implicit) differential is negative at the start of the simulation period, higher public debt reduces the snowball effect. Further into the simulation, this effect fades and the differential rises under the weight of the current interest rate. For a differential of 0.4% and a 2032 horizon, the two effects offset each other.
 
-Si l'on partait d'un écart critique apparent plus élevé, ou si l'on conduisait les mêmes simulations, mais plus loin dans le temps, l'avantage d'un écart critique apparent faible disparaîtrait.
+Were one to start from a higher implicit differential, or to run the same simulations over a longer horizon, the advantage of a low implicit differential would disappear.
 
 ```{r, include = FALSE}
 data_rpk <- source_data("simofce2609taux.r")
@@ -874,7 +889,7 @@ lines <- data_rpk$summary |> filter(r==0, k==1.2) |> pull(deter, name = d)
 
 ```{r}
 #| label: fig-taux
-#| fig-cap: Effort budgétaire, en fonction de l'écart critique
+#| fig-cap: Fiscal effort as a function of the interest–growth differential
 #| fig-asp: 0.7
 
 gg <- data_rpk |> 
@@ -883,10 +898,10 @@ gg <- data_rpk |>
    mutate(
     e = (q0.975-q0.025)/2,
     tooltip = glue(
-      "<b>\u00c9cart critique : {fmt_pct(r,1)}</b>
-      Persistance (og<sub>mce</sub>): {round(p, 1)}
+      "<b>Interest–growth differential: {fmt_pct(r,1)}</b>
+      Persistence (og<sub>mce</sub>): {round(p, 1)}
       Amplitude (og<sub>dep</sub>): {round(k,1)}
-      Effort budgétaire: {fmt_pct(-deter,1)} (\u00b1{fmt_val(e*100)}) du PIB / {fmt_val(-deter*3050,0)} (\u00b1{fmt_val(e*3050,0)}) milliards €" ) ) |> 
+      Fiscal effort: {fmt_pct(-deter,1)} (\u00b1{fmt_val(e*100)}) of GDP / €{fmt_val(-deter*3050,0)} (\u00b1{fmt_val(e*3050,0)}) billion" ) ) |> 
   mutate(k = factor(k)) |> 
   ggplot()+
   aes(x = r, color = factor(d), fill = factor(d), y = -deter , group = factor(d)) +
@@ -909,36 +924,33 @@ gg <- data_rpk |>
     labels = scales::label_percent(),
     sec.axis = sec_axis(
       ~.x*3050,
-      name = "Effort budgétaire (milliards € 2026)")) + 
+      name = "Fiscal effort (€ billion, 2026)")) + 
   guides(fill = "none") +
   PrettyCols::scale_fill_pretty_d( 
-    name = "Dette (cible et valeur initiale)",
+    name = "Debt (target and initial value)",
     "Joyful") +
   PrettyCols::scale_color_pretty_d( 
-    name = "Dette (cible et valeur initiale)",
+    name = "Debt (target and initial value)",
     "Joyful" )  +
   theme(
     legend.direction = "horizontal"  ) +
-  ylab("Effort budgétaire à long terme (en % du PIB)")+
-  xlab("Ecart critique à long terme (r-g)")+
-  # facet_wrap(
-  #   vars(d), 
-  #   labeller = as_labeller(c("60" = "Dette autour de 60%", "120" = "Dette autour de 120%"))) +
+  ylab("Long-term fiscal effort (% of GDP)")+
+  xlab("Long-term interest–growth differential (r-g)")+
   ofce_caption(
-      source = "Debtwatch v2.0, AMECO, prévision d'automne 2026 de l'OFCE",
-      lecture = "Un écart critique de 1.0% impose un effort de 108 milliards d'euros pour une dette à 60% du PIB, de 113 milliards d'euros pour 120% du PIB",
-      note = "Simulations stochastiques, 256 tirages. Les bandes colorées représentent l'intervalle de confiance à 95%")
+      source = "Debtwatch v2.0, AMECO, OFCE autumn 2026 forecast",
+      lecture = "An interest–growth differential of 1.0% requires an effort of €108 billion for debt at 60% of GDP, and of €113 billion for debt at 120% of GDP",
+      note = "Stochastic simulations, 256 draws. Shaded bands represent the 95% confidence interval")
 
 girafy(gg, r=2) 
 ```
 
-### Multiplicateurs nuls ou plus forts {#sec-multinuloufort}
+### Zero or stronger multipliers {#sec-multinuloufort}
 
-Considérer que les multiplicateurs sont nuls permet de comprendre l'influence de ce paramètre. L'effort budgétaire est plus bas que lorsque les multiplicateurs sont non nuls, de 2,9% du PIB (approx. 85 milliards d'euros de 2026).
+Assuming zero multipliers helps to understand the influence of this parameter. The fiscal effort is lower than with non-zero multipliers, at 2.9% of GDP (approx. €85 billion at 2026 GDP).
 
 ```{r}
 #| label: tbl-nomult
-#| tbl-cap: Ajustement optimal, 120% de dette en 2032, multiplicateurs nuls
+#| tbl-cap: Optimal adjustment, debt at 120% in 2032, zero multipliers
 
 table_scenarios(
   sim = sims |> filter(ibs == "nomult", loss_ib==5, !sp),
@@ -946,13 +958,13 @@ table_scenarios(
 
 ```
 
-Le multiplicateur budgétaire a donc un effet important sur l'effort budgétaire à fournir (défini comme l'opposé de la somme des impulsions budgétaires jusqu'à l'horizon de stabilisation de la dette).
+The fiscal multiplier therefore has a substantial effect on the fiscal effort required (defined as the opposite of the sum of fiscal impulses up to the debt stabilisation horizon).
 
-Dans le modèle employé, le multiplicateur dépend de deux paramètres principaux (voir @sec-multiplicateurs), la persistance $og_{mce}$ et l'amplitude. L'amplitude découle d'une moyenne pondérée entre l'effet des dépenses $og_{dep}$ et des recettes $og_{po}$ par $pc_{po}$, les deux canaux ayant la même persistance.
+In the model used, the multiplier depends on two main parameters (see @sec-multiplicateurs): persistence, $og_{mce}$, and amplitude. Amplitude is a weighted average of the effect of expenditure, $og_{dep}$, and of revenue, $og_{po}$, with weight $pc_{po}$, both channels having the same persistence.
 
-Plus l'horizon est proche, plus l'effort à faire est important — un résultat intuitif que l'on retrouve facilement dans un modèle à une période avec un multiplicateur et qui a été au coeur du débat sur les multiplicateurs budgétaires en 2011-2012 au moment des politiques de redressement du solde en Grèce (*self-defeating austerity)*. On dégage ici cependant d'autres éléments. Non seulement l'amplitude du multiplicateur est importante mais aussi sa persistance. La simulation conduite montre que pour des valeurs faibles des multiplicateurs l'écart d'effort est tout à fait significatif, de l'ordre de 40 milliards d'euros au PIB de 2026 pour un délai moyen d'ajustement entre 1 année et 3,4 années (i.e. la persistance $og_{mce} \in [0,2 ; 0,4]$ et l'amplitude $og_{dep}\in [0,8; 1,2]$).
+The closer the horizon, the larger the required effort — an intuitive result that is readily obtained in a one-period model with a multiplier, and which was at the heart of the 2011–2012 debate on fiscal multipliers during the fiscal consolidation in Greece (*self-defeating austerity*). Other insights emerge here, however. Not only the amplitude of the multiplier matters, but also its persistence. The simulation shows that, even for low multiplier values, the difference in effort is substantial, of the order of €40 billion at 2026 GDP, for an average adjustment lag of between 1 and 3.4 years (i.e. persistence $og_{mce} \in [0.2 ; 0.4]$ and amplitude $og_{dep}\in [0.8; 1.2]$).
 
-Mais un autre résultat apparaît : plus l'horizon est lointain, plus l'effort est faible et certain. L'écart d'effort n'est que de 15 milliards d'euros pour un horizon à 2037. Ainsi, s'il existe une incertitude sur le multiplicateur, s'engager sur un horizon court est plus risqué que s'engager sur un horizon plus long.
+Another result emerges as well: the more distant the horizon, the smaller and the more certain the effort. The difference in effort is only €15 billion for a 2037 horizon. Thus, when the multiplier is uncertain, committing to a short horizon is riskier than committing to a longer one.
 
 ```{r, include = FALSE}
 data_hpk <- source_data("simofce2609horizons.r")
@@ -960,7 +972,7 @@ data_hpk <- source_data("simofce2609horizons.r")
 
 ```{r}
 #| label: fig-mults
-#| fig-cap: Effort budgétaire, en fonction de l'horizon et du multiplicateur
+#| fig-cap: Fiscal effort as a function of the horizon and the multiplier
 #| fig-asp: 0.7
 
 gg <- data_hpk |> 
@@ -968,10 +980,10 @@ gg <- data_hpk |>
    mutate(
     e = (q0.975-q0.025)/2,
     tooltip = glue(
-      "<b>Horizon (dette à 120%): {h}</b>
-      Persistance (og_mce): {round(p, 1)}
+      "<b>Horizon (debt at 120%): {h}</b>
+      Persistence (og_mce): {round(p, 1)}
       Amplitude (og_dep): {round(k,1)}
-      Effort budgétaire: {fmt_pct(-deter)} (\u00b1{fmt_val(e*100)}) du PIB / {round(-deter*3050,1)} (\u00b1{fmt_val(e*3050)}) milliards €" ) ) |> 
+      Fiscal effort: {fmt_pct(-deter)} (\u00b1{fmt_val(e*100)}) of GDP / €{round(-deter*3050,1)} (\u00b1{fmt_val(e*3050)}) billion" ) ) |> 
   mutate(p = factor(p)) |> 
   ggplot()+
   aes(x = h, color = p, y = -deter , group = p) +
@@ -991,24 +1003,24 @@ gg <- data_hpk |>
     labels = scales::label_percent(),
     sec.axis = sec_axis(
       ~.x*3050,
-      name = "Effort budgétaire (milliards € 2026)")) + 
+      name = "Fiscal effort (€ billion, 2026)")) + 
   guides(fill = "none") +
   PrettyCols::scale_fill_pretty_d(
     "Summer") +
   PrettyCols::scale_color_pretty_d(
     "Summer", 
-    name = "Persistance (og_mce)") +
-  ylab("Effort budgétaire (en % du PIB)")+
-  xlab("Horizon de stabilisation de la dette")+
+    name = "Persistence (og_mce)") +
+  ylab("Fiscal effort (% of GDP)")+
+  xlab("Debt stabilisation horizon")+
   ofce_caption(
-      source = "Debtwatch v2.0, AMECO, prévision d'automne 2026 de l'IFE|OFCE",
-      lecture = "L'effort budgétaire est l'opposé de la somme des impulsions de 2026 à l'horizon de stabilisation de la dette publique à 120% du PIB",
-      note = "Simulations stochastiques, 256 tirages. Les bandes colorées représentent l'intervalle de confiance à 95%")
+      source = "Debtwatch v2.0, AMECO, IFE|OFCE autumn 2026 forecast",
+      lecture = "The fiscal effort is the opposite of the sum of impulses from 2026 to the horizon at which public debt is stabilised at 120% of GDP",
+      note = "Stochastic simulations, 256 draws. Shaded bands represent the 95% confidence interval")
 
 girafy(gg)
 ```
 
-## Et si la dette avait été à 60% ? {#sec-d60}
+## What if debt had been at 60%? {#sec-d60}
 
 ```{r, include=FALSE}
 sims_ifd <- sourcoise::sourcoise(
@@ -1053,7 +1065,7 @@ sims_sum_ifd <- sims_ifd |>
       ibs=="d2030" ~ 2030,
       ibs=="dstable30" ~ 2030,
       TRUE ~ 2032),
-    cible = if_else(sp, "Solde", "Dette")) |> 
+    cible = if_else(sp, "Balance", "Debt")) |> 
   group_by(ibs, loss_ib, sp, date_cible, cible) |> 
   summarize(
     ibclt = -ibc[year==2050],
@@ -1087,29 +1099,29 @@ sims_sum_ifd <- sims_ifd |>
 
 ```
 
-Nous reprenons ici l'ensemble des simulations du @tbl-sum sous une hypothèse forte : la dette publique en 2025 est de 55,6% au lieu de 115,6%, soit une translation de -60% du PIB pour la dette.
+Here we rerun all the simulations of @tbl-sum under a strong assumption: public debt in 2025 is 55.6% of GDP instead of 115.6%, i.e. a downward shift of 60 points of GDP.
 
-Au lieu de viser une cible de 120% du PIB, nous visons ici une dette de 60% du PIB. Les paramètres des simulations sont identiques, en conservant les mêmes conventions que le @tbl-sum. En particulier le déficit public en 2025 est le même (5,1% du PIB) et les charges d'intérêts en 2026 sont réduites, fonction du nouveau ratio dette sur PIB -- et donc divisées par 2 à peu près. Le taux souverain est également réduit, puisque l'écart critique ($r-g$) est supposé nul -- ce qui est une hypothèse plutôt favorable. Entre 2012 et 2022, cet écart critique a été négatif (voir @tip-dyndet) si on prend le taux souverain de marché -- et qui continue aujourd'hui d'être négatif si on considère le taux apparent. On impute donc à l'écart de dette avec la cible du Pacte de Stabilité et de Croissance l'intégralité de l'écart critique, ce qui est abusif, mais permet d'isoler cet effet.
+Instead of a target of 120% of GDP, we target debt of 60% of GDP. The simulation parameters are unchanged, and the conventions of @tbl-sum are retained. In particular, the government deficit in 2025 is the same (5.1% of GDP) and interest payments in 2026 are reduced in line with the new debt-to-GDP ratio — and therefore roughly halved. The sovereign rate is also lower, since the interest–growth differential ($r-g$) is assumed to be zero — a rather favourable assumption. Between 2012 and 2022, this differential was negative (see @tip-dyndet) when measured using the market sovereign rate — and it remains negative today when measured using the implicit rate. The entire interest–growth differential is thus attributed to the gap between debt and the Stability and Growth Pact reference value, which is an overstatement but allows this effect to be isolated.
 
-Cet exercice de pensée est évidement factice mais il est intéressant pour mesurer ce que le niveau de la dette fait peser comme contrainte sur le retour à l'équilibre des finances publiques (au sens du déficit public primaire) et d'un objectif de dette à moyen terme moyennent ambitieux.
+This thought experiment is admittedly artificial, but it is useful for gauging the constraint that the level of debt places on restoring public finances to balance (in terms of the primary deficit) and on a moderately ambitious medium-term debt objective.
 
-Le @tbl-sumd60 résume les résultats de ces simulations. Le principal résultat est qu'une dette publique divisée par 2 ne réduit pas significativement le coût de l'ajustement budgétaire. Si avec un écart critique nul, le coût budgétaire est inférieur de 0,3 point de PIB à celui calculé pour le niveau observé de la dette (@tbl-sum), il est très proche pour un écart critique de +0,8 point de pourcentage.
+@tbl-sumd60 summarises the results of these simulations. The main finding is that halving public debt does not significantly reduce the cost of fiscal adjustment. With a zero interest–growth differential, the fiscal cost is 0.3 point of GDP lower than that computed for the observed level of debt (@tbl-sum); for a differential of +0.8 percentage point, it is very close.
 
-Par ailleurs, on retrouve une hiérarchie identique dans toutes les variantes à celle observée pour la dette à 115,6% en 2025.
+Moreover, the ranking of the variants is identical to that observed for debt at 115.6% of GDP in 2025.
 
-L'explication de ce résultat contre intuitif est assez simple. Le paramètre clef pour identifier le coût de la dette, c'est-à-dire ce qu'elle fait peser comme contrainte, n'est pas le niveau de la dette, ni la charge d'intérêts. Le paramètre essentiel est le produit de l'écart critique par la dette ($\frac{r-g}{1+g} \times d$, voir @tip-dyndet).
+The explanation for this counter-intuitive result is fairly simple. The key parameter for identifying the cost of debt, i.e. the constraint it imposes, is neither the level of debt nor interest payments. The essential parameter is the product of the interest–growth differential and debt ($\frac{r-g}{1+g} \times d$, see @tip-dyndet).
 
-Or, dans le cas de la France en 2025, ce paramètre joue en la faveur des finances publiques françaises, puisque le taux apparent sur la dette publique française est inférieur au taux de croissance nominal. Sur la période 2026-2032, le taux souverain pondéré est de 2,7 points de pourcentage, ce qui est inférieur au taux de croissance potentiel nominal espéré sur la période (2,8% par an), et même du taux de croissance espéré en tenant compte de l'effort budgétaire (2,9% par an) (@tbl-optimal1). L'écart critique reste négatif et, toutes choses égales par ailleurs, plus de dette induit un effet boule de neige négatif, qui contribue (modestement) à réduire la dette.
+In the case of France in 2025, this parameter works in favour of French public finances, since the implicit rate on French public debt is below the nominal growth rate. Over 2026–2032, the weighted sovereign rate is 2.7%, which is below the nominal potential growth rate expected over the period (2.8% per year), and even below the expected growth rate once the fiscal effort is taken into account (2.9% per year) (@tbl-optimal1). The interest–growth differential remains negative and, all else being equal, more debt generates a negative snowball effect, which contributes (modestly) to reducing debt.
 
-Un taux souverain de marché plus élevé fera fondre cet avantage plus rapidement. Le @tbl-plustaux illustre cet effet. Le taux souverain moyen pondéré est de 2,9% par an de 2026 à 2032, au lieu de 2,8% par an dans le scénario de référence. Il atteint lentement une valeur supérieure à la croissance potentielle nominale et augmente petit à petit. Il faut attendre 2028 pour que cet écart critique devienne nul, puis positif. À très long terme il aboutit à une valeur rédhibitoire. La ligne "effet boule de neige" quantifie cette dynamique délétère. Malgré une dette importante, cet effet reste modeste face à l'ampleur du déficit à combler. Le scénario "fil de l'eau" (@tbl-fildle) indique ainsi que, avec un écart critique faible (+0,5% par an), l'effet boule de neige s'accroît dans le temps, et serait de 0,1 point par an en 2032 (c'est-à-dire la dette publique s'accroît de son propre poids de 0,1 point par an). Il faut attendre au-delà de 2040 pour que cela soit supérieur à 1/2 point de pourcentage par an. Un écart critique plus important augmente directement cet effet boule de neige. Cela illustre pourquoi la charge d'intérêts n'est pas un indicateur budgétaire pertinent : c'est la charge nette de la taxe inflationniste ou mieux nette de la croissance nominale (l'effet boule de neige) qui est intéressante, et tant que l'écart critique est faible ou négatif, la dette n'est pas un fardeau -- et même peut faciliter la stabilisation des finances publiques[^8].
+A higher market sovereign rate would erode this advantage more quickly, as @tbl-plustaux illustrates. The weighted average sovereign rate is 2.9% per year over 2026–2032, instead of 2.8% per year in the reference scenario. It slowly reaches a level above nominal potential growth and then rises gradually. It is not until 2028 that the interest–growth differential reaches zero and then turns positive. In the very long run it reaches a prohibitive level. The "snowball effect" row quantifies this adverse dynamic. Despite a high level of debt, this effect remains modest relative to the size of the deficit to be closed. The no-policy-change scenario (@tbl-fildle) thus shows that, with a small differential (+0.5% per year), the snowball effect increases over time and would amount to 0.1 point per year in 2032 (i.e. public debt increases under its own weight by 0.1 point per year). Only after 2040 would it exceed half a percentage point per year. A larger differential directly increases this snowball effect. This illustrates why interest payments are not a relevant fiscal indicator: what matters is the interest burden net of the inflation tax or, better still, net of nominal growth (the snowball effect); as long as the interest–growth differential is small or negative, debt is not a burden — and may even facilitate the stabilisation of public finances[^8].
 
-[^8]: Voir à ce sujet les échanges de François Geerolf avec le DG de l'INSEE [@geerolf:hal-05506068].
+[^8]: See, on this subject, the exchanges between François Geerolf and the Director General of INSEE [@geerolf:hal-05506068].
 
-Des taux de marché encore plus élevés pourraient accélérer cette évolution. Il faudrait un taux de l'ordre de 8% par an pour propulser le taux souverain pondéré à 2,8% en 2026. La conclusion est donc simple : il faut des taux de marché élevés pendant une longue période pour que la dette publique devienne une contrainte véritable. C'est un sérieux risque pour le très long terme qui n'a pas de conséquences immédiates. Ce même raisonnement s'applique à des pays comme l'Italie ou le Japon qui n'ont pas basculé à cause d'une dette publique trop importante. En revanche, l'effet des politiques budgétaires pour réduire rapidement la dette a un impact à court terme qu'il ne faut absolument pas négliger au risque de graves déconvenues.
+Even higher market rates could accelerate this process. A rate of around 8% per year would be needed to push the weighted sovereign rate up to 2.8% in 2026. The conclusion is therefore simple: market rates must remain high for a long period for public debt to become a genuine constraint. This is a serious risk in the very long term, but one without immediate consequences. The same reasoning applies to countries such as Italy or Japan, which have not tipped into crisis because of excessive public debt. By contrast, fiscal policies aimed at reducing debt rapidly have a short-term impact that must on no account be overlooked, at the risk of severe setbacks.
 
 ```{r}
 #| label: tbl-sumd60
-#| tbl-cap: 'Simulations : "et si la dette était à 60% en 2025"'
+#| tbl-cap: 'Simulations: "what if debt had been at 60% in 2025?"'
 
 sims_sum_ifd |> 
   mutate(
@@ -1132,48 +1144,48 @@ sims_sum_ifd |>
   select(libs, cible, date_cible, ibc = ibc_s, ogc = ogc_s, dettep = dettep_s, ibclt = ibclt_s) |> 
   gt() |> 
   tab_spanner(
-    "De 2026 à la cible",
+    "From 2026 to target year",
     c(ibc, ogc, dettep)) |>
   tab_spanner(
-    "\u00c0 long terme",
+    "Long term",
     id = "lt",
     c(ibclt)) |>
   cols_label(
-    libs ="", cible = "Cible", date_cible = "Année",
-    ogc = "Perte d'activité", ibc = "Effort budgétaire", dettep = "Dette",
-    ibclt = "Effort budgétaire") |> 
+    libs ="", cible = "Target", date_cible = "Year",
+    ogc = "Output loss", ibc = "Fiscal effort", dettep = "Debt",
+    ibclt = "Fiscal effort") |> 
   cols_align("right", -c(libs, cible, date_cible)) |>
   fmt_number(
     -c(libs, cible, date_cible),
     scale_by = 100, 
     decimals = 1,
-    sep_mark = " ",
-    dec_mark = ",") |> 
+    sep_mark = ",",
+    dec_mark = ".") |> 
   cols_width(
     libs ~ px(180),
     cible ~ px(40),
     date_cible ~ px(40),
     everything() ~ px(70)  ) |> 
-  tab_footnote("og = écart de production, AMECO 5/2026", 
+  tab_footnote("og = output gap, AMECO 5/2026", 
                cells_body(libs, row = str_detect(libs, "AMECO"))) |>
-  tab_footnote("% du PIB", cells_column_labels(-c(libs, cible, date_cible))) |>
+  tab_footnote("% of GDP", cells_column_labels(-c(libs, cible, date_cible))) |>
   tab_footnote(
-    "Cumul des impulsions de 2026 à l'année de la cible de dette ou de solde",
+    "Cumulative impulses from 2026 to the target year (debt or balance target)",
     cells_column_labels(ibc)) |>
   tab_footnote(
-    "Perte d'activité moyenne de 2026 à l'année de la cible de dette ou de solde", 
+    "Average output loss from 2026 to the target year (debt or balance target)", 
     cells_column_labels(ogc)) |>
   tab_footnote(
-    "Dette en % du PIB l'année ciblée", 
+    "Debt as % of GDP in the target year", 
     cells_column_labels(dettep)) |>
   tab_footnote(
-    "La simulation fonctionne sans règle budgétaire, l'impulsion n'est donc pas stochastique", 
-    cells_body("libs", rows = cible == "Solde" ) ) |>
+    "The simulation runs without a fiscal rule; the impulse is therefore not stochastic", 
+    cells_body("libs", rows = cible == "Balance" ) ) |>
   tab_footnote(
     "2050", cells_column_spanners(spanners = "lt")) |>
   ofce_caption(
-    source = "Données AMECO mai 2026, debtwatch 2.0",
-    note = "256 tirages, la simulation démarre en 2026. Les chiffres principaux sont ceux de la simulation détermiste et entre paranthèse l'intervalle de confiance à 95% issue des simulations stochastiques") |> 
+    source = "AMECO data May 2026, debtwatch 2.0",
+    note = "256 draws; the simulation starts in 2026. Headline figures are those of the deterministic simulation; figures in brackets give the 95% confidence interval derived from the stochastic simulations") |> 
   ofce::ofce_tab_options(
     typst_width = 90 ) |> 
   tab_style(
@@ -1182,44 +1194,44 @@ sims_sum_ifd |>
 ```
 
 ```{r, results='asis'}
-ofce::margin_download(sims_sum_ifd, "ofce-xt-sims-tbld60", "Données du tableau (d=60%)", prefix="")
+ofce::margin_download(sims_sum_ifd, "ofce-xt-sims-tbld60-en", "Table data (d=60%)", prefix="")
 ```
 
 ```{r, results='asis'}
-ofce::margin_download(sims_ifd, "ofce-xt-sims-d60", "Simulations (d=60%)", prefix="")
+ofce::margin_download(sims_ifd, "ofce-xt-sims-d60-en", "Simulations (d=60%)", prefix="")
 ```
 
-## Méthodologie
+## Methodology
 
-### Principales hypothèses {#sec-annexe1}
+### Main assumptions {#sec-annexe1}
 
-1.  On a supposé une croissance potentielle de 1% par an à terme. Entre 2026 et 2029, la croissance potentielle est un peu supérieure du fait d'une baisse du chômage structurel vers 7% de la population active.
+1.  Potential growth is assumed to be 1% per year in the long run. Between 2026 and 2029, potential growth is slightly higher owing to a decline in structural unemployment towards 7% of the labour force.
 
-2.  L'inflation est ancrée à 1,75% à long terme. En 2026, le prix du pétrole reste élevé pour revenir à la "normale" vers la fin de l'année 2027.
+2.  Inflation is anchored at 1.75% in the long run. In 2026, the oil price remains high, returning to "normal" towards the end of 2027.
 
-3.  Le solde public et la dette publique sont calés sur la dernière notification de la dette publique française (mars 2026) et sur la prévision d'automne 2026 de l'IFE\|OFCE. Les autres données macroéconomiques pour l'année 2025 sont celles de la base AMECO de mai 2026. Elles diffèrent des comptes nationaux de mai 2026 à la marge pour l'année 2025.
+3.  The government balance and public debt are calibrated on the latest notification of French public debt (March 2026) and on the IFE\|OFCE autumn 2026 forecast. Other macroeconomic data for 2025 are taken from the May 2026 AMECO database. For 2025, they differ marginally from the May 2026 national accounts.
 
-4.  L'écart de production est calé sur la prévision d'automne 2026 de l'IFE\|OFCE. AMECO donne un écart de production de -0,6% du PIB potentiel en 2025 contre -0,2% dans ce scénario.
+4.  The output gap is calibrated on the IFE\|OFCE autumn 2026 forecast. AMECO puts the output gap at −0.6% of potential GDP in 2025, compared with −0.2% in this scenario.
 
-5.  La prime sur le taux souverain par rapport à la croissance potentielle nominale s’accroît encore en 2027 puis décroît lentement vers 0,5 point de pourcentage.
+5.  The premium of the sovereign rate over nominal potential growth widens further in 2027 and then slowly declines towards 0.5 percentage point.
 
-6.  Le multiplicateur budgétaire est de 0,85 (0,5 sur les recettes, 1,2 sur les dépenses et les impulsions sont à 50% sur les recettes et 50% sur les dépenses). Il y a une littérature empirique abondante sur les mulitplicateurs [voir par exemple @aldama2022ea, @oikonomoumorteza].
+6.  The fiscal multiplier is 0.85 (0.5 for revenue and 1.2 for expenditure, with impulses split equally between revenue and expenditure). There is an extensive empirical literature on multipliers [see for example @aldama2022ea, @oikonomoumorteza].
 
-7.  L'optimisation est une optimisation sous contrainte d'atteindre la cible de dette (*e.g.* 120%) à une date donnée (2032 ou 2037) et de s'y tenir ensuite. Les impulsions sont calculées en fonction en minimisant une fonction objectif qui minimise la perte quadratique d'écart de croissance et la variance des impulsions. Cette optimisation intègre les effets de retour des impulsions sur l'activité et donc les écarts de production.
+7.  The optimisation is subject to the constraint of reaching the debt target (*e.g.* 120%) at a given date (2032 or 2037) and remaining there thereafter. Impulses are computed by minimising an objective function that combines the quadratic loss from the output gap and the variance of impulses. This optimisation incorporates the feedback effects of impulses on activity and hence on output gaps.
 
-8.  Une optimisation alternative consistant à stabiliser la dette indépendamment de son niveau en 2032 est décrite en @sec-annexe3.
+8.  An alternative optimisation, which consists in stabilising debt regardless of its level in 2032, is described in @sec-annexe3.
 
-### Trajectoires au fil de l'eau {#sec-annexe2}
+### No-policy-change paths {#sec-annexe2}
 
-La trajectoire au fil de l'eau est là à titre de référence. Elle consiste à dérouler à partir des conditions initiales la logique de la dynamique du modèle sans impulsion budgétaire. Les propriétés du modèle sont très simples, avec d'un côté le retour à l'équilibre de l'écart de production et de l'autre le calcul de l'évolution de la dette publique par l'accumulation des déficits structurels et de la charge d'intérêt. L'inflation dépend, autour de la trajectoire, de l'écart de production (que ce soit par un argument de type Phillips ou un ajustement par le compte extérieur). La condition initiale en 2025 est celle d'un écart de production peu ouvert (conforme à l'hypothèse DGTrésor). L'appréciation de la position dans le cycle de la Commission Européenne est un peu plus négative, ce qui justifierait un peu plus de croissance dans le court terme.
+The no-policy-change path is provided as a benchmark. It consists in running the model dynamics forward from the initial conditions without any fiscal impulse. The properties of the model are very simple: on the one hand, the output gap returns to equilibrium; on the other, public debt evolves through the accumulation of structural deficits and interest payments. Around this path, inflation depends on the output gap (whether through a Phillips-curve mechanism or through adjustment via the external account). The initial condition in 2025 is a small output gap (consistent with the assumption of the French Treasury, DG Trésor). The European Commission's assessment of the cyclical position is somewhat more negative, which would warrant slightly stronger growth in the short term.
 
-La trajectoire au fil de l'eau est construite sur une impulsion budgétaire nulle, c'est-à-dire que le taux de prélèvement obligatoire est constant et que la dépense publique est constante en point de PIB potentiel. Cette trajectoire est déjà un ajustement budgétaire si on tient compte d'évolutions tendancielles ou votées comme la dépense sociale, la loi de programmation pluri-annuelle militaire ou les impôts exceptionnels qui doivent s'éteindre en 2026 ou en 2027. Le fil de l'eau choisi n'a donc rien de spontané mais illustre plutôt les dynamiques à l’œuvre.
+The no-policy-change path is built on a zero fiscal impulse, i.e. the tax-to-GDP ratio is constant and public expenditure is constant as a share of potential GDP. This path already amounts to a fiscal adjustment once trend or legislated developments are taken into account, such as social spending, the multi-year military programming law, or exceptional taxes due to expire in 2026 or 2027. The chosen no-policy-change path is therefore by no means spontaneous; rather, it illustrates the dynamics at work.
 
-De ce point de vue, la stabilité du déficit structurel ajouté à la hausse de la charge d'intérêt conduit à un accroissement du déficit public. À l'horizon de 2031, la hausse ainsi induite du déficit public est de l'ordre d'un point de PIB, ce résultat dépendant des hypothèses retenues sur les taux d'intérêt souverain courant et pondéré. Notons que la modélisation du taux pondéré, avec un modèle auto-régressif, minore potentiellement la hausse du taux pondéré à l'horizon de la décennie. À plus long terme, cette déviation s'accentue, conduisant la dette publique à 180% du PIB en 2050. Ceci constitue indéniablement une dynamique explosive mais relativement lente, en 25 années la dette s'accroît de 60 points de PIB, soit 2,4 points par an.
+From this perspective, a stable structural deficit combined with rising interest payments leads to an increase in the government deficit. By 2031, the resulting increase in the government deficit is of the order of one point of GDP, a result that depends on the assumptions made about current and weighted sovereign rates. Note that modelling the weighted rate with an autoregressive process potentially understates its increase over the decade. In the longer term, this deviation widens, taking public debt to 180% of GDP in 2050. These dynamics are undeniably explosive, albeit relatively slow: over 25 years, debt increases by 60 points of GDP, i.e. 2.4 points per year.
 
 ```{r}
 #| label: tbl-fildle
-#| tbl-cap: Fil de l'eau, pas d'impulsion après 2027
+#| tbl-cap: No-policy-change scenario, no impulse after 2027
 
 table_scenarios(
   sim = sims |> filter(ibs == "fildle"),
@@ -1228,7 +1240,7 @@ table_scenarios(
 
 ```{r}
 #| label: fig-fildle
-#| fig-cap: Fil de l'eau, pas d'impulsion après 2027
+#| fig-cap: No-policy-change scenario, no impulse after 2027
 #| fig-asp: 0.7
 
 data_cc <- sims |> 
@@ -1239,13 +1251,13 @@ data_cc <- sims |>
     variable %in% c("og", "ib", "dettep", "sep")) |> 
   mutate(
     cas = case_when(
-      sp ~ "dette stable en 2032",
-      ibs == "optimal1" ~ "120% en 2032",
-      ibs == "nomult" ~ "120% en 2032, multiplicateurs nuls",
-      ibs == "multivar" ~ "120% en 2032, multiplicateurs variables",
-      ibs == "d2037" ~ "120% en 2037")  ) |> 
+      sp ~ "Debt stable in 2032",
+      ibs == "optimal1" ~ "120% in 2032",
+      ibs == "nomult" ~ "120% in 2032, zero multipliers",
+      ibs == "multivar" ~ "120% in 2032, cycle-dependent multipliers",
+      ibs == "d2037" ~ "120% in 2037")  ) |> 
   mutate(
-    tooltip = glue("<b>{cas}</b><br><em>{vlabels[variable]}</em><br>En {year} : {round(q0.5*100,1)}%"))
+    tooltip = glue("<b>{cas}</b><br><em>{vlabels[variable]}</em><br>In {year}: {round(q0.5*100,1)}%"))
 
 gg <- ggplot(data_cc)+
   theme_ofce(base_size = 10)+
@@ -1276,104 +1288,104 @@ girafy(gg, r=1.5)
 
 ```
 
-### Principes de la modélisation {#sec-annexe5}
+### Modelling principles {#sec-annexe5}
 
-L'équation de retour à l'équilibre de l'écart de production est écrite comme un modèle à correction d'erreur (MCE). Les impulsions jouent sur l'écart de production. Le multiplicateur instantané est défini par le paramètre $og_{dep}$ ou $og_{po}$. Le multiplicateur complet (ou de long terme) dépend des autres paramètres du MCE, $og_{lag}$ et $og_{mce}$. Les valeurs utilisées pour les simulations sont : $og_{dep}=0.8$, $og_{po}=0.5$, $og_{mce}=0.3$, $og_{lag}=0.25$.
+The equation governing the return of the output gap to equilibrium is specified as an error-correction model (ECM). Impulses affect the output gap. The impact multiplier is defined by the parameter $og_{dep}$ or $og_{po}$. The full (or long-run) multiplier depends on the other ECM parameters, $og_{lag}$ and $og_{mce}$. The values used in the simulations are: $og_{dep}=0.8$, $og_{po}=0.5$, $og_{mce}=0.3$, $og_{lag}=0.25$.
 
 $$\Delta og = og_{lag} \times \Delta og_{-1} -og_{mce} \times og + og_{dep} \times ib_{dep} + og_{po} \times ib_{po} + \varepsilon$$ {#eq-og}
 
-Un bruit est ajouté, avec une autocorrélation. $ogn_\sigma=0.015$ et $ogn_{ar}=0.9$.
+An autocorrelated noise term is added, with $ogn_\sigma=0.015$ and $ogn_{ar}=0.9$.
 
 $$\Delta \varepsilon = ogn_{ar} \times \varepsilon_{-1} + \epsilon_{og} (\sim \mathcal{N}(0,ogn_{\sigma}^2))$$
 
-Le taux de croissance du prix du PIB (appelé inflation, on ne distingue pas prix de consommation ou autres), suit également un MCE. Le long terme est défini par la cible d'inflation et un effet de Phillips. Les paramètres sont $inf_{lag}=0$, $inf_{mce}=0.68$, $inf_{tcho}=0.15$.
+The growth rate of the GDP deflator (referred to as inflation; no distinction is made between consumer and other prices) also follows an ECM. The long-run level is determined by the inflation target and a Phillips effect. The parameters are $inf_{lag}=0$, $inf_{mce}=0.68$, $inf_{tcho}=0.15$.
 
 $$\Delta\dot{p} = inf_{lag} \times d\dot p_{-1} - inf_{mce} \times (\dot p - inf_{star} - inf_{tcho} \times (u - nairu)) +\eta$$
 
-Comme pour l'écart de production, on ajoute une perturbation aléatoire. $inf_{\sigma}=0.01$, $infn_{ar}=0.0$.
+As for the output gap, a random disturbance is added, with $inf_{\sigma}=0.01$ and $infn_{ar}=0.0$.
 
 $$\Delta \eta = infn_{ar} \times \eta_{-1} + \epsilon_{inf} (\sim \mathcal{N}(0,inf_{sigma}^2))$$
 
-La dynamique de la dette suit une équation habituelle. $t_{aut}$ assure l'équilibre comptable et prend en compte les recettes non fiscales.
+Debt dynamics follow a standard equation. $t_{aut}$ ensures accounting consistency and captures non-tax revenue.
 
 $$\Delta dette = -s_p + int - t_{aut} \times vpib + one_{off}$$
 
-Le taux de marché est défini comme la somme de l'inflation, de la croissance potentielle, d'une prime de risque $ec$ et d'un terme qui dépend de l'écart de la dette à une dette de référence $d^{**}$. Dans les simulations $r_{dette}$ est nul.
+The market rate is defined as the sum of inflation, potential growth, a risk premium $ec$ and a term that depends on the gap between debt and a reference debt level $d^{**}$. In the simulations, $r_{dette}$ is set to zero.
 
 $$r_{inst} = g_{pot} + \dot{p} + ec + r_{dette} \times (d - d^{**})$$
 
-La prime de risque suit un MCE, $ec_{mce}=0.5$.
+The risk premium follows an ECM, with $ec_{mce}=0.5$.
 
 $$\Delta ec = -ec_{mce} \times (ec_{-1} - ec^*)$$
 
-Le taux moyen pondéré de la dette publique ou taux apparent est la moyenne entre le taux moyen pondéré antérieur et le taux courant, comme approximation de tranches de dettes de maturité égale et de différentes dates d'émission. $r_{mat}=9$.
+The weighted average rate on public debt, or implicit rate, is a weighted average of its own lagged value and of the current rate, approximating a stock of debt tranches of equal maturity issued at different dates, with $r_{mat}=9$.
 
 $$r_{app} = 1/r_{mat} \times r_{inst, -1} + (1-1/r_{mat}) \times r_{app, -1}$$
 
-La règle linéaire qui définit les impulsions est ($tpo_{s^*}=0.25$, $tpo_{og}=-0.25$, $tpo_{d^*}=-0.1$:
+The linear rule that determines impulses is ($tpo_{s^*}=0.25$, $tpo_{og}=-0.25$, $tpo_{d^*}=-0.1$):
 
 $$ib_{lr} = tpo_{s^*} \times (spp - s^*) + tpo_{d^*} \times (d- d^*) + tpo_{og}\times og$$
 
-Le chômage suit un MCE dont la cible est le nairu et qui est perturbé par l'écart de production, le coefficient d'Okun à court terme est définit par $tcho_{okun}=0.5$ et unitaire à long terme (i.e. en cas de choc persistant sur l'écart de production). $tcho_{mce}=0.27$.
+Unemployment follows an ECM whose target is the NAIRU and which is disturbed by the output gap; the short-run Okun coefficient is given by $tcho_{okun}=0.5$, and the long-run coefficient is unity (i.e. in the case of a persistent shock to the output gap). $tcho_{mce}=0.27$.
 
 $$\Delta tcho = - tcho_{okun} \times dog - tcho_{mce} \times (tcho+og-nairu)$$
 
-Le nairu s'ajuste progressivement à sa cible, afin de lisser les évolutions. $nairu_{mce}=0.2$
+The NAIRU adjusts gradually to its target, so as to smooth changes, with $nairu_{mce}=0.2$.
 
 $$\Delta nairu = - nairu_{mce} \times (nairu_{-1} - nairu^*)$$
 
-Une politique budgétaire optimale est calculée : les impulsions budgétaires successives (disons de 2025 à 2055) sont déterminées de façon à ce que la dette publique soit égale à la cible de dette à partir d'une date donnée (dans le cas central 2045, 20 ans après 2025). Ce problème admet une infinité de solutions, puisque il suffit que le déficit primaire soit nul à partir de 2045 et que la dette en 2045 soit égale à la cible. On choisit parmi toutes ces solutions celle qui minimise l'écart quadratique d'activité ou des impulsions. Formellement, la fonction de perte s'écrit :
+An optimal fiscal policy is computed: successive fiscal impulses (say from 2025 to 2055) are determined such that public debt equals the debt target from a given date onwards (in the central case, 2045, i.e. 20 years after 2025). This problem has infinitely many solutions, since it suffices that the primary deficit be zero from 2045 and that debt in 2045 equal the target. Among all these solutions, we select the one that minimises the quadratic deviation of activity or of impulses. Formally, the loss function is:
 
 $$\mathcal{L} = \lambda_{og}\sum_{t=2025}^{\infty} \beta^t og_t^2 + \lambda_{ib} \sum_{t=2025}^{\infty} \beta^t ib_t^2 + \lambda_{max} \max_{t\geq 2025}(-og_t)$$ {#eq-perte-quad}
 
-$\lambda_{og}$, $\lambda_{ib}$ et $\lambda_{max}$ permettent de donner un poids relatif aux trois termes de cette expression. $\beta$ est un facteur d'actualisation. Cette fonction de perte permet l'utilisation d'algorithmes numériques standards de minimisation (en l’occurrence COBYLA tel qu'implémenté dans @nloptr).
+$\lambda_{og}$, $\lambda_{ib}$ and $\lambda_{max}$ assign relative weights to the three terms of this expression. $\beta$ is a discount factor. This loss function allows the use of standard numerical minimisation algorithms (in this case COBYLA, as implemented in @nloptr).
 
-Le premier terme s'interprète comme la minimisation de la "variance" des écarts de production, c'est-à-dire une trajectoire qui s'écarte le moins possible de 0 et qui recherche des trajectoires où l'écart est le plus constant possible. On minimise ainsi l'impact de la politique restrictive. La partie en $ib_t^2$ est l'équivalent, mais pour les instruments. Elle permet de représenter un monde où il est difficile de modifier le budget. Cette inertie, si elle n'est pas rationnelle, est réaliste. Le mélange entre les deux fonctions de perte conduit à associer les deux arguments. Le facteur d'actualisation consiste à préférer des conséquences lointaines plutôt qu'immédiates et constitue une façon simple de justifier la *backloading* par rapport au *frontloading*.
+The first term can be interpreted as minimising the "variance" of the output gap, i.e. seeking paths that deviate as little as possible from 0 and along which the gap is as constant as possible. The impact of the restrictive policy is thus minimised. The $ib_t^2$ term is its counterpart for the instruments. It represents a world in which the budget is difficult to change. Such inertia, while not rational, is realistic. Combining the two loss functions brings both considerations together. The discount factor amounts to preferring distant rather than immediate consequences and provides a simple justification for *backloading* over *frontloading*.
 
-Enfin, le troisième terme conduit à prendre en compte le creux d'écart de production. Cette fonction de perte conduit, comme on le verra plus loin, à produire des trajectoires dont la partie $og_t$ négative est la plus limitée possible. Ce terme de la fonction de perte induit un *backloading* assez fort, par construction. Pour faciliter le calcul numérique, on utilise une approximation continue de la fonction $max$[^9].
+Finally, the third term accounts for the trough in the output gap. As will be seen below, this loss function produces paths in which the negative part of $og_t$ is as limited as possible. By construction, this term of the loss function induces fairly strong *backloading*. To facilitate numerical computation, a continuous approximation of the $max$ function is used[^9].
 
-[^9]: par une fonction $max(x_1,x_2) \approx (x_1^\sigma + x_2^\sigma)^{1/\sigma}$ avec $\sigma$ assez grand (en pratique on prendra 8).
+[^9]: using $max(x_1,x_2) \approx (x_1^\sigma + x_2^\sigma)^{1/\sigma}$ with $\sigma$ sufficiently large (8 in practice).
 
 $$\mathcal{L} = max(-og_t)$$ {#eq-perte-min}
 
-Le programme que l'on résout est alors donné par @eq-prog-min, $\mathcal{S}$ étant la solution du système dynamique qui permet de calculer la trajectoire de la dette à partir des impulsions :
+The problem solved is then given by @eq-prog-min, where $\mathcal{S}$ is the solution of the dynamic system that computes the debt path from the impulses:
 
 $$
 \min_{ib_{t}}\mathcal{L}
-\text{ sous contrainte : pour } t \geq T \text{, } d_t = d^* \text{avec } d_t = \mathcal{S}(ib_t) 
+\text{ subject to: for } t \geq T \text{, } d_t = d^* \text{ with } d_t = \mathcal{S}(ib_t) 
 $$ {#eq-prog-min}
 
-### Multiplicateurs budgétaires {#sec-multiplicateurs}
+### Fiscal multipliers {#sec-multiplicateurs}
 
-La modélisation et les paramètres présentés dans la @sec-annexe5 permettent de calculer (simuler) les multiplicateurs budgétaires dans des cas simples. Le premier choc considéré est un choc temporaire de dépenses publiques ou de baisses d'impôts. On effectue donc une impulsion de 1 point de PIB en 2026 puis une impulsion de -1 point de PIB en 2027. Deux cas sont considérés suivant que l'on intègre une règle budgétaire linéaire ou non.
+The modelling and parameters presented in @sec-annexe5 make it possible to compute (simulate) fiscal multipliers in simple cases. The first shock considered is a temporary increase in public spending or a temporary tax cut: an impulse of 1 point of GDP is applied in 2026, followed by an impulse of −1 point of GDP in 2027. Two cases are considered, depending on whether or not a linear fiscal rule is included.
 
-Le résultat de la simulation est indiqué dans le @fig-multiplicateur. La modélisation du multiplicateur apparaît comme "super neutre" : non seulement un choc temporaire de dépense publique n'a pas d'impact sur l'écart de croissance mais en plus il n'a pas d'impact sur l'écart de croissance cumulé et ceci indépendamment de l'activation de la règle budgétaire ou non.
+The simulation results are shown in @fig-multiplicateur. The multiplier as modelled is "super-neutral": not only does a temporary public spending shock have no impact on the output gap, it also has no impact on the cumulative output gap, irrespective of whether the fiscal rule is activated.
 
-Lorsque la règle budgétaire est activée, la dette publique retourne (lentement) vers la dette de départ et le solde public est positif tant que la dette n'est pas revenu à sa valeur initiale.
+When the fiscal rule is activated, public debt returns (slowly) to its initial level, and the government balance remains positive until debt has returned to its initial value.
 
-Lorsque la règle n'est pas activée, le solde public revient à sa valeur initiale augmentée de l'écart de charge d'intérêt et la dette persiste. Un point de dépense publique augmente la dette d'un point à peu près. L'écart critique étant faible dans le compte central, l'accumulation des effets boule de neige ne suffit pas à accroître la dette et surtout ne compense pas la légère hausse de l'inflation temporaire induite par la dépense publique supplémentaire.
+When the rule is not activated, the government balance returns to its initial value plus the change in interest payments, and the higher debt persists. One point of public spending raises debt by roughly one point. As the interest–growth differential is small in the central scenario, the accumulated snowball effects are not sufficient to increase debt and, above all, do not offset the slight temporary rise in inflation induced by the additional public spending.
 
-Le multiplicateur à court terme est faible, inférieur à 1, ce qui est sans doute très conservateur. L'écart de production ne persiste pas parce que le choc est temporaire et qu'il est la superposition d'un choc positif de dépenses publiques, suivi de son arrêt.
+The short-run multiplier is low, below 1, which is probably very conservative. The output gap does not persist because the shock is temporary, being the superposition of a positive public spending shock and its subsequent withdrawal.
 
 ```{r}
 #| label: fig-multiplicateur
-#| fig-cap: Multiplicateur budgétaire, réponse d'une sélection de variables
+#| fig-cap: Fiscal multiplier, response of selected variables
 #| fig-asp: 0.8
 
-lbl <- c("dettep" = "Dette",
+lbl <- c("dettep" = "Debt",
          "og" = "OG",
-         "ogc" = "OG cumulé",
-         "ssp" = "Solde primaire",
-         "Règle linéaire" = "Règle linéaire",
-         "Règle optimale" = "Règle optimale",
-         "Pas de règle" = "Pas de règle")
+         "ogc" = "Cumulative OG",
+         "ssp" = "Primary balance",
+         "Règle linéaire" = "Linear rule",
+         "Règle optimale" = "Optimal rule",
+         "Pas de règle" = "No rule")
 res <- source_data("multiplicateurs.R") |> 
   filter(variable%in%c("dettep", "og", "ogc", "ssp"),
          year <= 2050) |> 
   mutate(tooltip = glue(
   "<b>{lbl[variable]}</b>
   {lbl[rule]}
-   En {year} : {ofce::fmt_pct(dvar,1)} par rapport au compte central"))
+   In {year}: {fmt_pct(dvar,1)} relative to the central scenario"))
 
 gg <- ggplot(res)+
   theme(legend.position = c(1,1),
@@ -1393,23 +1405,26 @@ gg <- ggplot(res)+
   facet_grid(
     cols = vars(variable), rows = vars(rule),
     labeller = as_labeller(lbl)) +
-  scale_y_continuous(labels = scales::label_percent(.1)) + 
-  ylab("Ecart en point de PIB au compte central") + xlab(NULL) + 
+  scale_y_continuous(
+    labels = scales::label_percent(1),
+    limits = c(-0.02, 0.03),
+    name = "Deviation from the central scenario (points of GDP)") + 
   scale_x_continuous(
     breaks = c(2025, 2030, 2035),
     labels = c("2025", "30", "35"),
-    limits = c(2025, 2035)) +
+    limits = c(2025, 2035), 
+    name = NULL) +
+  theme(panel.spacing = unit(6, "pt")) +
   ofce::ofce_caption(
     source = "debtwatch v2.0",
-    note = "Les grandeurs sont calculé en écart en point de PIB au compte de référence. OG est l'écart de production, la dette est la dette publique, le solde primaire est le solde public primaire. Pour la règle optimale, la dette doit être revenue au niveau initial (120% du PIB) en 2032." )
-
+    note = "Variables are expressed as deviations from the reference scenario, in points of GDP. OG is the output gap, debt is public debt and the primary balance is the primary government balance. Under the optimal rule, debt must have returned to its initial level (120% of GDP) by 2032." )
 
 girafy(gg)
 ```
 
 {{< fa square >}}
 
-## Bibliographie
+## References
 
 ::: {#refs}
 :::

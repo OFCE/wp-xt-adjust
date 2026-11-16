@@ -583,7 +583,8 @@ table_scenarios <- function(
   note_d = "",
   note_f = "",
   note_s = "",
-  dec = 1
+  dec = 1,
+  lang = getOption("dwr.lang", "fr")
 ) {
   if (is.null(years)) {
     year <- start_year(sim)
@@ -603,7 +604,8 @@ table_scenarios <- function(
       note_d = note_d,
       note_s = note_s,
       note_f = note_f,
-      dec = dec
+      dec = dec,
+      lang = lang
     )
   } else {
     map(
@@ -617,7 +619,8 @@ table_scenarios <- function(
         note_d = note_d,
         note_s = note_s,
         note_f = note_f,
-        dec = dec
+        dec = dec,
+        lang = lang
       )
     )
   }
@@ -632,8 +635,10 @@ table_simulation <- function(
   note_s = "",
   note_d = "",
   note_f = "",
-  dec = 1
+  dec = 1,
+  lang = getOption("dwr.lang", "fr")
 ) {
+  lang <- match.arg(lang, c("fr", "en"))
   fin <- debut + fwd + 1
   p1.d <- debut - 4
   
@@ -734,6 +739,48 @@ table_simulation <- function(
     "ci_ni"   , "Ch. int. nette de l'inflation"    , "% du PIB"                                , ""    ,
     "bdn"     , "Effet boule de neige"             , "% du PIB"                                , "" )  |> 
     mutate(pos = 1:n())
+
+  if (lang == "en") {
+    labels_en <- c(
+      gpib   = "GDP growth",
+      og     = "Output gap",
+      ogc    = "Average cumulative output gap",
+      gpot   = "Potential GDP growth",
+      gppib  = "Inflation",
+      tcho   = "Unemployment rate",
+      sep    = "Government balance",
+      spp    = "Primary government balance",
+      sspp   = "Structural primary balance",
+      ib     = "Primary fiscal impulse",
+      ib_po  = "\u202F\u202F\u202Fof which revenue",
+      ib_dep = "\u202F\u202F\u202Fof which expenditure",
+      ibc    = "Cumulative primary impulse",
+      r_inst = "Current sovereign rate",
+      r_app  = "Weighted sovereign rate",
+      dettep = "Public debt",
+      ci     = "Interest payments",
+      ci_ni  = "Interest payments net of inflation",
+      bdn    = "Snowball effect")
+    notes_en <- c(
+      "évolution en % annuel, volume"           = "annual % change, volume",
+      "évolution en % annuel"                   = "annual % change",
+      "% du PIB"                                = "% of GDP",
+      "déflateur du PIB, évolution en % annuel" = "GDP deflator, annual % change",
+      "% de la population active"               = "% of labour force",
+      "% du PIB potentiel"                      = "% of potential GDP",
+      "10 ans, % annuel"                        = "10-year, annual %",
+      "% annuel"                                = "annual %")
+    pos <- pos |>
+      mutate(
+        label = unname(labels_en[variable]),
+        note = unname(notes_en[note]))
+  }
+  # footnote texts, in the order they were originally declared
+  notes_txt <- c(
+    "évolution en % annuel, volume", "évolution en % annuel", "% du PIB",
+    "déflateur du PIB, évolution en % annuel", "% de la population active",
+    "% du PIB potentiel", "10 ans, % annuel", "% annuel")
+  if (lang == "en") notes_txt <- unname(notes_en[notes_txt])
   
   an_tot <- sim1 |>
     filter(year %in% (debut - bck):(fin)) |>
@@ -768,14 +815,25 @@ table_simulation <- function(
     simulation <- "?"
     year1 <- "?"
   }
+  ameco_nom <- atrbts$globals$ameco_nom
+  if (lang == "en") {
+    ameco_nom <- ameco_nom |>
+      stringr::str_replace("printemps", "spring") |>
+      stringr::str_replace("hiver", "winter")
+    cap_source <- "{ameco_nom} data{note_d}, debtwatch v2.0 (github.com/OFCE/dwr)"
+    cap_note <- "First simulation year: {year1}{note_s}. Deterministic simulation"
+  } else {
+    cap_source <- "Données {ameco_nom}{note_d}, debtwatch v2.0 (github.com/OFCE/dwr)"
+    cap_note <- "Première année de simulation : {year1}{note_s}. Simulation déterministe"
+  }
   an_tot |>
     gt() |>
     fmt_number(
       columns = where(is.numeric),
       decimals = dec,
       scale_by = 100,
-      sep_mark = " ",
-      dec_mark = ","
+      sep_mark = if (lang == "en") "," else " ",
+      dec_mark = if (lang == "en") "." else ","
     ) |>
     tab_style(
       style = cell_fill(color = "gray95"),
@@ -788,38 +846,15 @@ table_simulation <- function(
     tab_style(style = cell_borders('top'), cells_body(rows = c(4, 7, 10, 13, 14, 16, 17))) |>
     cols_label(label = "") |>
     cols_hide(c(note, max, `Max. 25-50`)) |>
-    tab_footnote(
-      "évolution en % annuel, volume",
-      cells_body(label, note == "évolution en % annuel, volume")
-    ) |>
-    tab_footnote(
-      "évolution en % annuel",
-      cells_body(label, note == "évolution en % annuel")
-    ) |>
-    tab_footnote("% du PIB", cells_body(label, note == "% du PIB")) |>
-    tab_footnote(
-      "déflateur du PIB, évolution en % annuel",
-      cells_body(label, note == "déflateur du PIB, évolution en % annuel")
-    ) |>
-    tab_footnote(
-      "% de la population active",
-      cells_body(label, note == "% de la population active")
-    ) |>
-    tab_footnote(
-      "% du PIB potentiel",
-      cells_body(label, note == "% du PIB potentiel")
-    ) |>
-    tab_footnote(
-      "10 ans, % annuel",
-      cells_body(label, note == "10 ans, % annuel")
-    ) |>
-    tab_footnote("% annuel", cells_body(label, note == "% annuel")) |>
+    (\(tbl) purrr::reduce(
+      notes_txt,
+      \(t, n) tab_footnote(t, n, cells_body(label, note == n)),
+      .init = tbl))() |>
     tab_footnote("Minimum", cells_body(`Max. 25-50`, max == "min")) |>
     ofce::ofce_caption(
-      source = "Données {atrbts$globals$ameco_nom}{note_d}, debtwatch v2.0 (github.com/OFCE/dwr)" |>
-        glue::glue(),
-      note = "Première année de simulation : {year1}{note_s}. Simulation déterministe" |>
-        glue::glue()) |>
+      source = glue::glue(cap_source),
+      note = glue::glue(cap_note),
+      lang = lang) |>
     tab_source_note("{note_f}" |> glue::glue()) |>
     ofce::ofce_tab_options() |>
     sub_missing() |>
