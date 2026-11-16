@@ -31,21 +31,31 @@ contributes:
       cap-location: top
       crossref:
         chapters: false
-        fig-prefix: graphique
-        tbl-prefix: tableau
-        eq-prefix: équation
-        sec-prefix: section
-        tip-prefix: encadré
-        fig-title: "**Graphique**"
-        tip-title: "**Encadré**"
         title-delim: "**.**"
-        tbl-title: "**Tableau**"
-        lof-title: Graphiques
-        lot-title: Tableaux
         fr:
+          fig-prefix: graphique
+          tbl-prefix: tableau
+          eq-prefix: équation
+          sec-prefix: section
+          tip-prefix: encadré
+          fig-title: "**Graphique**"
+          tip-title: "**Encadré**"
           title-delim: "**.**"
+          tbl-title: "**Tableau**"
+          lof-title: Graphiques
+          lot-title: Tableaux
         en:
+          fig-prefix: graph
+          tbl-prefix: table
+          eq-prefix: equation
+          sec-prefix: section
+          tip-prefix: box
+          fig-title: "**Graph**"
+          tip-title: "**Box**"
           title-delim: "**.**"
+          tbl-title: "**Table**"
+          lof-title: Graphs
+          lot-title: Tables
       logo: ../ofce/img/IFE-OFCE_logo_noir.png
       filters:
         - quotes
