@@ -2,8 +2,7 @@
 title: "What does it cost to stabilize public debt?" 
 subtitle: "From intuition to simulations with debtwatch 2.0"
 # author: Xavier Timbeau                   
-date: 2026-11-19    
-# the ofce extension sets tip-prefix/tip-title, which front-matter validation rejects
+date-modified: now
 format:                                  
   wp-html: default                    
   wp-typst:
