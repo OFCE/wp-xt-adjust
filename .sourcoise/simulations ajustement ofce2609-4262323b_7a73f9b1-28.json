@@ -1,0 +1,22 @@
+{
+  "timing": [204.9761],
+  "date": ["2026-11-17 14:22:26.856051"],
+  "size": [8143544],
+  "args": [],
+  "lapse": ["never"],
+  "src": ["simulations ajustement ofce2609.r"],
+  "src_hash": ["db59a39fc75ae2bc8c53283b22d74a3974ac6ae3"],
+  "arg_hash": ["4262323b"],
+  "track_hash": ["115190d16f74e609f6ca254dbda7f6120ee81cd8"],
+  "track": [
+    ["simulations init.R"]
+  ],
+  "wd": ["file"],
+  "qmd_file": [],
+  "src_in": ["project"],
+  "data_hash": ["0a1536f29a4505abf2346f618a5c78ba"],
+  "priority": [10],
+  "file_size": [870396],
+  "data_date": ["2026-11-17 14:22:26.962553"],
+  "data_file": ["simulations ajustement ofce2609-4262323b_0a1536f29a4505abf2346f618a5c78ba.qs2"]
+}

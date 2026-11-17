@@ -80,7 +80,7 @@ rs25 <- list(
   i_tpo = 0.0013,
   i_dette = -0.0048,
   pcpo = 0.5,
-  taut = c(-.001),
+  taut = c(-.0009),
   add_og = c(-0.0063, -0.0054, rep(0.00, 25)),
   add_inf = c(+0.0023, 0.0031, 0.001, 0),
   no_rule = 1,
@@ -100,25 +100,30 @@ brs25 <- setup_params(
   start_y = 2025,
   ameco_version = "5/2026"
 )
+r_inst_f <- function(.r) c(0.015, 0.75*0.015+0.25*.r, 0.25*0.015 + 0.75*.r, rep(.r, 25))
+r_inst_5 <- r_inst_f(0.005)
+r_inst_0 <- r_inst_f(0.0)
+r_inst_8 <- r_inst_f(0.008)
+r_inst_17 <- r_inst_f(0.017)
 
 ibs <- list(
   fildle = list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = 1,
     no_phi = 1,
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5
   ),
   fildle_plus_r = list(
     add_ib = c(-0.004, -0.007, 0),
     no_rule = c(1),
     no_phi = 1,
-    add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))
+    add_rinst = r_inst_17
   ),
   optimal1 = list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5
   ),
   ameco = list(
     i_og  = 0.0,
@@ -128,37 +133,37 @@ ibs <- list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5
   ),
   optimal1_moins_r = list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))
+    add_rinst = r_inst_0
   ),
   optimal1_plus_r = list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.017, rep(0.017, 25))
+    add_rinst = r_inst_17
   ),
   optimal1_plus_r8 = list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.008, rep(0.008, 25))
+    add_rinst = r_inst_8
   ),
   optimal2 = list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(0),
     no_phi = c( 0),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5 
     ),
   no2027 = list(
     add_ib = c(-0.005, 0, 0),
     no_rule = c(1, 1, 0, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5
   ),
   d2037 = list(
     cons_d = 15,
@@ -166,7 +171,7 @@ ibs <- list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5
   ),
   d2030 = list(
     cons_d = 22,
@@ -174,7 +179,7 @@ ibs <- list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5
   ),
   nomult = list(
     og_po = 0,
@@ -182,14 +187,14 @@ ibs <- list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5
   ),
   ogpers = list(
     og_mce = 0.3,
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5
   ),
   highmult = list(
     og_po = 0.75,
@@ -197,7 +202,7 @@ ibs <- list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5
   ),
   multivar = list(
     multivar = 1,
@@ -210,7 +215,7 @@ ibs <- list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+    add_rinst = r_inst_5
   ),
   lr = list(
     add_ib = c(0),

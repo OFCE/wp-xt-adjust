@@ -19,7 +19,7 @@ cclr <- map_dfr(
   mutate(loss_ib = NA, sp = NA)
 
 # table_scenarios(cclr |> filter(ibs == "noog"), dec = 2, bck = 0, fwd=8)
-# table_scenarios(cclr |> filter(ibs == "fildle"), dec = 2, bck = 0, fwd=8)
+table_scenarios(cclr |> filter(ibs == "fildle"), dec = 1, bck = 0, fwd=8)
 # table_scenarios(cclr |> filter(ibs == "fildle"), dec = 2, bck = 0, fwd=8)
 
 ## principales variantes, cible de dette --------------------------
@@ -48,7 +48,7 @@ ccl <- map_dfr(
   futurize() |>
   mutate(loss_ib = 5, sp = FALSE)
 
-table_scenarios(ccl |> filter(ibs == "ameco"), dec = 2, bck = 0, fwd=8)
+# table_scenarios(ccl |> filter(ibs == "ameco"), dec = 2, bck = 0, fwd=8)
 # table_scenarios(ccl |> filter(ibs == "optimal1"), dec = 2, bck = 0, fwd=8)
 
 ## cible de solde -----------------
@@ -117,7 +117,7 @@ ccdd <- map_dfr(
     pp <- list_modify(
       ibs[[.x]],
       dstar = 0.6, loss_og = 5, loss_ib = 5, loss_ogpe = 0,
-      add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25)))
+      add_rinst = r_inst_f(0.0))
     if(str_detect(.x, "plus_r$"))
       pp <- list_modify(
         pp,
@@ -125,7 +125,7 @@ ccdd <- map_dfr(
     if(str_detect(.x, "plus_r8$"))
       pp <- list_modify(
         pp,
-        add_rinst = c(0.015, 0.008, rep(0.008, 25)))
+        add_rinst = r_inst_f(0.005))
     phis <- calc_phis(
       brs25d60,
       algorithm = "cobyla",
@@ -148,7 +148,7 @@ phis <- calc_phis(
     dstar = 0.6, cons_d=0, cons_dt=0, cons_sp = 19,
     cons_spt = 7, loss_og = 5, loss_ib = 10, loss_ogpe = 0,
     no_rule = 1, no_phi = c(1,1,0), add_spstar = 0.0,
-    add_rinst = c(0.015, 0.01, 0.0055, rep(0.0, 25))))
+    add_rinst = r_inst_f(0.005)))
 cli::cli_alert_info(phis$message)
 ccssdd <- run_model(brs25d60, out = "none", params = phis, full_mc = FALSE) |>
   mutate(ibs = "dstable", loss_ib = 5, sp = TRUE, ifd = TRUE)

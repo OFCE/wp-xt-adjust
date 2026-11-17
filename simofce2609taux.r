@@ -1,7 +1,7 @@
 #1
 source("simulations init.R")
 future::plan("multisession", workers = workers)
-add_rinst = c(0.015, 0.015, 0.0105, rep(0.005, 25))
+
 ## principales variantes, cible de dette --------------------------
 ccl <- pmap_dfr(
   expand_grid(
@@ -16,8 +16,8 @@ ccl <- pmap_dfr(
                       dstar = 1.2, loss_og = 5, loss_ib = 5, loss_ogpe = 0,
                       cons_d = 27 - (.h - 2025), cons_dt = .h - 2025,
                       # c'est compliqué pour correspondre à ec=0.5 dans le cas central
-                      add_rinst = c(0.015, 0.5*(0.025+.r), 0.5*(0.016+.r), rep(.r, 25)),
-                      og_dep = .k, og_mce = .p    )
+                      add_rinst =  r_inst_f(.r),
+                      og_dep = .k, og_mce = .p)
     phis <- calc_phis(
       brs25,
       algorithm = "cobyla",
@@ -57,7 +57,7 @@ ccld60 <- pmap_dfr(
     pp <- list_modify(ibs[["optimal1"]],
                       dstar = 0.6, loss_og = 5, loss_ib = 5, loss_ogpe = 0,
                       cons_d = 27 - (.h - 2025), cons_dt = .h - 2025,
-                      add_rinst = c(0.015, 0.5*(0.025+.r), 0.5*(0.016+.r), rep(.r, 25)),
+                      add_rinst = r_inst_f(.r),
                       og_dep = .k, og_mce = .p    )
     phis <- calc_phis(
       brs25d60,
