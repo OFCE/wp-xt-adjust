@@ -9,11 +9,11 @@ format:
   wp-typst:
     fig-format: svg
     fig-dpi: 1200
-    output-file: ofce-draft-wp-xt-adjust-en.pdf
+    output-file: ofce-draft-wp-xt-adjust.pdf
 format-links:
   - typst
   - format: wp-typst
-    text: ofce-draft-wp-xt-adjust-en.pdf
+    text: ofce-draft-wp-xt-adjust.pdf
     icon: file-pdf
 editor: visual                          
 bibliography:                           
