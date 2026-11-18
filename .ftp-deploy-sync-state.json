@@ -1,61 +1,61 @@
 {
     "description": "DO NOT DELETE THIS FILE. This file is used to keep track of which files have been synced in the most recent deployment. If you delete this file a resync will need to be done (which can take a while) - read more: https://github.com/SamKirkland/FTP-Deploy-Action",
     "version": "1.0.0",
-    "generatedTime": 1794905912481,
+    "generatedTime": 1794942592461,
     "data": [
         {
             "type": "file",
             "name": ".ftp-deploy-sync-state.json",
-            "size": 38279,
-            "hash": "2509839084a3f8bbe1b3350c53ae116530c6e6a4bbf814d2834d1823b7cacc36"
+            "size": 38515,
+            "hash": "9cc2700b9e872a32f2c80fe99771199dad3275249e4e6d411d389fd6f0c1f2b8"
         },
         {
             "type": "file",
             "name": ".staticrypt.json",
             "size": 50,
-            "hash": "57ea022dd39015daddbaf6de475e65775162ca34d10d0f53830488b9c6dcc5d3"
+            "hash": "84925df32b92358d6aaea20b9de8942b7bbcb0962f94b483ddb61709fba68ba3"
         },
         {
             "type": "file",
             "name": "annexes.html",
             "size": 108237,
-            "hash": "c3bfc02286624641a87f6b52d3919b2130ce486946c3a4b9f0af62771a130ef4"
+            "hash": "f68959fcfb12084180ecc78e550de42b4ea1927e335ad5b6fa7f92e44ef01b14"
         },
         {
             "type": "file",
             "name": "index.html",
-            "size": 18138541,
-            "hash": "9198411d6e998c86e06db80bcb60d8eb35f105dda60bc6ef719dd88229362ce5"
+            "size": 18151085,
+            "hash": "1b7b1a2ae067eac516a080f7d1836737a9f9524f757b1f57db3b29f336ec9814"
         },
         {
             "type": "file",
             "name": "manifest.json",
             "size": 688,
-            "hash": "018a9f7c48dbd3ae58215c3ec3bb299400b87863e32de7ec1e7058b0ab8ec002"
+            "hash": "e726e82441951281b917eb185afb70039d896e725681846707a604c0ec4276d6"
         },
         {
             "type": "file",
             "name": "news.html",
             "size": 108365,
-            "hash": "4b07c04bbafbd72cfba39b253d9c7cb874ac4e3fa1396b0c8ce8059e8e4bd605"
+            "hash": "6d44881f9df6f9a4d4cd1886d20b8d2f85cd17448a6e5d22de5fdd8df2898c04"
         },
         {
             "type": "file",
             "name": "ofce-draft-wp-xt-adjust.pdf",
-            "size": 8796763,
-            "hash": "5d39b7943a456bf90aaf41e53c37edfdfdc0e6f4d681dcdb2d6ec1e38a7ee048"
+            "size": 8579706,
+            "hash": "3df69b44b231416e0d90da503e320f44afb3cd1dc102385f755303dcc00cfdcd"
         },
         {
             "type": "file",
             "name": "push-count.json",
             "size": 73,
-            "hash": "4494dce3f5b56fef8879f1af2e8843339b1102768df95c1e2f9891faedb41d06"
+            "hash": "b950fefd5f80849de87dc24d4a3d471efd1a79a2a532194eaea660b8e821a797"
         },
         {
             "type": "file",
             "name": "search.json",
-            "size": 96069,
-            "hash": "15dce00688e0b2fa2c64448247f1d368bf249d044e3b0f1457517c505ad3173a"
+            "size": 97936,
+            "hash": "4e217dca68550602375ab08512b86231c463c9d39177c12cb060e21fc4dde9da"
         },
         {
             "type": "folder",
@@ -65,7 +65,7 @@
             "type": "file",
             "name": "sitemap.xml",
             "size": 471,
-            "hash": "c22a4800b499dcfd98b88f009f231361b34cdbf293411d63d66eab1f5e6a43ca"
+            "hash": "13ff834748ad23c4ce76e0c6516b9d5360adb19fec51574dea9f667fb711fddd"
         },
         {
             "type": "folder",
@@ -73,19 +73,15 @@
         },
         {
             "type": "folder",
-            "name": "site_libs/bootstrap"
-        },
-        {
-            "type": "folder",
             "name": "site_libs/clipboard"
         },
         {
             "type": "folder",
-            "name": "site_libs/cookie-consent"
+            "name": "site_libs/bootstrap"
         },
         {
             "type": "folder",
-            "name": "site_libs/ggiraphjs-0.9.4"
+            "name": "site_libs/cookie-consent"
         },
         {
             "type": "folder",
@@ -94,6 +90,10 @@
         {
             "type": "folder",
             "name": "site_libs/htmltools-fill-0.5.9"
+        },
+        {
+            "type": "folder",
+            "name": "site_libs/ggiraphjs-0.9.4"
         },
         {
             "type": "folder",
@@ -106,10 +106,6 @@
         {
             "type": "folder",
             "name": "site_libs/liberation-sans-0.6.0"
-        },
-        {
-            "type": "folder",
-            "name": "site_libs/ofce-fonts-1.3.47"
         },
         {
             "type": "folder",
@@ -132,34 +128,14 @@
             "name": "site_libs/quarto-search"
         },
         {
+            "type": "folder",
+            "name": "site_libs/ofce-fonts-1.3.47"
+        },
+        {
             "type": "file",
             "name": "www/ifeofce.png",
             "size": 31943,
             "hash": "143cd7741c816137cdf754ac916f8d5ab624325887e7e72dce5c2d71a9e9df54"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/bootstrap/bootstrap-eb59f3e9777795da5006961f778b36ba.min.css",
-            "size": 526701,
-            "hash": "bdadcac77904bd39b018e38e84acdf611fee5aef4b41773f6e92b3fab0714998"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/bootstrap/bootstrap-icons.css",
-            "size": 99464,
-            "hash": "01253947f506e030589e4f33fc7ec7ccdfb9505e2e596dedf16445f12e243c0a"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/bootstrap/bootstrap-icons.woff",
-            "size": 180288,
-            "hash": "f55513b7b591cb84a3b87ff0e34ea24d4831d6fedc22e54b911ca64b5b544a15"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/bootstrap/bootstrap.min.js",
-            "size": 80668,
-            "hash": "d2ea6c1e0cabca20d18e924b25a1cd0187c38ba7c33f60ab06e1b0402b9bcdb5"
         },
         {
             "type": "file",
@@ -169,15 +145,51 @@
         },
         {
             "type": "file",
-            "name": "site_libs/cookie-consent/cookie-consent.css",
-            "size": 75,
-            "hash": "9be199c11f99e906de71b99a9d4e7e113b979007c90125d7c49a593bc7f22e28"
+            "name": "site_libs/bootstrap/bootstrap-eb59f3e9777795da5006961f778b36ba.min.css",
+            "size": 526701,
+            "hash": "bdadcac77904bd39b018e38e84acdf611fee5aef4b41773f6e92b3fab0714998"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/bootstrap/bootstrap-icons.woff",
+            "size": 180288,
+            "hash": "f55513b7b591cb84a3b87ff0e34ea24d4831d6fedc22e54b911ca64b5b544a15"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/bootstrap/bootstrap-icons.css",
+            "size": 99464,
+            "hash": "01253947f506e030589e4f33fc7ec7ccdfb9505e2e596dedf16445f12e243c0a"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/bootstrap/bootstrap.min.js",
+            "size": 80668,
+            "hash": "d2ea6c1e0cabca20d18e924b25a1cd0187c38ba7c33f60ab06e1b0402b9bcdb5"
         },
         {
             "type": "file",
             "name": "site_libs/cookie-consent/cookie-consent.js",
             "size": 206910,
             "hash": "8705f2ec4440409a916b9e3a76e038446f806d1d3a5c15be1815691280cd3a38"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/cookie-consent/cookie-consent.css",
+            "size": 75,
+            "hash": "9be199c11f99e906de71b99a9d4e7e113b979007c90125d7c49a593bc7f22e28"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/girafe-binding-0.9.6/girafe.js",
+            "size": 120590,
+            "hash": "80bd29b405e395147d36e17dc3c3f1781ab9b4ab018adcf4836758a5e9189ddc"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/htmltools-fill-0.5.9/fill.css",
+            "size": 585,
+            "hash": "0f41825dd6d8bb9923f39a10cd5de929daf009243c64e3e30fc008e45b8c3325"
         },
         {
             "type": "file",
@@ -196,18 +208,6 @@
             "name": "site_libs/ggiraphjs-0.9.4/girafe.yaml",
             "size": 123,
             "hash": "64f16998c0f447296c07a5b2a74ec99a54e307477ab39b0755ef36291da16f93"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/girafe-binding-0.9.6/girafe.js",
-            "size": 120590,
-            "hash": "80bd29b405e395147d36e17dc3c3f1781ab9b4ab018adcf4836758a5e9189ddc"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/htmltools-fill-0.5.9/fill.css",
-            "size": 585,
-            "hash": "0f41825dd6d8bb9923f39a10cd5de929daf009243c64e3e30fc008e45b8c3325"
         },
         {
             "type": "file",
@@ -230,6 +230,92 @@
         {
             "type": "folder",
             "name": "site_libs/liberation-sans-0.6.0/fonts"
+        },
+        {
+            "type": "folder",
+            "name": "site_libs/liberation-serif-0.6.0/css"
+        },
+        {
+            "type": "folder",
+            "name": "site_libs/liberation-serif-0.6.0/fonts"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-html/anchor.min.js",
+            "size": 5888,
+            "hash": "69098e105d990f834cff1b7886d873444228ff63c590e5ff834d568f1115ed8b"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-html/popper.min.js",
+            "size": 20084,
+            "hash": "4d50586b184724d39ddfe0f6582861664eddd5e806e5a79e0dbaa832361414d0"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-html/quarto-syntax-highlighting-9ae5c72b37dfa155a0c3e107e79de40a.css",
+            "size": 3616,
+            "hash": "9abddaebb8b11a4586c2d975d63ef4da00b31c46c7f0c720fcff4d329fcb0dc0"
+        },
+        {
+            "type": "folder",
+            "name": "site_libs/quarto-html/scrollable-regions"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-html/quarto.js",
+            "size": 28472,
+            "hash": "ff69fff180226f37a042e27a4046ca1f6d585b3e454452e27d3549161f7070fd"
+        },
+        {
+            "type": "folder",
+            "name": "site_libs/quarto-html/tabsets"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-html/tippy.css",
+            "size": 1409,
+            "hash": "5969f497d9158d7682f8219c6f13fa67269cdf5bf50a3931d95327151dee5678"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-html/tippy.umd.min.js",
+            "size": 24033,
+            "hash": "41181eeec6d7ba64cb9165f0e95563e34e026bde79e7c13aeec83270429b6fae"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-nav/headroom.min.js",
+            "size": 4570,
+            "hash": "5b80cc4165a661a3f2060d6bdb5ccff591f04c4f8e39a06c12d3c2544587cb17"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-nav/quarto-nav.js",
+            "size": 9851,
+            "hash": "a209dafb198d7c8e77cb398912b7225806e7b998211afa1fb269a4ef54ff56f6"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-search/autocomplete.umd.js",
+            "size": 96397,
+            "hash": "cd9db3b7d812139a4679a2566ea8f01b2a80159490a60b9e9e813e81b5e00a05"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-search/fuse.min.js",
+            "size": 23539,
+            "hash": "c57339c3fa16b1d69d9a6b46749a8139ef8d4fc9bbfe48144ff897aa7d4222ec"
+        },
+        {
+            "type": "folder",
+            "name": "site_libs/quarto-contrib/fontawesome6-6.7.2"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-search/quarto-search.js",
+            "size": 43121,
+            "hash": "1a23221f499b3993dc66ca5c8913e4e6602dfa4652337e9fbf75139ded5ece68"
         },
         {
             "type": "file",
@@ -272,92 +358,6 @@
             "name": "site_libs/ofce-fonts-1.3.47/ofce-fonts.css",
             "size": 892,
             "hash": "8609bbae443bc0ee9232a5a03ef603bf85c679e1368f373c3246a3420c0bf00a"
-        },
-        {
-            "type": "folder",
-            "name": "site_libs/liberation-serif-0.6.0/css"
-        },
-        {
-            "type": "folder",
-            "name": "site_libs/liberation-serif-0.6.0/fonts"
-        },
-        {
-            "type": "folder",
-            "name": "site_libs/quarto-contrib/fontawesome6-6.7.2"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-html/anchor.min.js",
-            "size": 5888,
-            "hash": "69098e105d990f834cff1b7886d873444228ff63c590e5ff834d568f1115ed8b"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-html/popper.min.js",
-            "size": 20084,
-            "hash": "4d50586b184724d39ddfe0f6582861664eddd5e806e5a79e0dbaa832361414d0"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-html/quarto-syntax-highlighting-9ae5c72b37dfa155a0c3e107e79de40a.css",
-            "size": 3616,
-            "hash": "9abddaebb8b11a4586c2d975d63ef4da00b31c46c7f0c720fcff4d329fcb0dc0"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-html/quarto.js",
-            "size": 28472,
-            "hash": "ff69fff180226f37a042e27a4046ca1f6d585b3e454452e27d3549161f7070fd"
-        },
-        {
-            "type": "folder",
-            "name": "site_libs/quarto-html/scrollable-regions"
-        },
-        {
-            "type": "folder",
-            "name": "site_libs/quarto-html/tabsets"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-html/tippy.css",
-            "size": 1409,
-            "hash": "5969f497d9158d7682f8219c6f13fa67269cdf5bf50a3931d95327151dee5678"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-html/tippy.umd.min.js",
-            "size": 24033,
-            "hash": "41181eeec6d7ba64cb9165f0e95563e34e026bde79e7c13aeec83270429b6fae"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-nav/quarto-nav.js",
-            "size": 9851,
-            "hash": "a209dafb198d7c8e77cb398912b7225806e7b998211afa1fb269a4ef54ff56f6"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-nav/headroom.min.js",
-            "size": 4570,
-            "hash": "5b80cc4165a661a3f2060d6bdb5ccff591f04c4f8e39a06c12d3c2544587cb17"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-search/autocomplete.umd.js",
-            "size": 96397,
-            "hash": "cd9db3b7d812139a4679a2566ea8f01b2a80159490a60b9e9e813e81b5e00a05"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-search/fuse.min.js",
-            "size": 23539,
-            "hash": "c57339c3fa16b1d69d9a6b46749a8139ef8d4fc9bbfe48144ff897aa7d4222ec"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-search/quarto-search.js",
-            "size": 43121,
-            "hash": "1a23221f499b3993dc66ca5c8913e4e6602dfa4652337e9fbf75139ded5ece68"
         },
         {
             "type": "file",
@@ -409,6 +409,12 @@
         },
         {
             "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Italic.ttf",
+            "size": 274984,
+            "hash": "7be4134e2499920a4d7013e0da9ed2d5bdaccf84825791368761c5cbbf5db48c"
+        },
+        {
+            "type": "file",
             "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Italic.woff",
             "size": 159520,
             "hash": "d5849cb19881d841828737a938b094e4d4604510ba8d9f009462c595cd6473b8"
@@ -418,12 +424,6 @@
             "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Regular.ttf",
             "size": 313408,
             "hash": "a9b21391536aec1c8fad37f2d5f24750e7f2d63cd86bccbb2463b6e17005f52e"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Italic.ttf",
-            "size": 274984,
-            "hash": "7be4134e2499920a4d7013e0da9ed2d5bdaccf84825791368761c5cbbf5db48c"
         },
         {
             "type": "file",
@@ -457,12 +457,6 @@
         },
         {
             "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Italic.ttf",
-            "size": 355608,
-            "hash": "e27e6da1f5bbba630d635b8cc2916f84f195735865ea539687df962ae5a98e72"
-        },
-        {
-            "type": "file",
             "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Italic.woff",
             "size": 197640,
             "hash": "347ff2dc069a5af3ff61f4cb0456f3fa4b748d24e659712bacbc197a243acf7b"
@@ -478,6 +472,12 @@
             "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Regular.woff",
             "size": 190908,
             "hash": "bbd94e83d46bbdb5ec949361090dedb8612dce415e574ae5b057e052218dc448"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Italic.ttf",
+            "size": 355608,
+            "hash": "e27e6da1f5bbba630d635b8cc2916f84f195735865ea539687df962ae5a98e72"
         },
         {
             "type": "file",
@@ -727,15 +727,15 @@
         },
         {
             "type": "file",
-            "name": "site_libs/liberation-serif-0.6.0/fonts/AUTHORS",
-            "size": 242,
-            "hash": "d640bd6acfd5f7558507851f3e8936857b390bbe7e10c662241161dd83dbe830"
-        },
-        {
-            "type": "file",
             "name": "site_libs/liberation-serif-0.6.0/fonts/ChangeLog",
             "size": 806,
             "hash": "bbbd383dae5527d944a41db0edbdf470d1539f16e632304a1ddeb572a29d0b4b"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-serif-0.6.0/fonts/AUTHORS",
+            "size": 242,
+            "hash": "d640bd6acfd5f7558507851f3e8936857b390bbe7e10c662241161dd83dbe830"
         },
         {
             "type": "file",
@@ -900,6 +900,18 @@
             "hash": "cd27fae5e8aa0e65359a4e4e8ca641fd89b7fff35c915f34284fa7df66f786b4"
         },
         {
+            "type": "file",
+            "name": "site_libs/quarto-html/scrollable-regions/scrollable-regions.js",
+            "size": 6782,
+            "hash": "b2f956903f5b9c36742454e74d37571f96eceedad7b0b603abc9fac713cf992e"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-html/tabsets/tabsets.js",
+            "size": 2882,
+            "hash": "a9c226bf70e82eaf5476f619cecfb70b4446b87ce4d1634d6404b0b2ba006d15"
+        },
+        {
             "type": "folder",
             "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/1e21o67"
         },
@@ -914,18 +926,6 @@
             "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css",
             "size": 351,
             "hash": "8df3fbb7dceb5e3ecee02577fdf7a63eacad2a6a5db3271f9a04bfe480a620e1"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-html/scrollable-regions/scrollable-regions.js",
-            "size": 6782,
-            "hash": "b2f956903f5b9c36742454e74d37571f96eceedad7b0b603abc9fac713cf992e"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-html/tabsets/tabsets.js",
-            "size": 2882,
-            "hash": "a9c226bf70e82eaf5476f619cecfb70b4446b87ce4d1634d6404b0b2ba006d15"
         },
         {
             "type": "file",
@@ -953,12 +953,6 @@
         },
         {
             "type": "file",
-            "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/1e21o67/fa-solid-900.ttf",
-            "size": 426112,
-            "hash": "d2f0593540b0e33ba6de255a54f272d466e31144806956bea8cfdbf7edffc9bd"
-        },
-        {
-            "type": "file",
             "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/1e21o67/fa-solid-900.woff2",
             "size": 158220,
             "hash": "aa75998623a391e61c6901794ace832e3ecdd288b56d608f21bea0411acc0b8e"
@@ -974,6 +968,12 @@
             "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/1e21o67/fa-v4compatibility.woff2",
             "size": 4796,
             "hash": "0ce9033c69dc714f5f45ef9bf17d55e4c46bcdfad6799a4e92b38e7781bf86bd"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/1e21o67/fa-solid-900.ttf",
+            "size": 426112,
+            "hash": "d2f0593540b0e33ba6de255a54f272d466e31144806956bea8cfdbf7edffc9bd"
         }
     ]
 }
