@@ -8,11 +8,11 @@ format:
   wp-typst:
     fig-format: svg
     fig-dpi: 1200
-    output-file: ofce-draft-wp-xt-adjust.pdf
+    output-file: OFCEWP2026-13.pdf
 format-links:
   - typst
   - format: wp-typst
-    text: ofce-draft-wp-xt-adjust.pdf
+    text: OFCEWP2026-13.pdf
     icon: file-pdf
 editor: visual                          
 bibliography:                           
