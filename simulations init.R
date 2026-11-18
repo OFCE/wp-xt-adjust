@@ -147,11 +147,11 @@ ibs <- list(
     no_phi = c(1, 1, 0),
     add_rinst = r_inst_17
   ),
-  optimal1_plus_r8 = list(
+  optimal1_plus_r5 = list(
     add_ib = c(-0.005, -0.008, 0),
     no_rule = c(1, 1, 0),
     no_phi = c(1, 1, 0),
-    add_rinst = r_inst_8
+    add_rinst = r_inst_5
   ),
   optimal2 = list(
     add_ib = c(-0.005, -0.008, 0),

@@ -1,0 +1,22 @@
+{
+  "timing": [286.153],
+  "date": ["2026-11-18 11:38:55.764964"],
+  "size": [22332504],
+  "args": [],
+  "lapse": ["never"],
+  "src": ["simofce2609horizons.r"],
+  "src_hash": ["d6be94b0da961e5ef0032c40c1b82bb58dde6e6c"],
+  "arg_hash": ["4262323b"],
+  "track_hash": ["723a2c6ff35fd1ae867cec1636fb83f36a3572e4"],
+  "track": [
+    ["simulations init.r"]
+  ],
+  "wd": ["file"],
+  "qmd_file": [],
+  "src_in": ["project"],
+  "data_hash": ["1ef0361092784d78367d67f042550966"],
+  "priority": [10],
+  "file_size": [5240051],
+  "data_date": ["2026-11-18 11:38:56.043554"],
+  "data_file": ["simofce2609horizons-4262323b_1ef0361092784d78367d67f042550966.qs2"]
+}

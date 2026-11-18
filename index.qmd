@@ -18,11 +18,12 @@ editor: visual
 bibliography:                           
   - references.bib
 citation: false
-thanks: I am grateful to Eric Heyer for his careful comments which, once again, enabled me to track down errors. Those that remain are in no way attributable to him and are my sole responsibility.
+thanks: I am grateful to Eric Heyer for his careful comments which, once again, enabled me to track down errors and pushed toward a better understanding of the problem at stake. Errors that remain are my sole responsibility.
 ---
 
 ```{r, include=FALSE}
 ofce::init_qmd()
+options(ofce.savegraph = TRUE)
 
 # English conventions: captions, dwr tables, number formatting, quarter labels
 options(ofce.caption.lang = "en", dwr.lang = "en")
@@ -74,7 +75,7 @@ ibs_labs <- c("optimal1"  =  "IFE|OFCE forecast 2609",
               "ameco" = "IFE|OFCE forecast 2609, AMECO output gap",
               "nomult" = "Zero multipliers",
               "optimal1_plus_r" = "Higher rates (r-g: +1.7%)",
-              "optimal1_plus_r8" = "Higher rates (r-g: +0.8%)",
+              "optimal1_plus_r5" = "Higher rates (r-g: +0.5%)",
               "optimal1_moins_r" = "Lower rates (r-g: 0%)",
               "no2027" = "No impulse in 2027",
               "d2037" = "Five years later",
@@ -316,7 +317,7 @@ gn_opt1 <- avg26_32("optimal1", \(d) d$gpib + d$txppib)
 
 [^1]: In this paper, *fiscal effort* denotes the opposite of fiscal impulses cumulated over several years (the period relevant to the fiscal adjustment). The term "fiscal effort" is sometimes used — notably in the forecast referred to here — to denote the impulse corrected for automatic stabilisers and for the elasticity of taxes and social contributions to their bases or to GDP. Here, impulses are cumulated from 2026 to 2032. If 2026 is regarded as a given, the opposite of the 2026 impulse, i.e. `r pt(-v("optimal1", "ib", 2026))` point of GDP (€`r bn(-v("optimal1", "ib", 2026))` billion at 2026 GDP), simply needs to be subtracted from the 2026–2032 fiscal effort.
 
-[^2]: The cumulative effects of the scenarios on the fiscal effort and on the output gap are assessed relative to the 2025 situation. An alternative would be to measure them as deviations from a reference scenario, such as the no-policy-change scenario (@sec-annexe2) or the zero-multiplier scenario (@sec-multinuloufort). The estimated output loss, for instance, is increased by the persistent initial negative output gap, which accounts for `r pt(oloss("fildle"))` in the no-policy-change scenario or `r pt(oloss("nomult"))` in the zero-multiplier case. For the sake of simplicity, we do not make this comparison with a reference scenario, even though this means we cannot directly answer the question "what is the impact of the assumptions on the cumulative output loss?".
+[^2]: The cumulative effects of the scenarios on the fiscal effort and on the output gap are assessed relative to the 2025 situation. An alternative would be to measure them as deviations from a reference scenario, such as the no-policy-change scenario (@sec-annexe1) or the zero-multiplier scenario (@sec-multinuloufort). The estimated output loss, for instance, is increased by the persistent initial negative output gap, which accounts for `r pt(oloss("fildle"))` in the no-policy-change scenario or `r pt(oloss("nomult"))` in the zero-multiplier case. For the sake of simplicity, we do not make this comparison with a reference scenario, even though this means we cannot directly answer the question "what is the impact of the assumptions on the cumulative output loss?".
 
 [^3]: It is intuitive that the cost should be roughly halved when public debt is halved as interest growth differential is nearly divided by 2 (except for the year 2026 — unchanged — and gradually in 2027 and 2028) . By contrast, the additional fiscal effort runs counter to intuition. In the long run, one point of interest–growth differential should entail an additional cost of 1.2 points of GDP (120% debt times 1 point of differential), i.e. €36 billion at 2026 GDP. This amount is found in the "LT" columns of the simulation tables. At the 2032 horizon, because the interest–growth differential is still negative, debt is not a cost but an advantage.
 
@@ -551,7 +552,8 @@ dd |>
     md("<em>e = s<sub>p</sub> - s<sub>stab</sub></em>"), cells_column_labels(c(ecart, ecart_m)) ) |> 
   tab_style(
       cell_fill(color = "grey90"),
-      cells_body(c(ecart, ecart_m))  )
+      cells_body(c(ecart, ecart_m))  ) |> 
+  ofce::save_gt()
   
 ```
 
@@ -667,7 +669,8 @@ sims_sum |>
     typst_width = 90 ) |> 
   tab_style(
     cell_borders("top", color = "grey", weight = px(0.5)),
-    location=cells_body(rows = c(3,5,9,12) ))
+    location=cells_body(rows = c(3,5,9,12) )) |> 
+  ofce::save_gt()
 
 ```
 
@@ -749,7 +752,7 @@ gg <- ggplot(data_wf) +
         vjust = vjust,
         family = "Arimo",
         color = textcolor),
-    size = 6, size.unit = "pt",
+    size = rel(2),
     lineheight = 1) +
   scale_x_continuous(breaks = NULL) +
   scale_y_continuous(
@@ -1019,7 +1022,7 @@ gg <- data_rpk |>
     data = slopes,
     col = 'white', 
     family = "Arimo",
-    size = 7, size.unit = "pt",
+    size = rel(2),
     lineheight = 1,
     aes(col = fill, x = x, y = y, label = label )
   ) + 
@@ -1176,9 +1179,9 @@ sims_sum_ifd <- sims_ifd |>
     ibclt = -ibc[year==2050],
     ogclt = -ogc[year==2050]/(2050-2025),
     detteplt = dettep[year==2050],
-    ibc = -ibc[year==date_cible],
-    ogc = -ogc[year==date_cible]/(date_cible[year==date_cible]-2025),
-    dettep = dettep[year==date_cible],
+    ibc = -ibc[year==date_cible+1],
+    ogc = -ogc[year==date_cible+1]/(date_cible[year==date_cible+1]-2025),
+    dettep = dettep[year==date_cible+1],
     minog = -min(og[between(year, 2026, date_cible)]),
     maxu = max(tcho[between(year, 2026, date_cible)]),
     .groups = "drop") |>
@@ -1186,7 +1189,7 @@ sims_sum_ifd <- sims_ifd |>
     libs = ibs_labs[ibs],
     ibs = factor(
       ibs,
-      c("optimal1", "optimal1_plus_r","optimal1_plus_r8",
+      c("optimal1", "optimal1_plus_r","optimal1_plus_r5",
         "no2027", "d2030", "d2037", "optimal2", "dstable", "dstable30", "ddecroit",  
         "nomult", "ogpers", "highmult", "multivar"))) |>
   arrange(ibs) |> 
@@ -1217,19 +1220,7 @@ Instead of a target of 120% of GDP, we target debt of 60% of GDP. The simulation
 
 This thought experiment is admittedly artificial, but it is useful for gauging the constraint that the level of debt places on restoring public finances to balance (in terms of the primary deficit) and on a moderately ambitious medium-term debt objective.
 
-@tbl-sumd60 summarises the results of these simulations. The main finding is that halving public debt does not significantly reduce the cost of fiscal adjustment -- it even increases it !. With a zero interest–growth differential, the fiscal cost is `r pt(abs(ifd_eff("optimal1") - eff("optimal1")))` point of GDP `r updown(ifd_eff("optimal1") - eff("optimal1"))` than that computed for the observed level of debt (@tbl-sum); for a differential of +0.8 percentage point, the gap is `r pts(ifd_eff("optimal1_plus_r8") - eff("optimal1"))`% of GDP.
-
-Moreover, the ranking of the variants is close to that observed for debt at `r pt(v("optimal1", "dettep", 2025))`% of GDP in 2025.
-
-The explanation for this counter-intuitive result is fairly simple. The key parameter for identifying the cost of debt, i.e. the constraint it imposes, is neither the level of debt nor interest payments. The essential parameter is the product of the interest–growth differential and debt ($\frac{r-g}{1+g} \times d$, see @tip-dyndet).
-
-In the case of France in 2025, this parameter works in favour of French public finances, since the implicit rate on French public debt is below the nominal growth rate. Over 2026–2032, the weighted sovereign rate is `r pt(rapp_opt1)`%, which is close to the nominal potential growth rate expected over the period (`r pt(gnpot_opt1)`% per year), and below the expected growth rate once the fiscal effort is taken into account (`r pt(gn_opt1)`% per year) (@tbl-optimal1). The interest–growth differential remains negative and, all else being equal, more debt generates a negative snowball effect, which contributes (modestly) to reducing debt.
-
-A higher market sovereign rate would erode this advantage more quickly, as @tbl-plustaux illustrates. The weighted average sovereign rate is `r pt(rapp_plus)`% per year over 2026–2032, instead of `r pt(rapp_opt1)`% per year in the reference scenario. It slowly reaches a level above nominal potential growth and then rises gradually. It is not until 2028 that the interest–growth differential reaches zero and then turns positive. In the very long run it reaches a prohibitive level. The "snowball effect" row quantifies this adverse dynamic. Despite a high level of debt, this effect remains modest relative to the size of the deficit to be closed. The no-policy-change scenario (@tbl-fildle) thus shows that, with a small differential (+0.5% per year), the snowball effect increases over time and would amount to `r pt(v("fildle", "bdn", 2032))` point per year in 2032 (i.e. public debt increases under its own weight by `r pt(v("fildle", "bdn", 2032))` point per year). Only from `r first_year("fildle", \(d) d$bdn > 0.005)` would it exceed half a percentage point per year. A larger differential directly increases this snowball effect. This illustrates why interest payments are not a relevant fiscal indicator: what matters is the interest burden net of the inflation tax or, better still, net of nominal growth (the snowball effect); as long as the interest–growth differential is small or negative, debt is not a burden — and may even facilitate the stabilisation of public finances[^8].
-
-[^8]: See, on this subject, the exchanges between François Geerolf and the Director General of INSEE [@geerolf:hal-05506068].
-
-Even higher market rates could accelerate this process. A rate of around 8% per year would be needed to push the weighted sovereign rate up to 2.8% in 2026. The conclusion is therefore simple: market rates must remain high for a long period for public debt to become a genuine constraint. This is a serious risk in the very long term, but one without immediate consequences. The same reasoning applies to countries such as Italy or Japan, which have not tipped into crisis because of excessive public debt. By contrast, fiscal policies aimed at reducing debt rapidly have a short-term impact that must on no account be overlooked, at the risk of severe setbacks.
+@tbl-sumd60 summarises the results of these simulations. The main finding is that halving public debt reduce slightly the cost of fiscal adjustment. With a zero interest–growth differential, the fiscal cost is `r pt(abs(ifd_eff("optimal1") - eff("optimal1")))` point of GDP `r updown(ifd_eff("optimal1") - eff("optimal1"))` than that computed for the observed level of debt (@tbl-sum); for a differential of +0.8 percentage point, the gap is `r pts(ifd_eff("optimal1_plus_r5") - eff("optimal1"))`% of GDP.
 
 ```{r}
 #| label: tbl-sumd60
@@ -1308,7 +1299,8 @@ sims_sum_ifd |>
     typst_width = 90 ) |> 
   tab_style(
     cell_borders("top", color = "grey", weight = px(0.5)),
-    location=cells_body(rows = c(2,4,9) ))
+    location=cells_body(rows = c(2,4,9) )) |> 
+  ofce::save_gt()
 ```
 
 ```{r, results='asis'}
@@ -1319,11 +1311,23 @@ ofce::margin_download(sims_sum_ifd, "ofce-xt-sims-tbld60-en", "Table data (d=60%
 ofce::margin_download(sims_ifd, "ofce-xt-sims-d60-en", "Simulations (d=60%)", prefix="")
 ```
 
+Moreover, the ranking of the variants is close to that observed for debt at `r pt(v("optimal1", "dettep", 2025))`% of GDP in 2025.
+
+The explanation for this counter-intuitive result is fairly simple. The key parameter for identifying the cost of debt, i.e. the constraint it imposes, is neither the level of debt nor interest payments. The essential parameter is the product of the interest–growth differential and debt ($\frac{r-g}{1+g} \times d$, see @tip-dyndet).
+
+In the case of France in 2025, this parameter works in favour of French public finances, since the implicit rate on French public debt is below the nominal growth rate. Over 2026–2032, the weighted sovereign rate is `r pt(rapp_opt1)`%, which is close to the nominal potential growth rate expected over the period (`r pt(gnpot_opt1)`% per year), and below the expected growth rate once the fiscal effort is taken into account (`r pt(gn_opt1)`% per year) (@tbl-optimal1). The interest–growth differential remains negative and, all else being equal, more debt generates a negative snowball effect, which contributes (modestly) to reducing debt.
+
+A higher market sovereign rate would erode this advantage more quickly, as @tbl-plustaux illustrates. The weighted average sovereign rate is `r pt(rapp_plus)`% per year over 2026–2032, instead of `r pt(rapp_opt1)`% per year in the reference scenario. It slowly reaches a level above nominal potential growth and then rises gradually. It is not until 2028 that the interest–growth differential reaches zero and then turns positive. In the very long run it reaches a prohibitive level. The "snowball effect" row quantifies this adverse dynamic. Despite a high level of debt, this effect remains modest relative to the size of the deficit to be closed. The no-policy-change scenario (@tbl-fildle) thus shows that, with a small differential (+0.5% per year), the snowball effect increases over time and would amount to `r pt(v("fildle", "bdn", 2032))` point per year in 2032 (i.e. public debt increases under its own weight by `r pt(v("fildle", "bdn", 2032))` point per year). Only from `r first_year("fildle", \(d) d$bdn > 0.005)` would it exceed half a percentage point per year. A larger differential directly increases this snowball effect. This illustrates why interest payments are not a relevant fiscal indicator: what matters is the interest burden net of the inflation tax or, better still, net of nominal growth (the snowball effect); as long as the interest–growth differential is small or negative, debt is not a burden — and may even facilitate the stabilisation of public finances[^8].
+
+[^8]: See, on this subject, the exchanges between François Geerolf and the Director General of INSEE [@geerolf:hal-05506068].
+
+Even higher market rates could accelerate this process. A rate of around 8% per year would be needed to push the weighted sovereign rate up to 2.8% in 2026. The conclusion is therefore simple: market rates must remain high for a long period for public debt to become a genuine constraint. This is a serious risk in the very long term, but one without immediate consequences. The same reasoning applies to countries such as Italy or Japan, which have not tipped into crisis because of excessive public debt. By contrast, fiscal policies aimed at reducing debt rapidly have a short-term impact that must on no account be overlooked, at the risk of severe setbacks.
+
 ## Methodology
 
 ### Main assumptions {#sec-annexe1}
-AMECO puts the output gap at `r pt(v("ameco", "og", 2025))`% of potential GDP in 2025, compared with `r pt(v("optimal1", "og", 2025))`% in the prev2609 reference scenario.
-1.  Potential growth is assumed to be 1% per year in the long run. Between 2026 and 2029, potential growth is slightly higher owing to a decline in structural unemployment towards 7% of the labour force.
+
+AMECO puts the output gap at `r pt(v("ameco", "og", 2025))`% of potential GDP in 2025, compared with `r pt(v("optimal1", "og", 2025))`% in the prev2609 reference scenario. 1. Potential growth is assumed to be 1% per year in the long run. Between 2026 and 2029, potential growth is slightly higher owing to a decline in structural unemployment towards 7% of the labour force.
 
 2.  Inflation is anchored at 1.75% in the long run. In 2026, the oil price remains high, returning to "normal" towards the end of 2027.
 
@@ -1337,9 +1341,7 @@ AMECO puts the output gap at `r pt(v("ameco", "og", 2025))`% of potential GDP in
 
 7.  The optimisation is subject to the constraint of reaching the debt target (*e.g.* 120%) at a given date (2032 or 2037) and remaining there thereafter. Impulses are computed by minimising an objective function that combines the quadratic loss from the output gap and the variance of impulses. This optimisation incorporates the feedback effects of impulses on activity and hence on output gaps.
 
-8.  An alternative optimisation, which consists in stabilising debt regardless of its level in 2032, is described in @sec-annexe3.
-The government deficit is `r pt(-v("fildle", "sep", 2031))`% of GDP in 2031 (`r pt(-v("fildle", "sep", 2025))`% in 2025), then rises to `r pt(-v("fildle", "sep", 2040))`% in 2040 and `r pt(-v("fildle", "sep", 2050))`% in 2050, a result that depends on the assumptions made about current and weighted sovereign rates. Note that modelling the weighted rate with an autoregressive process potentially understates its increase over the decade. In the longer term, this deviation widens, taking public debt to `r pt(v("fildle", "dettep", 2050), 0)`% of GDP in 2050. These dynamics are undeniably explosive, albeit relatively slow: over 25 years, debt increases by `r pt(v("fildle", "dettep", 2050) - v("fildle", "dettep", 2025), 0)` points of GDP, i.e. `r pt((v("fildle", "dettep", 2050) - v("fildle", "dettep", 2025)) / 25)` points per year.
-### No-policy-change paths {#sec-annexe2}
+8.  An alternative optimisation, which consists in stabilising debt regardless of its level in 2032, is described in @sec-annexe3. The government deficit is `r pt(-v("fildle", "sep", 2031))`% of GDP in 2031 (`r pt(-v("fildle", "sep", 2025))`% in 2025), then rises to `r pt(-v("fildle", "sep", 2040))`% in 2040 and `r pt(-v("fildle", "sep", 2050))`% in 2050, a result that depends on the assumptions made about current and weighted sovereign rates. Note that modelling the weighted rate with an autoregressive process potentially understates its increase over the decade. In the longer term, this deviation widens, taking public debt to `r pt(v("fildle", "dettep", 2050), 0)`% of GDP in 2050. These dynamics are undeniably explosive, albeit relatively slow: over 25 years, debt increases by `r pt(v("fildle", "dettep", 2050) - v("fildle", "dettep", 2025), 0)` points of GDP, i.e. `r pt((v("fildle", "dettep", 2050) - v("fildle", "dettep", 2025)) / 25)` points per year. \### No-policy-change paths {#sec-annexe2}
 
 The no-policy-change path is provided as a benchmark. It consists in running the model dynamics forward from the initial conditions without any fiscal impulse. The properties of the model are very simple: on the one hand, the output gap returns to equilibrium; on the other, public debt evolves through the accumulation of structural deficits and interest payments. Around this path, inflation depends on the output gap (whether through a Phillips-curve mechanism or through adjustment via the external account). The initial condition in 2025 is a small output gap (consistent with the assumption of the French Treasury, DG Trésor). The European Commission's assessment of the cyclical position is somewhat more negative, which would warrant slightly stronger growth in the short term.
 

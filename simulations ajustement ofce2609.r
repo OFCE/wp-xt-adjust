@@ -110,7 +110,7 @@ brs25d60 <- setup_params(
 # table_scenarios(run_model(brs25d60, out = "none", full_mc = FALSE), dec = 2, bck = 0, fwd=8)
 
 ccdd <- map_dfr(
-  c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_plus_r8",
+  c("optimal1", "optimal2", "optimal1_plus_r", "optimal1_plus_r5",
     "no2027", "d2037", "d2030", "nomult", "ogpers", "highmult", "multivar"),
   ~ {
     source("simulations init.R")
@@ -121,8 +121,8 @@ ccdd <- map_dfr(
     if(str_detect(.x, "plus_r$"))
       pp <- list_modify(
         pp,
-        add_rinst = c(0.015, 0.017, rep(0.017, 25)))
-    if(str_detect(.x, "plus_r8$"))
+        add_rinst = r_inst_f(.017))
+    if(str_detect(.x, "plus_r5$"))
       pp <- list_modify(
         pp,
         add_rinst = r_inst_f(0.005))
