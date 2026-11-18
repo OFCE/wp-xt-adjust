@@ -747,8 +747,10 @@ gg <- ggplot(data_wf) +
     aes(x = x, y = ymax, 
         label = label,
         vjust = vjust,
+        family = "Arimo",
         color = textcolor),
-    size = 6, size.unit = "pt", lineheight = 1.2) +
+    size = 6, size.unit = "pt",
+    lineheight = 1) +
   scale_x_continuous(breaks = NULL) +
   scale_y_continuous(
     labels = scales::label_percent(),
@@ -1015,8 +1017,10 @@ gg <- data_rpk |>
     hover_nearest = TRUE, shape = 21, color = "white"  ) +
   munch::geom_label_md(
     data = slopes,
-    col = 'white',
+    col = 'white', 
+    family = "Arimo",
     size = 7, size.unit = "pt",
+    lineheight = 1,
     aes(col = fill, x = x, y = y, label = label )
   ) + 
   scale_x_continuous(
