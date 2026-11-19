@@ -17,7 +17,7 @@ ofce::init_qmd()
 
 ## Définition
 
-**Effort fiscal** : opposé du cumul des impulsions (primaires, structurelles) budgétaires de 2026 à 2032
+**Effort fiscal ou budgétaire ** : opposé du cumul des impulsions (primaires, structurelles) budgétaires de 2026 à 2032
 
 $$ 
 E_f = -\sum_{t=2026}^{2032} \Delta s^*_p
@@ -34,7 +34,7 @@ On cherche donc à calculer l'effort budgétaire nécessaire poour stabiliser la
 {{< fa arrow-right >}} Peut être calculé sur une autre période (2027-2032 par ex.)
 
 ::: {.callout-warning}
-Différent de la notion d'effort budgétaire (les variations délibérées du solde structurel, hors élasticité des P.O. par ex.)
+Différent de la notion d'effort budgétaire employée pâr l'IFE|OFCE dans la prévision ou le concept découlant de la Dépense Publique Nette du PSC (i.e. les variations délibérées du solde structurel, hors élasticité des P.O. par ex.)
 :::
 
 ## Méthode {.smaller}
@@ -69,7 +69,7 @@ ofce::load_graphe("index-fig-contributions") |>
   girafy()
 ```
 
-## Un exemple de trajectoire
+## Exemple de trajectoires
 
 ```{r}
 ofce::load_graphe("index-fig-optimal") |> 
@@ -105,6 +105,8 @@ ofce::load_graphe("index-fig-taux") |>
 <br>
 
 -    la dynamique de l'écart critique (renouvellement de la dette publique) est *critique*. Le travail de Raul Sampognaro est important pour affiner cette dimension.
+
+-    un écart critique négatif incite à plus de dette publique, parce qu'il facilite l'effort budgétaire
 
 <br>
 
