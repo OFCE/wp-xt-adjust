@@ -1,25 +1,25 @@
 {
     "description": "DO NOT DELETE THIS FILE. This file is used to keep track of which files have been synced in the most recent deployment. If you delete this file a resync will need to be done (which can take a while) - read more: https://github.com/SamKirkland/FTP-Deploy-Action",
     "version": "1.0.0",
-    "generatedTime": 1795028443326,
+    "generatedTime": 1795028642253,
     "data": [
         {
             "type": "file",
             "name": ".ftp-deploy-sync-state.json",
             "size": 56544,
-            "hash": "009cfab88f71348f423564e2b99475c58b4b0ec63e895fb2cdd32aed59e1ea70"
+            "hash": "570a8965dbc0e3610426d71717b63da323aa966844377c64dba11571b6c97c2a"
         },
         {
             "type": "file",
             "name": "OFCEWP2026-13.pdf",
             "size": 8565628,
-            "hash": "d53f1e68ddf7d4dbe9009c94ffb8817ba060fb601af89320f2d938acdb7e5c38"
+            "hash": "7625f72d6ab75dce8603df462ff5810aad8e42a8a79f1d66df08e16f3a86cacb"
         },
         {
             "type": "file",
             "name": "OFCN2026_xt_presentation.html",
-            "size": 369592,
-            "hash": "7042f70c4afa27e3856e6fbfa2fc09faedee3b1c19af875e0bdb4924827b93aa"
+            "size": 369711,
+            "hash": "e16023728f4e552fffbd4045481922dc6b5c91aa503bba74bef54c7bf5d016a1"
         },
         {
             "type": "file",
@@ -48,8 +48,8 @@
         {
             "type": "file",
             "name": "search.json",
-            "size": 111081,
-            "hash": "0ee9019c03fc9605e76095fbc3c14bf50d5a0ec179afb65fb936cb5ca44273f6"
+            "size": 111196,
+            "hash": "39a2d84130485be184cd31a14813519282d42b3869a99ea19c1038bb78b93b8b"
         },
         {
             "type": "folder",
@@ -59,7 +59,7 @@
             "type": "file",
             "name": "sitemap.xml",
             "size": 586,
-            "hash": "21bf5db0f538e960b71c2618f904eeef7162e17f90942109cbc884034cbe8a72"
+            "hash": "103a84d8eda2b0b016ef03c60d22117bd6470e934367bb91c9f01c052f33bf08"
         },
         {
             "type": "folder",
@@ -95,15 +95,15 @@
         },
         {
             "type": "folder",
-            "name": "site_libs/liberation-mono-0.6.0"
-        },
-        {
-            "type": "folder",
             "name": "site_libs/liberation-sans-0.6.0"
         },
         {
             "type": "folder",
             "name": "site_libs/liberation-serif-0.6.0"
+        },
+        {
+            "type": "folder",
+            "name": "site_libs/liberation-mono-0.6.0"
         },
         {
             "type": "folder",
@@ -215,11 +215,7 @@
         },
         {
             "type": "folder",
-            "name": "site_libs/liberation-mono-0.6.0/css"
-        },
-        {
-            "type": "folder",
-            "name": "site_libs/liberation-mono-0.6.0/fonts"
+            "name": "site_libs/liberation-sans-0.6.0/css"
         },
         {
             "type": "folder",
@@ -227,7 +223,7 @@
         },
         {
             "type": "folder",
-            "name": "site_libs/liberation-sans-0.6.0/css"
+            "name": "site_libs/liberation-serif-0.6.0/css"
         },
         {
             "type": "folder",
@@ -235,7 +231,11 @@
         },
         {
             "type": "folder",
-            "name": "site_libs/liberation-serif-0.6.0/css"
+            "name": "site_libs/liberation-mono-0.6.0/css"
+        },
+        {
+            "type": "folder",
+            "name": "site_libs/liberation-mono-0.6.0/fonts"
         },
         {
             "type": "file",
@@ -269,15 +269,15 @@
         },
         {
             "type": "file",
-            "name": "site_libs/ofce-fonts-1.3.47/ofce-fonts.css",
-            "size": 892,
-            "hash": "8609bbae443bc0ee9232a5a03ef603bf85c679e1368f373c3246a3420c0bf00a"
-        },
-        {
-            "type": "file",
             "name": "site_libs/ofce-fonts-1.3.47/Merriweather-Regular.woff2",
             "size": 86116,
             "hash": "96ce00468a3439b676d863bed8b633d1f0bfe05ffc1933888539cfefc5117b76"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/ofce-fonts-1.3.47/ofce-fonts.css",
+            "size": 892,
+            "hash": "8609bbae443bc0ee9232a5a03ef603bf85c679e1368f373c3246a3420c0bf00a"
         },
         {
             "type": "folder",
@@ -285,11 +285,11 @@
         },
         {
             "type": "folder",
-            "name": "site_libs/quarto-contrib/quarto-project"
+            "name": "site_libs/quarto-contrib/reveal-auto-agenda-0.0.1"
         },
         {
             "type": "folder",
-            "name": "site_libs/quarto-contrib/reveal-auto-agenda-0.0.1"
+            "name": "site_libs/quarto-contrib/quarto-project"
         },
         {
             "type": "file",
@@ -317,15 +317,15 @@
         },
         {
             "type": "file",
-            "name": "site_libs/quarto-html/quarto.js",
-            "size": 28472,
-            "hash": "ff69fff180226f37a042e27a4046ca1f6d585b3e454452e27d3549161f7070fd"
-        },
-        {
-            "type": "file",
             "name": "site_libs/quarto-html/quarto-syntax-highlighting-9ae5c72b37dfa155a0c3e107e79de40a.css",
             "size": 3616,
             "hash": "9abddaebb8b11a4586c2d975d63ef4da00b31c46c7f0c720fcff4d329fcb0dc0"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-html/quarto.js",
+            "size": 28472,
+            "hash": "ff69fff180226f37a042e27a4046ca1f6d585b3e454452e27d3549161f7070fd"
         },
         {
             "type": "folder",
@@ -393,183 +393,9 @@
         },
         {
             "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/css/liberation-mono.css",
+            "name": "site_libs/liberation-sans-0.6.0/css/liberation-sans.css",
             "size": 1025,
-            "hash": "b0026635595a89fe5e226c877b00e1c62daf0fff0d5ebc8f2ec46b8abcb67f35"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/ChangeLog",
-            "size": 806,
-            "hash": "bbbd383dae5527d944a41db0edbdf470d1539f16e632304a1ddeb572a29d0b4b"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/AUTHORS",
-            "size": 242,
-            "hash": "d640bd6acfd5f7558507851f3e8936857b390bbe7e10c662241161dd83dbe830"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LICENSE",
-            "size": 4414,
-            "hash": "93fed46019c38bbe566b479d22148e2e8a1e85ada614accb0211c37b2c61c19b"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Bold.ttf",
-            "size": 301684,
-            "hash": "51024fd54bd726167996a9ed45ceb2ccae93be89a848045dd6b715856cb1561d"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Bold.woff",
-            "size": 170048,
-            "hash": "54c6a5648958043b60bb55621ff52aec57a5f4c541c2aa6abd3f0273d0f88986"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-BoldItalic.ttf",
-            "size": 277912,
-            "hash": "a0d13334ec3450aa57da0f0dcb356dc18775417e3662a23af88c94c4ea557e42"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-BoldItalic.woff",
-            "size": 161932,
-            "hash": "16ff9ebfc12c4c1366fc8bec141ea5000d14e233c5ebf968d773010b574c0c29"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Italic.ttf",
-            "size": 274984,
-            "hash": "7be4134e2499920a4d7013e0da9ed2d5bdaccf84825791368761c5cbbf5db48c"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Italic.woff",
-            "size": 159520,
-            "hash": "d5849cb19881d841828737a938b094e4d4604510ba8d9f009462c595cd6473b8"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Regular.woff",
-            "size": 174892,
-            "hash": "672a3eb095bf709c26d198cf5fbe5607959d29ba88a010b2f1a46560a032e4f0"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Regular.ttf",
-            "size": 313408,
-            "hash": "a9b21391536aec1c8fad37f2d5f24750e7f2d63cd86bccbb2463b6e17005f52e"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Bold.ttf",
-            "size": 353936,
-            "hash": "d723d5a272970aedf296ef6fc628180df6074bce7769701ea9e0d222c052668c"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Bold.woff",
-            "size": 192156,
-            "hash": "5b6291f6cf226c3f1db2fce3008a22ba1ab6886893a9aeb8f1f03005bddee6b9"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-BoldItalic.ttf",
-            "size": 349724,
-            "hash": "24b7cf0d06040c9a1b16efc528dc2966a407288938dfa169ee7fe584140a3393"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-BoldItalic.woff",
-            "size": 194844,
-            "hash": "ce9e471fc25c7af762ff4dc0ee544e0b043dd5aa5684034ec7b5a5b43580e363"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Italic.ttf",
-            "size": 355608,
-            "hash": "e27e6da1f5bbba630d635b8cc2916f84f195735865ea539687df962ae5a98e72"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Italic.woff",
-            "size": 197640,
-            "hash": "347ff2dc069a5af3ff61f4cb0456f3fa4b748d24e659712bacbc197a243acf7b"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Regular.ttf",
-            "size": 350200,
-            "hash": "e5b0af421ea2bfbc1ac8d251d647268087ae82786234c57f757d1f0b90fa8b49"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Regular.woff",
-            "size": 190908,
-            "hash": "bbd94e83d46bbdb5ec949361090dedb8612dce415e574ae5b057e052218dc448"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Bold.ttf",
-            "size": 365112,
-            "hash": "7a68170c1129e294639770c83f79033baaa59e384d561e979bbfc5ce11fc9854"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Bold.woff",
-            "size": 197292,
-            "hash": "2e5bad5212547e4d3942280c016699c9b36b22a4c3f3e13d1e045e4c6d81d239"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-BoldItalic.ttf",
-            "size": 371060,
-            "hash": "78c2810297cd3d9adead7a2bc242b67a095576ae020f19373a8825e504f5c52d"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-BoldItalic.woff",
-            "size": 206848,
-            "hash": "b7652f02741be9f5d5fbea6b3081b54a07c7c7e87ccaba6fb99a945494bd61c6"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Italic.ttf",
-            "size": 370968,
-            "hash": "ac0d2e385900315fbe12e0a175b5e22c8e8340f500d8b1e9b0e99c5ac065a1eb"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Italic.woff",
-            "size": 206064,
-            "hash": "bf26e4fcd3bca0bbd9eedbf0ad6bc86f55158f2c49314fb3e9cd23c9260f3a65"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Regular.ttf",
-            "size": 388352,
-            "hash": "26cd653d3312cee66f1d4f2c1065ba2ad324abd411b298f771bf7057e213d723"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Regular.woff",
-            "size": 206988,
-            "hash": "fbdb11f24b266a71949fe8b3a85c2bbf47ec98f6c78cf224d392c94d740fdbc6"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/README",
-            "size": 1977,
-            "hash": "c451eb298b5fbab16d0196ff06e436d7c9810e83cdef861dc5c6dadc21745de2"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/liberation-mono-0.6.0/fonts/TODO",
-            "size": 350,
-            "hash": "cd27fae5e8aa0e65359a4e4e8ca641fd89b7fff35c915f34284fa7df66f786b4"
+            "hash": "72a455bc04dd2805e09e6c41807cd750e59f51c83ba12e7684ae45175411e70f"
         },
         {
             "type": "file",
@@ -735,21 +561,21 @@
         },
         {
             "type": "file",
-            "name": "site_libs/liberation-sans-0.6.0/fonts/README",
-            "size": 1977,
-            "hash": "c451eb298b5fbab16d0196ff06e436d7c9810e83cdef861dc5c6dadc21745de2"
-        },
-        {
-            "type": "file",
             "name": "site_libs/liberation-sans-0.6.0/fonts/TODO",
             "size": 350,
             "hash": "cd27fae5e8aa0e65359a4e4e8ca641fd89b7fff35c915f34284fa7df66f786b4"
         },
         {
             "type": "file",
-            "name": "site_libs/liberation-sans-0.6.0/css/liberation-sans.css",
-            "size": 1025,
-            "hash": "72a455bc04dd2805e09e6c41807cd750e59f51c83ba12e7684ae45175411e70f"
+            "name": "site_libs/liberation-sans-0.6.0/fonts/README",
+            "size": 1977,
+            "hash": "c451eb298b5fbab16d0196ff06e436d7c9810e83cdef861dc5c6dadc21745de2"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-serif-0.6.0/css/liberation-serif.css",
+            "size": 1037,
+            "hash": "73d69e7cb79a1b1d4d9d5f5acdeddf32201a39c0612ed69081ec9b78e4259e19"
         },
         {
             "type": "file",
@@ -765,15 +591,15 @@
         },
         {
             "type": "file",
-            "name": "site_libs/liberation-serif-0.6.0/fonts/LiberationMono-Bold.ttf",
-            "size": 301684,
-            "hash": "51024fd54bd726167996a9ed45ceb2ccae93be89a848045dd6b715856cb1561d"
-        },
-        {
-            "type": "file",
             "name": "site_libs/liberation-serif-0.6.0/fonts/LICENSE",
             "size": 4414,
             "hash": "93fed46019c38bbe566b479d22148e2e8a1e85ada614accb0211c37b2c61c19b"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-serif-0.6.0/fonts/LiberationMono-Bold.ttf",
+            "size": 301684,
+            "hash": "51024fd54bd726167996a9ed45ceb2ccae93be89a848045dd6b715856cb1561d"
         },
         {
             "type": "file",
@@ -927,13 +753,193 @@
         },
         {
             "type": "file",
-            "name": "site_libs/liberation-serif-0.6.0/css/liberation-serif.css",
-            "size": 1037,
-            "hash": "73d69e7cb79a1b1d4d9d5f5acdeddf32201a39c0612ed69081ec9b78e4259e19"
+            "name": "site_libs/liberation-mono-0.6.0/css/liberation-mono.css",
+            "size": 1025,
+            "hash": "b0026635595a89fe5e226c877b00e1c62daf0fff0d5ebc8f2ec46b8abcb67f35"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/AUTHORS",
+            "size": 242,
+            "hash": "d640bd6acfd5f7558507851f3e8936857b390bbe7e10c662241161dd83dbe830"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/ChangeLog",
+            "size": 806,
+            "hash": "bbbd383dae5527d944a41db0edbdf470d1539f16e632304a1ddeb572a29d0b4b"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LICENSE",
+            "size": 4414,
+            "hash": "93fed46019c38bbe566b479d22148e2e8a1e85ada614accb0211c37b2c61c19b"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Bold.ttf",
+            "size": 301684,
+            "hash": "51024fd54bd726167996a9ed45ceb2ccae93be89a848045dd6b715856cb1561d"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Bold.woff",
+            "size": 170048,
+            "hash": "54c6a5648958043b60bb55621ff52aec57a5f4c541c2aa6abd3f0273d0f88986"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-BoldItalic.ttf",
+            "size": 277912,
+            "hash": "a0d13334ec3450aa57da0f0dcb356dc18775417e3662a23af88c94c4ea557e42"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-BoldItalic.woff",
+            "size": 161932,
+            "hash": "16ff9ebfc12c4c1366fc8bec141ea5000d14e233c5ebf968d773010b574c0c29"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Italic.woff",
+            "size": 159520,
+            "hash": "d5849cb19881d841828737a938b094e4d4604510ba8d9f009462c595cd6473b8"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Italic.ttf",
+            "size": 274984,
+            "hash": "7be4134e2499920a4d7013e0da9ed2d5bdaccf84825791368761c5cbbf5db48c"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Regular.ttf",
+            "size": 313408,
+            "hash": "a9b21391536aec1c8fad37f2d5f24750e7f2d63cd86bccbb2463b6e17005f52e"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationMono-Regular.woff",
+            "size": 174892,
+            "hash": "672a3eb095bf709c26d198cf5fbe5607959d29ba88a010b2f1a46560a032e4f0"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Bold.ttf",
+            "size": 353936,
+            "hash": "d723d5a272970aedf296ef6fc628180df6074bce7769701ea9e0d222c052668c"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Bold.woff",
+            "size": 192156,
+            "hash": "5b6291f6cf226c3f1db2fce3008a22ba1ab6886893a9aeb8f1f03005bddee6b9"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-BoldItalic.ttf",
+            "size": 349724,
+            "hash": "24b7cf0d06040c9a1b16efc528dc2966a407288938dfa169ee7fe584140a3393"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-BoldItalic.woff",
+            "size": 194844,
+            "hash": "ce9e471fc25c7af762ff4dc0ee544e0b043dd5aa5684034ec7b5a5b43580e363"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Italic.ttf",
+            "size": 355608,
+            "hash": "e27e6da1f5bbba630d635b8cc2916f84f195735865ea539687df962ae5a98e72"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Italic.woff",
+            "size": 197640,
+            "hash": "347ff2dc069a5af3ff61f4cb0456f3fa4b748d24e659712bacbc197a243acf7b"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Regular.ttf",
+            "size": 350200,
+            "hash": "e5b0af421ea2bfbc1ac8d251d647268087ae82786234c57f757d1f0b90fa8b49"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSans-Regular.woff",
+            "size": 190908,
+            "hash": "bbd94e83d46bbdb5ec949361090dedb8612dce415e574ae5b057e052218dc448"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Bold.ttf",
+            "size": 365112,
+            "hash": "7a68170c1129e294639770c83f79033baaa59e384d561e979bbfc5ce11fc9854"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Bold.woff",
+            "size": 197292,
+            "hash": "2e5bad5212547e4d3942280c016699c9b36b22a4c3f3e13d1e045e4c6d81d239"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-BoldItalic.ttf",
+            "size": 371060,
+            "hash": "78c2810297cd3d9adead7a2bc242b67a095576ae020f19373a8825e504f5c52d"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-BoldItalic.woff",
+            "size": 206848,
+            "hash": "b7652f02741be9f5d5fbea6b3081b54a07c7c7e87ccaba6fb99a945494bd61c6"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Italic.ttf",
+            "size": 370968,
+            "hash": "ac0d2e385900315fbe12e0a175b5e22c8e8340f500d8b1e9b0e99c5ac065a1eb"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Italic.woff",
+            "size": 206064,
+            "hash": "bf26e4fcd3bca0bbd9eedbf0ad6bc86f55158f2c49314fb3e9cd23c9260f3a65"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Regular.ttf",
+            "size": 388352,
+            "hash": "26cd653d3312cee66f1d4f2c1065ba2ad324abd411b298f771bf7057e213d723"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/LiberationSerif-Regular.woff",
+            "size": 206988,
+            "hash": "fbdb11f24b266a71949fe8b3a85c2bbf47ec98f6c78cf224d392c94d740fdbc6"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/README",
+            "size": 1977,
+            "hash": "c451eb298b5fbab16d0196ff06e436d7c9810e83cdef861dc5c6dadc21745de2"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/liberation-mono-0.6.0/fonts/TODO",
+            "size": 350,
+            "hash": "cd27fae5e8aa0e65359a4e4e8ca641fd89b7fff35c915f34284fa7df66f786b4"
         },
         {
             "type": "folder",
             "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/1e21o67"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css",
+            "size": 73810,
+            "hash": "a5a520c62d85f1c7bebc00e5a44a3b5c877f2af835dd035df141f26a10d245fa"
         },
         {
             "type": "file",
@@ -943,19 +949,13 @@
         },
         {
             "type": "file",
-            "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css",
-            "size": 73810,
-            "hash": "a5a520c62d85f1c7bebc00e5a44a3b5c877f2af835dd035df141f26a10d245fa"
+            "name": "site_libs/quarto-contrib/reveal-auto-agenda-0.0.1/reveal-auto-agenda.css",
+            "size": 462,
+            "hash": "c0227cc3a7556df06e721bd7e39a9ddaca49714cad0db86dcf7f0f124db7a7c0"
         },
         {
             "type": "folder",
             "name": "site_libs/quarto-contrib/quarto-project/ofce"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/quarto-contrib/reveal-auto-agenda-0.0.1/reveal-auto-agenda.css",
-            "size": 462,
-            "hash": "c0227cc3a7556df06e721bd7e39a9ddaca49714cad0db86dcf7f0f124db7a7c0"
         },
         {
             "type": "file",
@@ -977,12 +977,6 @@
         },
         {
             "type": "file",
-            "name": "site_libs/revealjs/dist/reveal.css",
-            "size": 52279,
-            "hash": "9cbc5082797d938f0ee780328790a131ae3d7bc5c09c176e77927c174f29e60a"
-        },
-        {
-            "type": "file",
             "name": "site_libs/revealjs/dist/reveal.esm.js",
             "size": 108817,
             "hash": "57d5e907604d1afd1c69f4c022101e3ef3183134a818eb7962e250433628f6e9"
@@ -995,19 +989,25 @@
         },
         {
             "type": "file",
-            "name": "site_libs/revealjs/dist/reveal.js",
-            "size": 109035,
-            "hash": "feb4e1817a0342d89e4cbd530b17f77232556182382693dc8ac64d68a1851d3a"
-        },
-        {
-            "type": "file",
             "name": "site_libs/revealjs/dist/reveal.js.map",
             "size": 450193,
             "hash": "aece8eba795c254950738c5d8509e4f8dd602253fbfe9c169e080f1b668e1cd5"
         },
         {
+            "type": "file",
+            "name": "site_libs/revealjs/dist/reveal.js",
+            "size": 109035,
+            "hash": "feb4e1817a0342d89e4cbd530b17f77232556182382693dc8ac64d68a1851d3a"
+        },
+        {
             "type": "folder",
             "name": "site_libs/revealjs/dist/theme"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/revealjs/dist/reveal.css",
+            "size": 52279,
+            "hash": "9cbc5082797d938f0ee780328790a131ae3d7bc5c09c176e77927c174f29e60a"
         },
         {
             "type": "folder",
@@ -1027,11 +1027,11 @@
         },
         {
             "type": "folder",
-            "name": "site_libs/revealjs/plugin/pdf-export"
+            "name": "site_libs/revealjs/plugin/quarto-line-highlight"
         },
         {
             "type": "folder",
-            "name": "site_libs/revealjs/plugin/quarto-line-highlight"
+            "name": "site_libs/revealjs/plugin/pdf-export"
         },
         {
             "type": "folder",
@@ -1051,15 +1051,15 @@
         },
         {
             "type": "file",
-            "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/1e21o67/fa-brands-400.ttf",
-            "size": 210792,
-            "hash": "808443ae6c8204395add8543da8a90a60b9376fb0f87ed8e8ea37d109596d805"
-        },
-        {
-            "type": "file",
             "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/1e21o67/fa-brands-400.woff2",
             "size": 118684,
             "hash": "d7236a19bf23cbb2027280e8f51dc99d6c45976a2ed60de73382b034b18a2b68"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/quarto-contrib/fontawesome6-6.7.2/1e21o67/fa-brands-400.ttf",
+            "size": 210792,
+            "hash": "808443ae6c8204395add8543da8a90a60b9376fb0f87ed8e8ea37d109596d805"
         },
         {
             "type": "file",
@@ -1113,15 +1113,15 @@
         },
         {
             "type": "file",
-            "name": "site_libs/revealjs/plugin/highlight/highlight.js",
-            "size": 940009,
-            "hash": "3d58fbfb3fb64e4c2c1c0288347ab4174847b281538fe93f056e90b9b5a608ca"
-        },
-        {
-            "type": "file",
             "name": "site_libs/revealjs/plugin/highlight/highlight.esm.js",
             "size": 939787,
             "hash": "ff4b4683377e4c0f8d512480bbd513b8fcd0d30db22bd1efedb39bd8bd5a8707"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/revealjs/plugin/highlight/highlight.js",
+            "size": 940009,
+            "hash": "3d58fbfb3fb64e4c2c1c0288347ab4174847b281538fe93f056e90b9b5a608ca"
         },
         {
             "type": "file",
@@ -1179,12 +1179,6 @@
         },
         {
             "type": "file",
-            "name": "site_libs/revealjs/plugin/math/mathjax2.js",
-            "size": 2094,
-            "hash": "8f4e74ea68e9f9f4238ce8d516d6602cb532224bd4e99eed6127f855a9ac578e"
-        },
-        {
-            "type": "file",
             "name": "site_libs/revealjs/plugin/math/mathjax3.js",
             "size": 2212,
             "hash": "08d040d053431c166c9a2131f6a04adf796948226116d7a9bfafd1cbd3536e6b"
@@ -1194,6 +1188,12 @@
             "name": "site_libs/revealjs/plugin/math/plugin.js",
             "size": 334,
             "hash": "5953baa37de282e598535d234440d9b3f4e7c640cb9c7fcb54187318ebc5af28"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/revealjs/plugin/math/mathjax2.js",
+            "size": 2094,
+            "hash": "8f4e74ea68e9f9f4238ce8d516d6602cb532224bd4e99eed6127f855a9ac578e"
         },
         {
             "type": "file",
@@ -1221,6 +1221,24 @@
         },
         {
             "type": "file",
+            "name": "site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css",
+            "size": 481,
+            "hash": "10ca4ebf89e45854dfb209477e5eec3dabadc6afaa3053e156be86b103d46713"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/revealjs/plugin/quarto-line-highlight/plugin.yml",
+            "size": 164,
+            "hash": "c360344cce59778682800185df97b414ac9ec91213fefda989b9551a10b49e95"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js",
+            "size": 11549,
+            "hash": "e985a18488170b3206470dd1465d696f19f4396f77a39853fe4ab664f42d043d"
+        },
+        {
+            "type": "file",
             "name": "site_libs/revealjs/plugin/pdf-export/pdfexport.js",
             "size": 3070,
             "hash": "04a7cf66287cee83929567717012f992e1da8da3ee1422afc4d6ed2ccf899db5"
@@ -1233,39 +1251,21 @@
         },
         {
             "type": "file",
-            "name": "site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css",
-            "size": 481,
-            "hash": "10ca4ebf89e45854dfb209477e5eec3dabadc6afaa3053e156be86b103d46713"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js",
-            "size": 11549,
-            "hash": "e985a18488170b3206470dd1465d696f19f4396f77a39853fe4ab664f42d043d"
-        },
-        {
-            "type": "file",
-            "name": "site_libs/revealjs/plugin/quarto-line-highlight/plugin.yml",
-            "size": 164,
-            "hash": "c360344cce59778682800185df97b414ac9ec91213fefda989b9551a10b49e95"
-        },
-        {
-            "type": "file",
             "name": "site_libs/revealjs/plugin/reveal-menu/menu.css",
             "size": 8192,
             "hash": "d1f53c1ca2da4e38337da57d0a04aa6ec37c8a5037ce8eb32b533aae58142ddf"
         },
         {
             "type": "file",
-            "name": "site_libs/revealjs/plugin/reveal-menu/menu.js",
-            "size": 37128,
-            "hash": "5e3a6594eed51e13b55ee755fd495e5a7de02fa3193fff97bc19b46f47e52522"
-        },
-        {
-            "type": "file",
             "name": "site_libs/revealjs/plugin/reveal-menu/plugin.yml",
             "size": 205,
             "hash": "572b76cc11ffd42c1abfe9e415fe7c95d76e517f2812a41e4baee3333fc9cf77"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/revealjs/plugin/reveal-menu/menu.js",
+            "size": 37128,
+            "hash": "5e3a6594eed51e13b55ee755fd495e5a7de02fa3193fff97bc19b46f47e52522"
         },
         {
             "type": "file",
@@ -1353,15 +1353,15 @@
         },
         {
             "type": "file",
-            "name": "site_libs/revealjs/dist/theme/fonts/league-gothic/LICENSE",
-            "size": 92,
-            "hash": "f8a741f43a00e8dc1ba89debfe7cc6c760de0315e9ee47406c17474f9246c692"
-        },
-        {
-            "type": "file",
             "name": "site_libs/revealjs/dist/theme/fonts/league-gothic/league-gothic.css",
             "size": 317,
             "hash": "82d18a3cfbde189aefc749cc31d314681e7a41f064141d33ec6687f6fc57223d"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/revealjs/dist/theme/fonts/league-gothic/LICENSE",
+            "size": 92,
+            "hash": "f8a741f43a00e8dc1ba89debfe7cc6c760de0315e9ee47406c17474f9246c692"
         },
         {
             "type": "file",
@@ -1419,15 +1419,15 @@
         },
         {
             "type": "file",
-            "name": "site_libs/revealjs/dist/theme/fonts/source-sans-pro/source-sans-pro-semibold.eot",
-            "size": 89897,
-            "hash": "ebb8918da92bae172dfe322a3947929b3df2330dccc6f13c7d8e8ed3815e1696"
-        },
-        {
-            "type": "file",
             "name": "site_libs/revealjs/dist/theme/fonts/source-sans-pro/source-sans-pro-regular.woff",
             "size": 114324,
             "hash": "d4eaa48ba450f4dd2d024ab5b0e895c73c81475718e5453fd1890254c16b7a57"
+        },
+        {
+            "type": "file",
+            "name": "site_libs/revealjs/dist/theme/fonts/source-sans-pro/source-sans-pro-semibold.eot",
+            "size": 89897,
+            "hash": "ebb8918da92bae172dfe322a3947929b3df2330dccc6f13c7d8e8ed3815e1696"
         },
         {
             "type": "file",

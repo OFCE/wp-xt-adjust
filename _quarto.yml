@@ -84,8 +84,11 @@ comments:
 lang: en
 quot-lang: en
 
+jel: [H63, E62, H68, E17]
+keywords: [Public debt, France, Fiscal policy, modelisation]
+
 author: Xavier Timbeau
-date: 2026-11-19
+date: 2026-11-17
 format:
   # ofce-html: default
   wp-html: default
