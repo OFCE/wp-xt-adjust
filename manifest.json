@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "id": "ofce-wp-2026-13-en",
+  "translation_id": null,
+  "institution": "ofce",
+  "type": "working-paper",
+  "media": "html",
+  "lang": "en",
+  "title": "What does it cost to stabilize public debt?",
+  "authors": [
+    "Xavier Timbeau"
+  ],
+  "abstract": null,
+  "categories": [],
+  "keywords": [
+    "Public debt",
+    "France",
+    "Fiscal policy",
+    "modelisation"
+  ],
+  "jel": [
+    "H63",
+    "E62",
+    "H68",
+    "E17"
+  ],
+  "date_published": "2026-11-17",
+  "date_modified": "2026-11-19",
+  "url": "https://www.ofce.fr/wp/2026/13/",
+  "pdf": "https://www.ofce.fr/wp/2026/13/OFCEWP2026-13.pdf",
+  "repo": "https://github.com/OFCE/wp-xt-adjust/",
+  "auto_update": true,
+  "wp": 13,
+  "annee": 2026,
+  "version": null,
+  "stage": false,
+  "pdf-path": "wp/2026/13/OFCEWP2026-13.pdf",
+  "source-repo": "OFCE/wp-xt-adjust",
+  "ofceweb-version": "1.0.6"
+}
