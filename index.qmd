@@ -515,7 +515,7 @@ If, instead of 2026 growth, one uses long term potential growth (1.1% per year i
 dd |> 
   gt() |> 
   ofce::ofce_tab_options(
-    quarto.disable_processing = FALSE,  
+    # quarto.disable_processing = FALSE,  
     data_row.padding = gt::px(2),
     typst_width = 90) |> 
   cols_hide(dstar) |>
@@ -752,7 +752,7 @@ gg <- ggplot(data_wf) +
         vjust = vjust,
         family = "Arimo",
         color = textcolor),
-    size = rel(2),
+    size = rel(2.25),
     lineheight = 1) +
   scale_x_continuous(breaks = NULL) +
   scale_y_continuous(
@@ -1022,7 +1022,7 @@ gg <- data_rpk |>
     data = slopes,
     col = 'white', 
     family = "Arimo",
-    size = rel(2),
+    size = rel(2.25),
     lineheight = 1,
     aes(col = fill, x = x, y = y, label = label )
   ) + 

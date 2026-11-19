@@ -80,14 +80,33 @@ ofce::load_graphe("index-fig-optimal") |>
 ## Les variantes
 
 ```{r}
-ofce::load_gt("index-tbl-sum")
+ofce::load_gt("index-tbl-sum") |> 
+  gt::rm_footnotes() |> 
+  gt::rm_source_notes() |> 
+  gt::tab_options(table.font.size = 18) |> 
+  cols_width(
+    i ~ px(30),
+    libs ~ px(260),
+    cible ~ px(70),
+    date_cible ~ px(70),
+    everything() ~ px(120)  )
 ```
 
 
 ## Et si la dette avait été de 60% ?
 
 ```{r}
-ofce::load_gt("index-tbl-sumd60")
+ofce::load_gt("index-tbl-sumd60") |> 
+  gt::rm_footnotes() |> 
+  gt::rm_source_notes() |> 
+  gt::tab_options(table.font.size = 18) |> 
+  cols_width(
+    i ~ px(30),
+    libs ~ px(260),
+    cible ~ px(70),
+    date_cible ~ px(70),
+    everything() ~ px(120)  )
+
 ```
 
 ## Ecart critique et dette : les liaisons dangereuses
@@ -140,3 +159,44 @@ ofce::load_graphe("index-fig-taux") |>
 
 ::: {#refs}
 :::
+
+# Annexes
+
+## Effort fiscal (approche naïve)
+
+```{r}
+ofce::load_gt("index-tbl-naif") |> 
+  gt::rm_footnotes() |> 
+  gt::rm_source_notes() |> 
+  gt::tab_options(table.font.size = 18) |>
+  cols_width(
+    nrow ~ px(30),
+    spstab ~ px(100),
+    everything() ~ px(100) ) 
+```
+
+## Historique dette France
+
+```{r}
+ofce::load_graphe("index-fig-dette") 
+```
+
+## Multiplicateurs
+
+```{r}
+ofce::load_graphe("index-fig-multiplicateur") |> 
+  girafy()
+```
+
+## Efforts suivant les horizons et les multiplicateurs
+
+```{r}
+ofce::load_graphe("index-fig-mults") |> 
+  girafy()
+```
+## Fil de l'eau
+
+```{r}
+ofce::load_graphe("index-fig-fildle") |> 
+  girafy()
+```
