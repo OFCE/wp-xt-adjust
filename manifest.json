@@ -12,9 +12,19 @@
   ],
   "abstract": null,
   "categories": [],
-  "keywords": [],
-  "jel": [],
-  "date_published": "2026-11-19",
+  "keywords": [
+    "Public debt",
+    "France",
+    "Fiscal policy",
+    "modelisation"
+  ],
+  "jel": [
+    "H63",
+    "E62",
+    "H68",
+    "E17"
+  ],
+  "date_published": "2026-11-17",
   "date_modified": "2026-11-19",
   "url": "https://www.ofce.fr/wp/2026/13/",
   "pdf": "https://www.ofce.fr/wp/2026/13/OFCEWP2026-13.pdf",
