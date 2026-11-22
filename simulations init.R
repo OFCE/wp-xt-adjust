@@ -23,7 +23,6 @@ source(pathify("R/dwr_sim.r"))
 source(pathify("R/dwr_optim.r"))
 source(pathify("R/dwr_utils.r"))
 source(pathify("R/dwr_tools.r"))
-source(pathify("R/dwr_mongo.r"))
 
 workers <- 4
 

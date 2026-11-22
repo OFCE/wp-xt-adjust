@@ -29,7 +29,7 @@ options(
   ofce.background_color = "transparent",
   ofce.source_data.src_in = "project",
   ofce.caption.ofce = FALSE,
-  ofce.marquee = "munch",
+  ofce.marquee = "marquee",
   ofce.caption.srcplus = NULL,
   ofce.caption.wrap = 0)
 

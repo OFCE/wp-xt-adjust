@@ -1,6 +1,8 @@
 ---
 title: "What does it cost to stabilize public debt?" 
 subtitle: "From intuition to simulations with debtwatch 2.0"
+abstract: |
+  How large a fiscal effort does France need to stabilise its public debt? Naive calculations based on the debt-stabilising primary balance give answers ranging from €46 billion to €192 billion, depending on the interest rate, growth rate and deficit measure chosen. This paper goes beyond this approach with debtwatch 2.0, a stochastic model of public debt dynamics that accounts for the gradual pass-through of market rates to the implicit rate on debt, the dynamics of the output gap and inflation, and fiscal multipliers. Fiscal impulses are chosen optimally to reach a debt target while minimising the loss of activity. Starting from the IFE\|OFCE autumn 2026 forecast, bringing public debt to 120% of GDP in 2032 requires a cumulative fiscal effort of 3.5 points of GDP over 2026–2032 (€105 billion at 2026 GDP), with an average output loss of 1.5 points of GDP and unemployment peaking at 9.4% in 2028. Merely stabilising the debt ratio in 2032 reduces the effort to 2.8 points. Postponing the target to 2037 hardly changes the effort but substantially reduces its impact on activity. Fiscal multipliers are a key determinant: moving from zero to persistent multipliers adds about 1 point of GDP to the required effort, while one point of interest–growth differential adds about €20 billion. A counterfactual with debt at 60% of GDP shows that the level of debt matters little as long as the interest–growth differential remains small, as is currently the case given the maturity structure of French public debt. Stochastic simulations point to an uncertainty of about ±0.6 point of GDP on the required effort.
 # author: Xavier Timbeau                   
 date-modified: now
 format:                                  
@@ -486,8 +488,8 @@ gdm <- ggplot(dette_trim) +
 gfinal <- gec/gecapp/gssp/gdm  +
   plot_layout(axes = "collect_x") &
   theme(plot.margin = margin(0),
-        axis.text.x = element_text(size = rel(0.75), hjust = 0),
-        plot.subtitle = munch::element_md(size=rel(0.75)),
+        axis.text.x = marquee::element_marquee(size = rel(0.75), hjust = 0),
+        plot.subtitle = marquee::element_marquee(size=rel(0.75)),
         plot.background = element_rect(fill = "transparent") )
 
 gd <- gfinal +
@@ -1510,7 +1512,7 @@ res <- source_data("multiplicateurs.R") |>
 gg <- ggplot(res)+
   theme(legend.position = c(1,1),
         legend.justification = c(1,1),
-        axis.text.x = element_text(hjust = 0)) +
+        axis.text.x = marquee::element_marquee(hjust = 0)) +
   aes(x=year, y=dvar, color = rule)+
   geom_line(linewidth = 0.2) +
   PrettyCols::scale_color_pretty_d(
