@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "id": "ofce-wp-2026-13-en",
+  "translation_id": null,
+  "institution": "ofce",
+  "type": "working-paper",
+  "media": "html",
+  "lang": "en",
+  "title": "What does it cost to stabilize public debt?",
+  "authors": [
+    "Xavier Timbeau"
+  ],
+  "abstract": "How large a fiscal effort does France need to stabilise its public debt? Naive calculations based on the debt-stabilising primary balance give answers ranging from €46 billion to €192 billion, depending on the interest rate, growth rate and deficit measure chosen. This paper goes beyond this approach with debtwatch 2.0, a stochastic model of public debt dynamics that accounts for the gradual pass-through of market rates to the implicit rate on debt, the dynamics of the output gap and inflation, and fiscal multipliers. Fiscal impulses are chosen optimally to reach a debt target while minimising the loss of activity. Starting from the IFE\\|OFCE autumn 2026 forecast, bringing public debt to 120% of GDP in 2032 requires a cumulative fiscal effort of 3.5 points of GDP over 2026–2032 (€105 billion at 2026 GDP), with an average output loss of 1.5 points of GDP and unemployment peaking at 9.4% in 2028. Merely stabilising the debt ratio in 2032 reduces the effort to 2.8 points. Postponing the target to 2037 hardly changes the effort but substantially reduces its impact on activity. Fiscal multipliers are a key determinant: moving from zero to persistent multipliers adds about 1 point of GDP to the required effort, while one point of interest–growth differential adds about €20 billion. A counterfactual with debt at 60% of GDP shows that the level of debt matters little as long as the interest–growth differential remains small, as is currently the case given the maturity structure of French public debt. Stochastic simulations point to an uncertainty of about ±0.6 point of GDP on the required effort.\n",
+  "categories": [],
+  "keywords": [
+    "Public debt",
+    "France",
+    "Fiscal policy",
+    "modelisation"
+  ],
+  "jel": [
+    "H63",
+    "E62",
+    "H68",
+    "E17"
+  ],
+  "date_published": "2026-11-17",
+  "date_modified": "2026-11-22",
+  "url": "https://www.ofce.fr/wp/2026/13/",
+  "pdf": "https://www.ofce.fr/wp/2026/13/OFCEWP2026-13.pdf",
+  "repo": "https://github.com/OFCE/wp-xt-adjust/",
+  "auto_update": true,
+  "wp": 13,
+  "annee": 2026,
+  "version": null,
+  "stage": false,
+  "pdf-path": "wp/2026/13/OFCEWP2026-13.pdf",
+  "source-repo": "OFCE/wp-xt-adjust",
+  "ofceweb-version": "1.0.6"
+}
