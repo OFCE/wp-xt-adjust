@@ -1,0 +1,35 @@
+---
+title: "_decomposition"
+format: html
+---
+
+## décomposition de la dette
+
+Si on note $d_t$ la dette publique en point de pib potentiel, $r$ le taux apparent et $g$ le taux de croissance potentiel, $s_p$ le solde public primaire on a : 
+
+$$
+d_t = \beta_{t-1} d_{t-1} - s_{p,t} \\
+
+avec \text{  } \beta_{t} = \frac{1+r}{1+g}
+
+$$
+Pour $r=g$, $\beta=1$.
+
+Si on intègre sur plusieurs périodes (de 0 à $T$) cette équation on obtient ($\prod_{i=1}^{0} \beta_{i-1}=1$) :
+
+$$
+\begin{align}
+& d_1 = \beta_0 d_0 - s_{p,1} \\
+
+& d_2 = \beta_1 d_1 - s_{p,2} = \beta_0 \times \beta_1 d_0 - \beta_1 \times s_{p,1} - s_{p,2} \\
+
+& d_3 = \beta_2 d_2 - s_{p,3} = \beta_0 \times \beta_1 \times \beta_2 d_0 -\beta_1 \times \beta_2 \times s_{p,1} - \beta_2 \times s_{p,2} - s_{p,3} \\
+
+& ... \\
+
+& d_T =  d_0 \times \prod_{i=0}^{T-1} \beta_i  - \sum_{i=1}^T \prod_{t=1}^{i-1}\beta_{t-1} s_{p, t}
+\end{align}
+$$
+
+$$
+L'évolution de la dette est donc l'effet de $\beta$ composé sur la période, plus l'effet de chaque solde primaire composé par le *même \beta* c'est-à-dire le solde de la période composé par l'effet $r-g$. 
